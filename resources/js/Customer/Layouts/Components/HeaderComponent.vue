@@ -80,8 +80,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Home</a>
                     </li>
+                    <hr>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"> Demo pages </a>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"> Demo pages </a>
                         <div class="dropdown-menu dropdown-large">
                             <nav class="row">
                                 <div class="col-6">

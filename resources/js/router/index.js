@@ -9,6 +9,10 @@ const router= createRouter({
         {
             path:'',
             component:MainLayout,
+            beforeEnter(){
+                addScriptsAndStyles();
+                return true;
+            },
             children:customerRoutes()
         },
         {
@@ -18,5 +22,9 @@ const router= createRouter({
         }
     ]
 })
+const addScriptsAndStyles = () => {
+  document.head.innerHTML+='<link href="/css/responsive.css" rel="stylesheet" type="text/css" />'
+  document.head.innerHTML+='<link href="/css/ui.css" rel="stylesheet" type="text/css"/>'
 
+}
 export default router

@@ -2,6 +2,7 @@ import axios from "axios";
 import {getCookie} from "../../Services/CookieService";
 
 const HTTP=axios.create({
+    baseURL:'/admin',
     headers:{
         'X-Request-With':'XMLHttpRequest'
     },

@@ -49,7 +49,7 @@ export default {
         })
         const login=async ()=>{
             try {
-                let {data}=await HTTP.post('/admin/login',{...credentials})
+                let {data}=await HTTP.post('/login',{...credentials})
                 if (data.success){
                     redirectToRouteByName(ADMIN_DASHBOARD_ROUTE)
                 }

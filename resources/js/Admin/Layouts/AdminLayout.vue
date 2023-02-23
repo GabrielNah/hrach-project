@@ -48,7 +48,7 @@ export default {
         const setMounted=()=>Mounted.value=true
         const getAdmin =async () => {
             try {
-                let {data:{admin}}=await HTTP.get('/admin/me')
+                let {data:{admin}}=await HTTP.get('/me')
                 store.actions.setAdmin(admin)
             }catch (e) {
                 store.actions.setAdmin(null)
@@ -58,7 +58,7 @@ export default {
 
         const logout = async () => {
             try {
-                let {data:{success}}=await HTTP.post('/admin/logout')
+                let {data:{success}}=await HTTP.post('/logout')
                 if (success){
                     store.actions.setAdmin(null)
                     redirectToRouteByName(ADMIN_LOGIN_ROUTE)

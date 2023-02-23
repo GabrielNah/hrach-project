@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Models\Admin;
 use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 
 class UpsertCategoryRequest extends FormRequest
@@ -26,12 +27,18 @@ class UpsertCategoryRequest extends FormRequest
     {
         return [
             'name'=>['required','string',function($attribute,$value,$fail){
-                if ($this->route('id')){
-                    
+                if ($this->route('category')){
+                    $names=$this->getNamesOfOtherCategories($this->route('category')->id);
+                    if ($names->contains($value)){
+                        $fail('This name is already taken');
+                    }
+                    return;
                 }
-                if ($value && !Category::query()->pluck('id')->contains($value)){
-                    $fail('Selected parent is invalid');
+                $names=$this->getNamesOfCategories();
+                if ($names->contains($value)){
+                    $fail('This name is already taken');
                 }
+
             }],
             'parent'=>[function($attribute,$value,$fail){
                 if ($value && !Category::query()->pluck('id')->contains($value)){
@@ -40,5 +47,16 @@ class UpsertCategoryRequest extends FormRequest
             }],
             'active'=>['nullable',Rule::in(['0','1'])],
         ];
+    }
+
+
+    private function getNamesOfOtherCategories(int $id):Collection
+    {
+        return Category::query()->whereNot('id',$id)->pluck('name');
+    }
+
+    private function getNamesOfCategories():Collection
+    {
+        return Category::query()->pluck('name');
     }
 }

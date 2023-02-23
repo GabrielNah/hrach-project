@@ -16,4 +16,20 @@ class Controller extends BaseController
     {
         return response()->json(array_merge(['success'=>true],$data),$status);
     }
+
+    public function createdResponse(?array $data=[]):JsonResponse
+    {
+        return $this->successResponse($data,Response::HTTP_CREATED);
+    }
+
+    public function deletedResponse():JsonResponse
+    {
+        return $this->successResponse([],Response::HTTP_NO_CONTENT);
+    }
+
+
+    public function errorResponse(?array $data=[]):JsonResponse
+    {
+        return $this->successResponse($data,Response::HTTP_BAD_REQUEST);
+    }
 }

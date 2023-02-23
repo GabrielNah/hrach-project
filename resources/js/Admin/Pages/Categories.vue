@@ -20,7 +20,7 @@
                                        </span>
                                        <div>
                                            <button class="btn btn-primary " @click="startEditing(category)">Edit</button>
-                                           <button class="btn btn-danger margin-left">Delete</button>
+                                           <button class="btn btn-danger margin-left" @click="deleteCategory(category.id)">Delete</button>
                                        </div>
                                    </div>
 
@@ -32,7 +32,7 @@
                                            </span>
                                            <div>
                                                <button class="btn btn-primary " @click="startEditing(subCategory,category)">Edit</button>
-                                               <button class="btn btn-danger margin-left">Delete</button>
+                                               <button class="btn btn-danger margin-left" @click="deleteCategory(subCategory.id)">Delete</button>
                                            </div>
                                        </li>
                                    </ul>
@@ -104,7 +104,7 @@ import {nextTick, onMounted, ref} from "vue";
 import HTTP from "../Axios/axiosCongif";
 import useLoader from "../../GlobalComposables/useLoader";
 import Loader from "../../SharedComponents/Loader.vue";
-import {errorNotification} from "../../Services/NotificationService";
+import {errorNotification, successNotification} from "../../Services/NotificationService";
 import {extractValidationErrors} from "../../Services/GlobalHelpers";
 
 export default {
@@ -132,9 +132,13 @@ export default {
                 loaded.value=false
                 const form=document.querySelector('#categoryForm');
                 const data=new FormData(form)
-                let response=await HTTP.post(`/category/store/${editableItem.value?.id ??''}`,data)
-                console.log(response.data)
+                let {data:{success}}=await HTTP.post(`/category/store/${editableItem.value?.id ??''}`,data)
+                editableItem.value=null
                 setLoaded()
+                await nextTick()
+                if (success){
+                    successNotification('Reload category diagram to view changes','Success');
+                }
             }catch (e) {
                 setLoaded()
                 await nextTick()
@@ -157,6 +161,19 @@ export default {
         }
 
 
+        const deleteCategory = async (category_id) => {
+            try {
+
+            let response=await HTTP.delete('/category/'+category_id)
+            if (response.status === 204){
+                successNotification('Reload diagram to view changes','Deleted successfully')
+            }
+            }catch (e) {
+                errorNotification(extractValidationErrors(e))
+            }
+        }
+
+
         onMounted( ()=>{
           getCategoriesWithSubCategories()
         })
@@ -169,7 +186,8 @@ export default {
             startAddingCategory,
             dropEditing,
             startEditing,
-            saveChanges
+            saveChanges,
+            deleteCategory
         }
 
     },

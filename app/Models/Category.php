@@ -19,7 +19,7 @@ class Category extends Model
         'active'=>'boolean'
     ];
 
-    public function SubCategories():HasManyThrough
+    public function subCategories():HasManyThrough
     {
         return  $this->hasManyThrough(self::class,SubCategory::class,'category_id','id','id','subcategory_id');
     }

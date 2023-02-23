@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,7 +17,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix'=>'admin'],function (){
     Route::post('/login',[AdminAuthController::class,'login']);
-    Route::post('/logout',[AdminAuthController::class,'logout']);
-    Route::get('/me',[AdminAuthController::class,'getAdmin']);
+    Route::group(['middleware'=>'auth:admin'],function (){
+
+        Route::post('/logout',[AdminAuthController::class,'logout']);
+        Route::get('/me',[AdminAuthController::class,'getAdmin']);
+
+
+        Route::group(['prefix'=>'category'],function (){
+            Route::get('',[CategoryController::class,'index']);
+            Route::post('store/{category?}',[CategoryController::class,'store']);
+        });
+
+
+    });
+
 });
 Route::view('/{any?}','welcome')->where('any','.*');

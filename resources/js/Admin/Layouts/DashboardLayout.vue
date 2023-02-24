@@ -1,6 +1,6 @@
 <template>
     <div class="area"></div>
-    <nav class="main-menu">
+    <nav class="main-menu position-fixed">
         <ul class="mt-lg-5 d-flex flex-column justify-content-center align-content-center gap-1">
             <li>
                 <router-link :to="{name:ADMIN_CATEGORIES_ROUTE}" active-class="active">
@@ -12,12 +12,12 @@
 
             </li>
             <li class="has-subnav">
-                <a href="#">
+                <router-link :to="{name:ADMIN_PRODUCT_LIST}" active-class="active">
                     <i class="fa fa-globe fa-2x"></i>
                     <span class="nav-text">
                         Products
                     </span>
-                </a>
+                </router-link>
 
             </li>
             <li class="has-subnav">
@@ -55,12 +55,12 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <router-link :to="{name:ADMIN_SETTING_ROUTE}" active-class="active">
                     <i class="fa fa-cogs fa-2x"></i>
                     <span class="nav-text">
-                            Tools & Resources
+                            Settings
                         </span>
-                </a>
+                </router-link>
             </li>
             <li>
                 <a href="#">
@@ -92,7 +92,7 @@
 
 
 import {inject, onMounted, ref} from "vue";
-import {ADMIN_LOGIN_ROUTE,ADMIN_CATEGORIES_ROUTE} from "../../router/Admin/adminRoutes";
+import {ADMIN_LOGIN_ROUTE, ADMIN_CATEGORIES_ROUTE, ADMIN_PRODUCT_LIST,ADMIN_SETTING_ROUTE} from "../../router/Admin/adminRoutes";
 import {redirectToRouteByName} from "../../Services/GlobalHelpers";
 import Loader from "../../SharedComponents/Loader.vue";
 
@@ -116,7 +116,9 @@ export default {
         return {
             loaded,
             redirectToRouteByName,
-            ADMIN_CATEGORIES_ROUTE
+            ADMIN_CATEGORIES_ROUTE,
+            ADMIN_PRODUCT_LIST,
+            ADMIN_SETTING_ROUTE
         }
     }
 }

@@ -2,10 +2,16 @@ import AdminLogin from "../../Admin/Auth/AdminLogin.vue";
 import AdminDashboard from "../../Admin/Pages/AdminDashboard.vue";
 import DashboardLayout from "../../Admin/Layouts/DashboardLayout.vue";
 import Categories from "../../Admin/Pages/Categories.vue";
+import ProductList from "../../Admin/Pages/Products/ProductList.vue";
+import AddProduct from "../../Admin/Pages/Products/AddProduct.vue";
+import Settings from "../../Admin/Pages/Settings.vue";
 
 export const ADMIN_LOGIN_ROUTE='admin.login'
 export const ADMIN_DASHBOARD_ROUTE='admin.dashboard'
 export const ADMIN_CATEGORIES_ROUTE='admin.categories'
+export const ADMIN_PRODUCT_LIST='admin.product.list'
+export const ADMIN_PRODUCT_ADD='admin.product.add'
+export const ADMIN_SETTING_ROUTE='admin.settings'
 
 export default ()=>([
     {
@@ -26,7 +32,22 @@ export default ()=>([
                 path:'categories',
                 name:ADMIN_CATEGORIES_ROUTE,
                 component:Categories
-            }
+            },
+            {
+                path:'products',
+                name:ADMIN_PRODUCT_LIST,
+                component:ProductList
+            },
+            {
+                path:'products/add',
+                name:ADMIN_PRODUCT_ADD,
+                component:AddProduct
+            },
+            {
+                path:'settings',
+                name:ADMIN_SETTING_ROUTE,
+                component:Settings
+            },
         ]
     }
 ])

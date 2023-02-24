@@ -28,4 +28,10 @@ class Category extends Model
     {
         return  $this->hasOneThrough(self::class,SubCategory::class,'subcategory_id','id','id','category_id');
     }
+
+
+    public function products():HasMany
+    {
+        return  $this->hasMany(Product::class,'category_id','id');
+    }
 }

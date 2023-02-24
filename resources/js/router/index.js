@@ -10,7 +10,7 @@ const router= createRouter({
             path:'',
             component:MainLayout,
             beforeEnter(){
-                addScriptsAndStyles();
+                addCustomersScriptsAndStyles();
                 return true;
             },
             children:customerRoutes()
@@ -18,13 +18,21 @@ const router= createRouter({
         {
             path:'/admin',
             component:AdminLayout,
-            children:adminRoutes()
+            children:adminRoutes(),
+            beforeEnter(){
+                addAdminsScriptAndStyles();
+                return true;
+            },
         }
     ]
 })
-const addScriptsAndStyles = () => {
+const addCustomersScriptsAndStyles = () => {
   document.head.innerHTML+='<link href="/css/responsive.css" rel="stylesheet" type="text/css" />'
   document.head.innerHTML+='<link href="/css/ui.css" rel="stylesheet" type="text/css"/>'
 
+}
+const addAdminsScriptAndStyles=()=>{
+    document.head.innerHTML+='<link href="/css/Admin/app.min.css" rel="stylesheet" type="text/css" />'
+    document.head.innerHTML+='<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css" />'
 }
 export default router

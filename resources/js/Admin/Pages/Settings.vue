@@ -1,0 +1,297 @@
+<template>
+    <div class="container d-flex flex-row justify-content-between">
+        <loader v-if="!loaded"/>
+        <template v-else>
+            <section class="border border-dark d-flex flex-column align-items-start p-2 mt-2 w-50">
+                <h4 class="text-center w-100 text">Color</h4>
+                <div class="d-flex flex-column justify-content-center w-100 align-items-center">
+                    <h5>{{ colors.length ? 'Existing colors' : 'No color added yet' }}  </h5>
+                    <div class="w-100 d-flex flex-row flex-wrap gap-2" v-if="colors.length">
+                        <div class="d-flex rounded pointer justify-content-center p-1 border-dark border flex-column"
+                             data-bs-toggle="tooltip" data-bs-placement="top" title="Click on color to edit"
+                             @click="setColorUnderEdition(color)"
+                             v-for="color in colors" :key="color.id">
+                            <h6 class="text-center">{{ color.name }}</h6>
+                            <div :style="{backgroundColor:color.value}" class="color_display"></div>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="w-100 text-center mt-2">{{ id ? 'Edit' :'Create' }} Color</h5>
+                <form class="form-group d-flex flex-column align-items-start"
+                      @submit="handleSubmit">
+                    <label  class="form-label">Choose color
+                        <input type="color" v-model="value" class="form-control form-control-color" title="Choose your color">
+                    </label>
+                    <label  class="form-label">Set name of color
+                        <input type="text" class="form-control " v-model="name" placeholder="Colors name">
+                    </label>
+                    <div>
+                        <button type="submit" class="btn btn-success">
+                           {{ id ? 'Save Changes' : 'Save' }}
+                        </button>
+                        <template v-if="id">
+                            <button @click="deleteColor"  style="margin-left: 10px" class="btn btn-danger " type="button"  title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                </svg>
+                            </button>
+                            <button class="btn btn-gray btn-secondary"
+                                    @click="resetColorData"
+                                    style="margin-left: 10px" type="button">Drop data</button>
+                        </template>
+
+                    </div>
+                </form>
+            </section>
+            <section class="border border-dark d-flex flex-column align-items-start justify-content-center p-2 mt-2 w-50">
+                <div class="w-100 d-flex flex-column align-items-center justify-content-between">
+                    <h4 class="text-center w-100 text">Sizes</h4>
+                    <div class="d-flex flex-column justify-content-center w-100 align-items-center mt-2">
+                        <h5>{{ sizes.length ? 'Existing sizes' : 'No size added yet' }}</h5>
+                        <div class="w-100 d-flex flex-row flex-wrap gap-2 justify-content-between">
+                            <div class="d-flex rounded justify-content-center p-1 border-dark border flex-column text-center  fw-bold"
+                                 v-for="size  in  sizes"
+                                 @click="setSizeUnderEdition(size)"
+                                 :key="size.id">
+                                {{ size.size }}
+                            </div>
+                        </div>
+                    </div>
+                    <h5 class="w-100 text-center mt-2">{{ sizeUnderEdition ? 'Edit': 'Create' }} size</h5>
+                    <form class="form-group d-flex flex-column align-items-start " @submit="handleSizeModification">
+                        <label  class="form-label">Set size
+                            <input type="text" class="form-control " v-model="sizeValue" placeholder="Sizes name">
+                        </label>
+                        <div>
+                            <button type="submit" class="btn btn-success">
+                                {{ sizeUnderEdition ?  'Save changes':'Save' }}
+                            </button>
+                            <template v-if="sizeUnderEdition">
+                                <button @click="deleteSize" style="margin-left: 10px" class="btn btn-danger " type="button"  title="Delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                    </svg>
+                                </button>
+                                <button class="btn-secondary btn" style="margin-left: 20px" @click="dropSizeEdition" type="reset">
+                                    Drop
+                                </button>
+                            </template>
+
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </template>
+    </div>
+
+</template>
+
+<script>
+import {onMounted, reactive, ref, toRefs} from "vue";
+import HTTP from "../Axios/axiosCongif";
+import useLoader from "../../GlobalComposables/useLoader";
+import Loader from "../../SharedComponents/Loader.vue";
+import {errorNotification, successNotification} from "../../Services/NotificationService";
+import {extractValidationErrors} from "../../Services/GlobalHelpers";
+
+export default {
+    name: "Settings",
+    components: {Loader},
+    setup(){
+        const {loaded,setLoaded}=useLoader()
+        const sizes=ref([]);
+        const colors=ref([]);
+        const sizeValue=ref('')
+        const colorData=reactive({
+            id:0,
+            name:'',
+            value:'#000000'
+        })
+
+        const sizeUnderEdition=ref(null)
+        const setSizeUnderEdition = (size) => {
+          sizeUnderEdition.value=size
+          sizeValue.value=size.size
+        }
+        const dropSizeEdition = () => {
+          sizeUnderEdition.value=null
+          sizeValue.value=''
+        }
+        const setColorUnderEdition=(color)=>{
+            colorData.id=color.id
+            colorData.value=color.value
+            colorData.name=color.name
+        }
+        const setSizes = (sizeValue) => {
+          sizes.value=sizeValue
+        }
+        const addSize = (size) => {
+          sizes.value.push(size)
+        }
+        const setColors = (colorsValue) => {
+          colors.value=colorsValue
+        }
+        const resetColorData=()=>{
+            colorData.id=0
+            colorData.name='';
+            colorData.value='#000000';
+        }
+        const addColor=(color)=>{
+            colors.value.push({...color})
+        }
+        const deleteColor =async () => {
+            try {
+                let response=await HTTP.delete('/settings/color/'+colorData.id)
+                if (response.status === 204){
+                    let index=colors.value.findIndex(clr=>clr.id === colorData.id)
+                    if (index=== -1){
+                        return;
+                    }
+                    colors.value.splice(index,1)
+                    resetColorData()
+                    successNotification('Color removed successfully')
+                }
+            }catch (e) {
+                console.log(e)
+                errorNotification(extractValidationErrors(e))
+            }
+        }
+        const saveColor=async ()=>{
+            try {
+                let {data}=await HTTP.post('/settings/color',colorData)
+                if (data.success){
+                    addColor(data.color);
+                    resetColorData()
+                    successNotification('Color added successfully')
+                }
+            }catch (e) {
+                errorNotification(extractValidationErrors(e))
+            }
+        }
+
+        const editColor=async ()=>{
+            try {
+                let {data}=await HTTP.put('/settings/color/'+colorData.id,colorData)
+                if (data.success){
+                    let selectedColor=colors.value.find((clr)=>clr.id === colorData.id)
+                    selectedColor.value=colorData.value
+                    selectedColor.name=colorData.name
+                    resetColorData()
+                    successNotification('Color updated successfully')
+                }
+            }catch (e) {
+                console.log(e)
+                errorNotification(extractValidationErrors(e))
+            }
+        }
+
+        const getSettings=async ()=>{
+            try {
+                let {data:{colors,sizes}}=await HTTP.get('/settings/all')
+                setSizes(sizes)
+                setColors(colors)
+                setLoaded()
+            }catch (e) {
+                console.log(e)
+            }
+        }
+
+        const handleSubmit = async (e) => {
+            e.preventDefault()
+            if (colorData?.id){
+              await  editColor()
+                return;
+            }
+            await saveColor()
+        }
+
+
+        const createSize = async () => {
+            try {
+                let {data}=await HTTP.post('/settings/size', {size:sizeValue.value})
+                if (data.success){
+                    dropSizeEdition()
+                    addSize(data.size)
+                    successNotification('Size added successfully')
+                }
+            }catch (e) {
+                console.log(e)
+                errorNotification(extractValidationErrors(e))
+            }
+        }
+
+        const updateSize=async ()=>{
+            try {
+                let {data}=await HTTP.put('/settings/size/'+sizeUnderEdition.value.id, {size:sizeValue.value})
+                if (data.success){
+                    let size=sizes.value.find((sz)=>sz.id === sizeUnderEdition.value.id)
+                    if (!size){
+                        throw new Error('Something went wrong,refresh page and try again')
+                    }
+                    size.size=sizeValue.value
+                    dropSizeEdition()
+                    successNotification('Size updated successfully')
+                }
+            }catch (e) {
+                console.log(e)
+                errorNotification(extractValidationErrors(e))
+            }
+        }
+
+        const deleteSize =async () => {
+            try {
+                let response=await HTTP.delete('/settings/size/'+sizeUnderEdition.value.id)
+                if (response.status === 204){
+                    let index=sizes.value.findIndex(clr=>clr.id === sizeUnderEdition.value.id)
+                    if (index=== -1){
+                        return;
+                    }
+                    sizes.value.splice(index,1)
+                    dropSizeEdition()
+                    successNotification('Size removed successfully')
+                }
+            }catch (e) {
+                console.log(e)
+                errorNotification(extractValidationErrors(e))
+            }
+        }
+
+        const handleSizeModification=async (e)=>{
+            e.preventDefault();
+            if (sizeUnderEdition.value){
+               await updateSize();
+                return;
+            }
+            await createSize()
+        }
+
+        onMounted(()=>getSettings())
+
+        return{
+            sizes,
+            colors,
+            loaded,
+            ...toRefs(colorData),
+            setColorUnderEdition,
+            resetColorData,
+            handleSubmit,
+            deleteColor,
+            sizeValue,
+            sizeUnderEdition,
+            dropSizeEdition,
+            handleSizeModification,
+            setSizeUnderEdition,
+            deleteSize
+        }
+    },
+}
+</script>
+
+<style scoped>
+.color_display{
+    width: 50px;
+    height: 50px;
+}
+</style>

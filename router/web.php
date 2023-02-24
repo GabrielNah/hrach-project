@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +28,21 @@ Route::group(['prefix'=>'admin'],function (){
             Route::get('',[CategoryController::class,'index']);
             Route::post('store/{category?}',[CategoryController::class,'store']);
             Route::delete('/{category}',[CategoryController::class,'delete']);
+        });
+
+        Route::group(['prefix'=>'settings'],function (){
+            Route::get('/all',[SettingController::class,'getSettings']);
+            Route::group(['prefix'=>'color'],function (){
+                Route::post('',[SettingController::class,'storeColor']);
+                Route::put('/{id}',[SettingController::class,'editColor']);
+                Route::delete('/{id}',[SettingController::class,'deleteColor']);
+            });
+
+            Route::group(['prefix'=>'size'],function (){
+                Route::post('',[SettingController::class,'storeSize']);
+                Route::put('/{id}',[SettingController::class,'editSize']);
+                Route::delete('/{id}',[SettingController::class,'removeSize']);
+            });
         });
 
 

@@ -1,37 +1,6 @@
 <template>
     <div class="container-fluid">
 
-        <!-- start page title -->
-        <div class="row align-items-center">
-            <div class="col-sm-6">
-                <div class="page-title-box">
-                    <h4 class="font-size-18">Product Edit</h4>
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);"><i class="mdi mdi-home-outline"></i></a></li>
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Ecommerce</a></li>
-                        <li class="breadcrumb-item active">Product Edit</li>
-                    </ol>
-                </div>
-            </div>
-
-            <div class="col-sm-6">
-                <div class="float-right d-none d-md-block">
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle waves-effect waves-light" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="mdi mdi-settings mr-2"></i> Settings
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Separated link</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- end page title -->
 
         <div class="row">
             <div class="col-12">
@@ -41,74 +10,107 @@
                         <h4 class="card-title">Basic Information</h4>
                         <p class="card-title-desc">Fill all information below</p>
 
-                        <form>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="productname">Product Name</label>
-                                        <input id="productname" name="productname" type="text" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="manufacturername">Manufacturer Name</label>
-                                        <input id="manufacturername" name="manufacturername" type="text" class="form-control">
+                        <div class="w-100 d-flex flex-row">
+                            <form class="w-50">
+                                <div class="row w-100">
+                                    <div class="col-sm-6 w-100">
+                                        <div class="form-group">
+                                            <label >Category</label>
+                                            <select class="form-select" aria-label="Default select example">
+                                                <option selected>Open this select menu</option>
+                                                <option value="1">One</option>
+                                                <option value="2">Two</option>
+                                                <option value="3">Three</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="productname">Product Name</label>
+                                            <input id="productname" name="productname" type="text" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="manufacturername">Product title</label>
+                                            <input id="manufacturername" name="manufacturername" type="text" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="productdesc">Product Description</label>
+                                            <textarea class="form-control" id="productdesc" rows="5"></textarea>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label >Rating</label>
+                                            <input class="form-control" min="0"  max="5" type="number"  >
+                                        </div>
+                                        <div class="form-group ">
+                                            <label >Sizes</label>
+                                            <multiselect/>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label>Colors</label>
+                                            <multiselect/>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label>Prices</label>
+                                            <div class="d-flex flex-row justify-content-between">
+                                                <div class="form-group ">
+                                                    <label>Price</label>
+                                                    <input class="form-control" type="text">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label >Currency</label>
+                                                    <select class="form-select" >
+                                                        <option selected>Open this select menu</option>
+                                                        <option>RU</option>
+                                                        <option>USD</option>
+                                                        <option>EUR</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-check form-group form-switch">
+                                                    <label class="form-check-label" >Price for many
+                                                        <input class="form-check-input"  type="checkbox"  >
+                                                    </label>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <label>Min count</label>
+                                                    <input class="form-control" type="text">
+                                                </div>
+                                                <div class="form-group ">
+                                                    <label>Max count</label>
+                                                    <input class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-primary mt-2">Add price</button>
+                                        </div>
+                                        <div class="form-check form-group form-switch">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">Product is active</label>
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" >
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="productdesc">Product Description</label>
-                                        <textarea class="form-control" id="productdesc" rows="5"></textarea>
+                                <button type="submit" class="btn btn-success mr-1 waves-effect waves-light">Save Changes</button>
+                                <button type="submit" class="btn btn-secondary waves-effect">Cancel</button>
+                            </form>
+                            <main class="w-50 d-flex flex-column">
+                                <h3 class="card-title text-center">Product files</h3>
+                                <section>
+                                    <h3 class="card-title text-center">Product images</h3>
+                                    <div class="d-flex flex-wrap">
+                                        <div class="position-relative"  v-for="i in 10">
+                                            <img src="/images/posts/1.webp" class="product_image" alt="">
+                                            <button type="button" class="btn-close" disabled aria-label="Close"></button>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="manufacturerbrand">Manufacturer Brand</label>
-                                        <input id="manufacturerbrand" name="manufacturerbrand" type="text" class="form-control">
+                                </section>
+                                <section>
+                                    <h3 class="card-title text-center">Product videos</h3>
+                                    <div class="d-flex flex-wrap">
+                                        <div class="position-relative" v-for="i in 10">
+                                             <img src="/images/posts/1.webp" class="product_image" alt="" >
+                                            <button type="button" class="btn-close" disabled aria-label="Close"></button>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="price">Price</label>
-                                        <input id="price" name="price" type="text" class="form-control">
-                                    </div>
+                                </section>
+                            </main>
+                        </div>
 
-                                    <div class="form-group">
-                                        <label class="control-label">Category</label>
-                                        <select class="form-control select2 select2-hidden-accessible" data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                            <option data-select2-id="3">Select</option>
-                                            <option value="AK">Alaska</option>
-                                            <option value="HI">Hawaii</option>
-                                        </select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="2" style="width: 583.6px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-4abz-container"><span class="select2-selection__rendered" id="select2-4abz-container" role="textbox" aria-readonly="true" title="Select">Select</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Features</label>
-
-                                        <select class="select2 form-control select2-multiple select2-hidden-accessible" multiple="" data-placeholder="Choose ..." data-select2-id="4" tabindex="-1" aria-hidden="true">
-                                            <option value="AK">Alaska</option>
-                                            <option value="HI">Hawaii</option>
-                                            <option value="CA">California</option>
-                                            <option value="NV">Nevada</option>
-                                            <option value="OR">Oregon</option>
-                                            <option value="WA">Washington</option>
-                                        </select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="5" style="width: 583.6px;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1" aria-disabled="false"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" placeholder="Choose ..." style="width: 562px;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
-
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Product Image</label> <br>
-                                        <img src="assets/images/products/1.jpg" alt="product img" class="img-fluid rounded" style="max-width: 200px;">
-                                        <br>
-                                        <button type="button" class="btn btn-info mt-2 waves-effect waves-light">Change Image</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-success mr-1 waves-effect waves-light">Save Changes</button>
-                            <button type="submit" class="btn btn-secondary waves-effect">Cancel</button>
-                        </form>
 
                     </div>
                 </div>
@@ -149,7 +151,10 @@
                 </div>
             </div>
         </div>
-        <!-- end row -->
+        <teleport to="#app">
+            <modal/>
+        </teleport>
+
 
 
 
@@ -157,11 +162,28 @@
 </template>
 
 <script>
+import Multiselect from "../../../SharedComponents/ReusableComponents/Multiselect.vue";
+import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
 export default {
-    name: "AddProduct"
+    name: "AddProduct",
+    components: {Modal, Multiselect}
+
 }
 </script>
 
 <style scoped>
-
+.product_image{
+    max-width: 150px;
+    margin-left: 5px;
+    margin-bottom: 3px;
+}
+.btn-close{
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #e90606;
+    opacity: 1 !important;
+    z-index: 250;
+    cursor: pointer !important;
+}
 </style>

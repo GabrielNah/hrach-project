@@ -9,3 +9,15 @@ export default function () {
         loaded,setLoaded
     }
 }
+
+export function useModal() {
+    const modalOpened=ref(false)
+    const openModal=()=>modalOpened.value=true
+    const closeModal=()=>modalOpened.value=false
+
+    return {
+        modalOpened,
+        openModal,
+        closeModal
+    }
+}

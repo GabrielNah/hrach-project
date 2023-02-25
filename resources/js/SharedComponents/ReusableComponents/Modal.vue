@@ -1,6 +1,7 @@
 <template>
-    <div class="modal">
-        <main class="p-2">
+    <div class="modal" @click.self="closeModal">
+        <button type="button" class="btn-close" @click.self="closeModal" disabled aria-label="Close"></button>
+        <main class="p-2 main_content">
             <slot/>
         </main>
     </div>
@@ -8,7 +9,12 @@
 
 <script>
 export default {
-    name: "Modal"
+    name: "Modal",
+    methods:{
+        closeModal(){
+            this.$emit('close')
+        }
+    }
 }
 </script>
 
@@ -22,7 +28,22 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 99999999999999;
+    z-index: 99999999999;
     background-color: #6c757d;
+}
+.btn-close{
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 9999999999999;
+}
+.main_content{
+    z-index: 99999999999999999;
+    background-color: #f1f3f4;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
 }
 </style>

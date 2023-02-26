@@ -1,5 +1,6 @@
-<template>
-    <div class="container-fluid">
+<template >
+    <loader v-if="loaded"/>
+    <div v-else class="container-fluid">
 
 
         <div class="row">
@@ -11,77 +12,84 @@
                         <p class="card-title-desc">Fill all information below</p>
 
                         <div class="w-100 d-flex flex-row">
-                            <form class="w-50">
+                            <form class="w-50" id="productMainData">
                                 <div class="row w-100">
                                     <div class="col-sm-6 w-100">
                                         <div class="form-group">
                                             <label >Category</label>
-                                            <select class="form-select" aria-label="Default select example">
-                                                <option selected>Open this select menu</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
+                                            <select class="form-select" aria-label="Default select example" name="category">
+                                                <option value="0" selected></option>
+                                                <option :value="category.id" v-for="category in categories" :key="category.id" >
+                                                    {{ category.name }}
+                                                </option>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="productname">Product Name</label>
-                                            <input id="productname" name="productname" type="text" class="form-control">
+                                            <input id="productname" name="name" type="text" class="form-control">
                                         </div>
                                         <div class="form-group">
                                             <label for="manufacturername">Product title</label>
-                                            <input id="manufacturername" name="manufacturername" type="text" class="form-control">
+                                            <input id="manufacturername" name="title" type="text" class="form-control">
                                         </div>
                                         <div class="form-group">
                                             <label for="productdesc">Product Description</label>
-                                            <textarea class="form-control" id="productdesc" rows="5"></textarea>
+                                            <textarea class="form-control" id="productdesc" rows="5" name="description"></textarea>
                                         </div>
                                         <div class="form-group ">
                                             <label >Rating</label>
-                                            <input class="form-control" min="0"  max="5" type="number"  >
+                                            <input class="form-control" min="0"  max="5" type="number" name="rating" >
                                         </div>
                                         <div class="form-group ">
                                             <label >Sizes</label>
-                                            <multiselect/>
+                                            <multiselect :values="sizes" @selected="setSize" :unique-key="'id'" :showable-key="'size'"/>
                                         </div>
                                         <div class="form-group ">
                                             <label>Colors</label>
-                                            <multiselect/>
+                                            <multiselect :values="colors" @selected="setColors" :unique-key="'id'" :showable-key="'name'"/>
                                         </div>
                                         <div class="form-group ">
                                             <label>Prices</label>
-                                            <div class="d-flex flex-row justify-content-between">
+                                            <div class="d-flex flex-row justify-content-between border p-1" v-for="price in priceCount" :key="price.id">
                                                 <div class="form-group ">
                                                     <label>Price</label>
-                                                    <input class="form-control" type="text">
-                                                </div>
-                                                <div class="form-group">
+                                                    <input class="form-control" :name="price.forMany ? 'prices[]' : 'price_for_one[]'" type="text">
                                                     <label >Currency</label>
-                                                    <select class="form-select" >
+                                                    <select class="form-select" :name="price.forMany ? 'currencies[]':'currencies_for_one[]'">
                                                         <option selected>Open this select menu</option>
-                                                        <option>RU</option>
-                                                        <option>USD</option>
-                                                        <option>EUR</option>
+                                                        <option v-for="(currency,index) in currencies" :key="index" :value="currency">
+                                                            {{ currency }}
+                                                        </option>
                                                     </select>
                                                 </div>
-                                                <div class="form-check form-group form-switch">
-                                                    <label class="form-check-label" >Price for many
-                                                        <input class="form-check-input"  type="checkbox"  >
-                                                    </label>
+                                                <div class="form-group">
+                                                    <div class="form-check form-group form-switch d-flex justify-content-between gap-5">
+                                                        <label class="form-check-label" >Price for many
+                                                            <input v-model="price.forMany" class="form-check-input"  type="checkbox"  >
+                                                        </label>
+                                                        <div class="position-relative" @click="removePrice(price)">
+                                                            <button type="button" class="btn-close"></button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group " v-if="price.forMany">
+                                                        <label class="d-flex">
+                                                              <span style="margin-right: 5px;">Min </span>
+                                                              <input class="form-control" name="counts_min[]" type="text">
+                                                        </label>
+                                                        <label class="d-flex mt-3">
+                                                                <span style="margin-right: 5px;">Max </span>
+                                                                <input class="form-control" name="count_max[]" type="text">
+                                                        </label>
+                                                    </div>
                                                 </div>
-                                                <div class="form-group ">
-                                                    <label>Min count</label>
-                                                    <input class="form-control" type="text">
-                                                </div>
-                                                <div class="form-group ">
-                                                    <label>Max count</label>
-                                                    <input class="form-control" type="text">
-                                                </div>
+
+
                                             </div>
-                                            <button class="btn btn-primary mt-2">Add price</button>
+                                            <button type="button" @click="addPrice" class="btn btn-primary mt-2">Add price</button>
                                         </div>
                                         <div class="form-check form-group form-switch">
                                             <label class="form-check-label" for="flexSwitchCheckChecked">Product is active</label>
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" >
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" name="is_active">
                                         </div>
                                     </div>
                                 </div>
@@ -91,15 +99,23 @@
                                 <section v-if="files.length">
                                     <figure class="general_image card position-relative">
                                         <figcaption class="fw-bold card-title mt-1">Products general file</figcaption>
-                                        <div class="checkmark tooltipp" @click="setGeneralFile(selectedFile)">
-                                            <svg v-if="selectedFile" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-check " viewBox="0 0 16 16">
-                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
-                                            </svg>
-                                            <span class="tooltiptext">Mark as general</span>
+                                        <div v-if="selectedFile" class="checkmark tooltipp" @click="setGeneralFile(selectedFile)">
+
+                                            <template v-if="fileIsGeneral(selectedFile)">
+                                                <span class="text text-success fw-bold">File is marked as general</span>
+                                            </template>
+                                            <template v-else>
+                                                <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-check " viewBox="0 0 16 16">
+                                                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                </svg>
+                                                <span class="tooltiptext"> Mark as general</span>
+                                            </template>
+
+
                                         </div>
                                         <template v-if="selectedFile">
                                             <template v-if="getFilesType(selectedFile) === 'video'">
-                                                <video :src="getFilesUrl(selectedFile)" class="w-100 card-img" muted autoplay></video>
+                                                <video controls :src="getFilesUrl(selectedFile)" class="w-100 card-img"  ></video>
                                             </template>
                                             <template v-if="getFilesType(selectedFile) === 'image'">
                                                 <img :src="getFilesUrl(selectedFile)"  class=" card-img"  />
@@ -141,23 +157,26 @@
                         <h4 class="card-title">Meta Data</h4>
                         <p class="card-title-desc">Fill all information below</p>
 
-                        <form>
+                        <form id="metaDataForm">
                             <div class="col">
-                                <div class="d-flex flex-row w-50 justify-content-between" v-for="i in 3">
+                                <div class="d-flex flex-row w-50 justify-content-between" v-for="i in metadataCount" :key="i.id">
                                     <div class="form-group">
-                                        <label for="metatitle">Meta data name</label>
-                                        <input id="metatitle" name="productname" type="text" class="form-control">
+                                        <label >Meta data name</label>
+                                        <input  name="metaDataName[]" type="text" class="form-control">
                                     </div>
                                     <div class="form-group">
-                                        <label for="metakeywords">Meta data value</label>
-                                        <input id="metakeywords" name="manufacturername" type="text" class="form-control">
+                                        <label >Meta data value</label>
+                                        <input  name="metaDataValue[]" type="text" class="form-control">
+                                    </div>
+                                    <div class="position-relative remove-metadat-btn">
+                                        <button type="button" class="btn-close" @click="removeMetaData(i)"></button>
                                     </div>
                                 </div>
-                                <button class="btn btn-primary mt-2">Add meta data</button>
+                                <button type="button" class="btn btn-primary mt-2" @click="addMetadata">Add meta data</button>
                             </div>
                             <div class="btn-group mt-2">
-                                <button type="submit" class="btn btn-success mr-1 waves-effect waves-light">Save Changes</button>
-                                <button type="submit" class="btn btn-secondary waves-effect" style="margin-left: 5px">Cancel</button>
+                                <button type="button" @click="addProduct" class="btn btn-success mr-1 waves-effect waves-light">Save Changes</button>
+                                <button type="button" @click="reload" class="btn btn-secondary waves-effect" style="margin-left: 5px">Cancel</button>
                             </div>
 
                         </form>
@@ -176,7 +195,6 @@
                     <template v-if="getFilesType(index) === 'image'">
                         <img :src="getFilesUrl(file)" @click="removeImage(index)" style="width: 150px"/>
                     </template>
-
                 </template>
             </div>
         </modal>
@@ -191,18 +209,67 @@
 <script>
 import Multiselect from "../../../SharedComponents/ReusableComponents/Multiselect.vue";
 import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
-import {ref, watch} from "vue";
-import useProductFileUploading from "../../Composables/useProductFileUploading";
+import {getCurrentInstance, ref, watch} from "vue";
+import useProductFileUploading, {
+    useAddProductsInitialData,
+    useMetaDataHandler, usePriceAdder, useProductSizeAndColorSetter
+} from "../../Composables/useProductFileUploading";
+import useLoader from "../../../GlobalComposables/useLoader";
+import Loader from "../../../SharedComponents/Loader.vue";
+import HTTP from "../../Axios/axiosCongif";
 
 export default {
     name: "AddProduct",
-    components: {Modal, Multiselect},
+    components: {Loader, Modal, Multiselect},
     setup(){
-
+        const {loaded,setLoaded}=useLoader()
+        const reload=()=>window.location.reload()
+        const metadata=useMetaDataHandler()
         const fileUploading=useProductFileUploading();
+        const initialData=useAddProductsInitialData();
+        const priceAdder=usePriceAdder();
+        const colorAndPrice=useProductSizeAndColorSetter()
+
+
+        const addProduct=async ()=>{
+            setLoaded(true)
+            const productInfo=new FormData(document.querySelector('#productMainData'))
+            const productMetaData=new FormData(document.querySelector('#metaDataForm'))
+            for (const [key,value] of productMetaData) {
+                productInfo.append(key,value)
+            }
+            productInfo.append('general_file',fileUploading.generalFile.value)
+            productInfo.append('files',allFiles(fileUploading.files.value,fileUploading.generalFile.value))
+            console.log(colorAndPrice.color.value.map(s=>s.id))
+            console.log(colorAndPrice.size.value.map(s=>s.id))
+            productInfo.append('colors',colorAndPrice.color.value.map(s=>s.id))
+            productInfo.append('sizes',colorAndPrice.size.value.map(s=>s.id))
+            let {data}=await HTTP.post('/product/store',productInfo)
+
+
+
+        }
+
+        const allFiles=(all,general)=>{
+            const index=all.findIndex(s=>JSON.stringify(s)===JSON.stringify(general))
+            if (index===-1){
+                return general;
+            }
+            all.splice(index,1)
+            return all;
+        }
+
 
         return {
-           ...fileUploading
+           ...fileUploading,
+           ...metadata,
+            ...initialData,
+            ...priceAdder,
+            addProduct,
+            setColors:colorAndPrice.setColors,
+            setSize:colorAndPrice.setSize,
+            reload,
+            loaded
         }
     }
 
@@ -273,5 +340,16 @@ export default {
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltipp:hover .tooltiptext {
     visibility: visible;
+}
+.remove-metadat-btn{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+}
+.remove-metadat-btn .btn-close {
+    position: relative;
+
 }
 </style>

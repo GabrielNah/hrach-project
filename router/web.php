@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix'=>'admin'],function (){
     Route::post('/login',[AdminAuthController::class,'login']);
-    Route::group(['middleware'=>'auth:admin'],function (){
+    Route::group(['middleware'=>['auth:admin','is_admin'],],function (){
 
         Route::post('/logout',[AdminAuthController::class,'logout']);
         Route::get('/me',[AdminAuthController::class,'getAdmin']);
@@ -45,6 +46,11 @@ Route::group(['prefix'=>'admin'],function (){
             });
         });
 
+
+        Route::group(['prefix'=>'product'],function (){
+            Route::get('',[ProductController::class,'create']);
+            Route::post('/store',[ProductController::class,'store']);
+        });
 
     });
 

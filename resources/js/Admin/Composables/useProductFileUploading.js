@@ -9,7 +9,7 @@ export default function () {
     const setGeneralFile = (file) => {
       generalFile.value=file
     }
-    
+
     const removeGeneralFromFiles=()=>{
         const index=files.value.findIndex((fl)=>JSON.stringify(fl)===JSON.stringify(generalFile.value))
         if (index===-1){

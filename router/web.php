@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix'=>'admin'],function (){
     Route::post('/login',[AdminAuthController::class,'login']);
-    Route::group(['middleware'=>'auth:admin'],function (){
+    Route::group(['middleware'=>['auth:admin','is_admin'],],function (){
 
         Route::post('/logout',[AdminAuthController::class,'logout']);
         Route::get('/me',[AdminAuthController::class,'getAdmin']);

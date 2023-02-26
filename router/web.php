@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,11 @@ Route::group(['prefix'=>'admin'],function (){
             });
         });
 
+
+        Route::group(['prefix'=>'product'],function (){
+            Route::get('',[ProductController::class,'create']);
+            Route::post('/store',[ProductController::class,'store']);
+        });
 
     });
 

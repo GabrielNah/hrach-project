@@ -1,5 +1,6 @@
-import {computed, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {useModal} from "../../GlobalComposables/useLoader";
+import HTTP from "../Axios/axiosCongif";
 
 export default function () {
     const modal=useModal()
@@ -10,13 +11,6 @@ export default function () {
       generalFile.value=file
     }
 
-    const removeGeneralFromFiles=()=>{
-        const index=files.value.findIndex((fl)=>JSON.stringify(fl)===JSON.stringify(generalFile.value))
-        if (index===-1){
-            return;
-        }
-        files.value.splice(index,1)
-    }
 
     const selectedFile=ref(null)
     const setSelectedFile=(file)=>{
@@ -42,6 +36,10 @@ export default function () {
         }
     }
 
+    const fileIsGeneral=(file)=>{
+        return file === generalFile.value
+    }
+
 
     return {
         ...modal,
@@ -53,7 +51,110 @@ export default function () {
         removeImage,
         getFilesType,
         selectedFile,
-        setSelectedFile
+        generalFile,
+        setSelectedFile,
+        fileIsGeneral
     }
 
+}
+
+export function useMetaDataHandler() {
+    const metadataCount=ref([{id:0}])
+    const addMetadata = () => {
+        metadataCount.value.push({id:Date.now()})
+    }
+
+    const removeMetaData = (value) => {
+        let index=metadataCount.value.findIndex(mt=>mt.id===value.id)
+        if (index===-1){
+            return;
+        }
+        metadataCount.value.splice(index,1)
+    }
+
+    return {
+        metadataCount,
+        removeMetaData,
+        addMetadata
+    }
+}
+
+
+export function useAddProductsInitialData() {
+   const colors=ref([]);
+   const sizes=ref([]);
+   const currencies=ref([]);
+   const categories=ref([]);
+
+   const setPageInitialValues=(data)=>{
+       colors.value=data.colors
+       sizes.value=data.sizes
+       currencies.value=data.currencies
+       categories.value=data.categories
+    }
+
+
+   const getInitialData=async ()=>{
+       try {
+           let {data}=await HTTP.get('/product')
+           setPageInitialValues(data)
+       }catch (e) {
+           console.log(e)
+       }
+   }
+
+   onMounted(getInitialData)
+    return{
+       colors,
+        sizes,
+        currencies,
+        categories
+    }
+}
+
+
+export function usePriceAdder() {
+    const priceCount=ref([{id:0,forMany:false}])
+    const addPrice = () => {
+        priceCount.value.push({id:Date.now(),forMany:false})
+    }
+
+    const removePrice = (value) => {
+        let index=priceCount.value.findIndex(prc=>prc.id===value.id)
+        if (index===-1){
+            return;
+        }
+        priceCount.value.splice(index,1)
+    }
+
+    const switchPriceType=(value)=>{
+        value.forMany=!value.forMany
+    }
+
+    return {
+        priceCount,
+        addPrice,
+        removePrice,
+        switchPriceType
+    }
+}
+
+export function useProductSizeAndColorSetter() {
+    const size=ref([]);
+    const color=ref([]);
+
+    const setSize=(val)=>{
+        size.value=val
+    }
+    const setColors=(val)=>{
+        color.value=val
+    }
+
+
+    return {
+        size,
+        color,
+        setColors,
+        setSize
+    }
 }

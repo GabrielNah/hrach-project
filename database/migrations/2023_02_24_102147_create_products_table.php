@@ -21,6 +21,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->string('name');
             $table->string('title');
+            $table->integer('rating');
             $table->longText('description');
             $table->json('sizes');
             $table->json('colors');

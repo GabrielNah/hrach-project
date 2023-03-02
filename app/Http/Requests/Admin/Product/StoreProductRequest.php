@@ -23,6 +23,7 @@ class StoreProductRequest extends FormRequest
         $this->sizes=Size::query()->pluck('id');
     }
 
+
     public function rules(): array
     {
 
@@ -33,16 +34,28 @@ class StoreProductRequest extends FormRequest
             'description'=>'required|string',
             'is_active'=>[Rule::in(['on','off'])],
             'rating'=>'required|numeric|min:1|max:5',
-            'price_for_one'=>'required|array',
+            'price_for_one'=>['required','array',function ($attribute, $value, $fail) {
+                $prices = collect($value);
+                $currencies = collect($this->input('currencies_for_one'));
+
+                if ($prices->count() !== $currencies->count()) {
+                    $fail('Number of prices and currencies should match');
+                    return;
+                }
+
+                $objects = $prices->map(function ($price, $index) use ($currencies) {
+                    return [
+                        'price' => $price,
+                        'currency' => $currencies[$index],
+                    ];
+                });
+
+                if ($objects->count() !== $objects->unique()->count()) {
+                    $fail('Prices and currencies should be unique');
+                }
+            },],
             'price_for_one.*'=>'integer',
-            'currencies_for_one'=>['required','array',function($attr,$value,$fail){
-                $val=collect($value);
-               if ($val->count()){
-                   if ($val->count() !== $val->unique()->count()){
-                       $fail('Currencies for one should be unique');
-                   }
-               }
-            }],
+            'currencies_for_one'=>['required','array'],
             'currencies_for_one.*'=>[Rule::in(Price::CURRENCIES)],
             'general_file'=>'required|file',
             'files'=>['present','array'],
@@ -76,54 +89,129 @@ class StoreProductRequest extends FormRequest
             'metaDataValue'=>'nullable|array',
             'metaDataName.*'=>'string',
             'metaDataValue.*'=>'string',
-            'prices'=>'array|required_with_all:count_max,counts_min,currencies',
-            'count_max'=>'array|required_with_all:prices,counts_min,currencies',
-            'counts_min'=>'array|required_with_all:prices,counts_min,currencies',
-            'currencies'=>['array','required_with_all:count_max,counts_min,prices',function($attr,$value,$fail){
-                if (count($value)){
-                    $counts_min=$this->get('count_min');
-                    $counts_max=$this->get('count_max');
-                    $prices=$this->get('prices');
-                    if (!(count($value) ===count($counts_max) &&
-                        count($counts_min)===count($prices) &&
-                        count($counts_min)=== count($value))){
-                        $fail('Provided parameters count of `prices for many ` does not match');
+            'prices'=>['array','required_with_all:count_max,counts_min,currencies', function ($attribute, $value, $fail) {
+                $minCounts = $this->get('counts_min');
+                $maxCounts = $this->get('count_max');
+                $currencies = $this->get('currencies');
+
+                $pricesData = [];
+                foreach ($minCounts as $index => $minCount) {
+                    $currency = $currencies[$index];
+                    if ($maxCounts[$index] < $minCount) {
+                        $fail('min_count should be less than max_count');
                         return;
                     }
 
+                    $priceData = [
+                        'min_count' => $minCount,
+                        'max_count' => $maxCounts[$index],
+                        'price' => $value[$index],
+                        'currency' => $currency,
+                    ];
+
+                    $pricesData[$currency][] = $priceData;
                 }
-            }],
+
+                foreach ($pricesData as $currency => $priceArray) {
+                    $uniquePriceArray = collect($priceArray)->unique();
+                    if ($uniquePriceArray->count() !== count($priceArray)) {
+                        $fail("Provided parameters count of `prices for many` does not match for currency $currency");
+                    }
+                }
+            },],
+            'count_max'=>'array|required_with_all:prices,counts_min,currencies',
+            'counts_min'=>'array|required_with_all:prices,counts_min,currencies',
+            'currencies'=>['array','required_with_all:count_max,counts_min,prices'],
 
         ];
     }
 
 
-    private function withValidator(Validator $validator):void
+
+    private function modifyPriceData():void
     {
-        $validator->after(function (Validator $validator){
-            $counts_min=$this->get('count_min');
-            $counts_max=$this->get('count_max');
-            $prices=$this->get('prices');
-            $currencies=$this->get('currencies');
-            $pricesData=[];
-            foreach ($counts_min as $key => $value){
-                $item=[];
-                $item['min']=$value;
-                $item['max']=$counts_max[$key];
-                $item['price']=$prices[$key];
-                $item['currency']=$currencies[$key];
-                $pricesData[]=$item;
+        $priceForOne = $this->input('price_for_one');
+        $currenciesForOne = $this->input('currencies_for_one');
+        $pricesForOne = [];
+
+        if ($priceForOne && $currenciesForOne){
+            foreach ($priceForOne as $key => $price) {
+                $pricesForOne[] = [
+                    'price' => $price,
+                    'currency' => $currenciesForOne[$key]
+                ];
             }
-            $pricesData=collect($pricesData);
-            if ($pricesData->count() !== $pricesData->unique()->count()){
-                $validator->errors()->add('Prices for many','Provided data of prices for many should be unique');
-            };
-        });
+
+            $this->merge([
+                'prices_for_one' => $pricesForOne
+            ]);
+        }
+
+
+        $countsMin = $this->input('counts_min');
+        $countsMax = $this->input('count_max');
+        $currencies = $this->input('currencies');
+        $prices = $this->input('prices');
+        $pricesForMany = [];
+        if ($countsMin && $countsMax && $currencies && $prices){
+            foreach ($countsMin as $key => $countMin) {
+                $pricesForMany[] = [
+                    'min_count' => $countMin,
+                    'max_count' => $countsMax[$key],
+                    'price' => $prices[$key],
+                    'currency' => $currencies[$key]
+                ];
+            }
+
+            $this->merge([
+                'prices_for_many' => $pricesForMany
+            ]);
+        }
+
     }
-
-
-    private function checkIfPricesForManyIsOk(array $prices):bool
+    private function modifyProductData():void
     {
-        
+        $name=$this->input('name');
+        $description=$this->input('description');
+        $category_id=$this->input('category');
+        $rating=$this->input('rating');
+        $active=$this->boolean('is_active');
+        $title=$this->input('title');
+        $sizes=$this->input('sizes');
+        $colors=$this->input('colors');
+
+        $this->merge([
+            'product_data'=>compact('name','description','title','category_id','active','sizes','colors','rating')
+        ]);
     }
+
+
+    private function combineMetaDats():void
+    {
+        $names=$this->get('metaDataName');
+        $values=$this->get('metaDataName');
+        $additional=[];
+        if ($names && $values){
+            foreach ($names as $index=>$name){
+                $additional[$name]=$values[$index];
+            }
+        }
+        $this->merge(compact('additional'));
+    }
+
+
+    private function getMergedResult():array
+    {
+
+        $this->modifyPriceData();
+        $this->modifyProductData();
+        $this->combineMetaDats();
+        return $this->all();
+    }
+
+    public function validated($key = null, $default = null):array
+    {
+        return $this->getMergedResult();
+    }
+
 }

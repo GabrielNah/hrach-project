@@ -232,14 +232,17 @@ export default {
 
 
         const addProduct=async ()=>{
-            setLoaded(true)
+            // setLoaded(true)
             const productInfo=new FormData(document.querySelector('#productMainData'))
             const productMetaData=new FormData(document.querySelector('#metaDataForm'))
             for (const [key,value] of productMetaData) {
                 productInfo.append(key,value)
             }
             productInfo.append('general_file',fileUploading.generalFile.value)
-            productInfo.append('files',allFiles(fileUploading.files.value,fileUploading.generalFile.value))
+            const files=allFiles(fileUploading.files.value,fileUploading.generalFile.value)
+            for(let i=0; i<files.length; i++) {
+                productInfo.append('files[]', files[i]);
+            }
             productInfo.append('colors',JSON.stringify(colorAndPrice.color.value.map(s=>s.id)))
             productInfo.append('sizes',JSON.stringify(colorAndPrice.size.value.map(s=>s.id)))
             let {data}=await HTTP.post('/product/store',productInfo)

@@ -54,7 +54,7 @@ class StoreProductRequest extends FormRequest
                     $fail('Prices and currencies should be unique');
                 }
             },],
-            'price_for_one.*'=>'integer',
+            'price_for_one.*'=>'numeric|regex:/^\d+(\.\d{1,2})?$/',
             'currencies_for_one'=>['required','array'],
             'currencies_for_one.*'=>[Rule::in(Price::CURRENCIES)],
             'general_file'=>'required|file',
@@ -89,6 +89,10 @@ class StoreProductRequest extends FormRequest
             'metaDataValue'=>'nullable|array',
             'metaDataName.*'=>'string',
             'metaDataValue.*'=>'string',
+            'prices.*' => [
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/'
+            ],
             'prices'=>['array','required_with_all:count_max,counts_min,currencies', function ($attribute, $value, $fail) {
                 $minCounts = $this->get('counts_min');
                 $maxCounts = $this->get('count_max');
@@ -175,7 +179,7 @@ class StoreProductRequest extends FormRequest
         $description=$this->input('description');
         $category_id=$this->input('category');
         $rating=$this->input('rating');
-        $active=$this->boolean('is_active');
+        $active=$this->input('is_active')==='on'?'1':'0';
         $title=$this->input('title');
         $sizes=$this->input('sizes');
         $colors=$this->input('colors');
@@ -189,14 +193,16 @@ class StoreProductRequest extends FormRequest
     private function combineMetaDats():void
     {
         $names=$this->get('metaDataName');
-        $values=$this->get('metaDataName');
+        $values=$this->get('metaDataValue');
         $additional=[];
         if ($names && $values){
             foreach ($names as $index=>$name){
                 $additional[$name]=$values[$index];
             }
         }
-        $this->merge(compact('additional'));
+        $this->merge([
+            'additional'=>json_encode($additional)
+        ]);
     }
 
 

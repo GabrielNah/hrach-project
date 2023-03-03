@@ -34,7 +34,7 @@ class ProductController extends Controller
         try {
 
             $this->productRepository->store($request->validated());
-            return $this->successResponse(['gg'=>$request->validated()]);
+            return $this->createdResponse();
         }catch (\Throwable $exception){
             return $this->errorResponse(['error'=>$exception->getMessage()]);
         }

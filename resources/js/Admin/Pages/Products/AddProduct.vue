@@ -217,6 +217,8 @@ import useProductFileUploading, {
 import useLoader from "../../../GlobalComposables/useLoader";
 import Loader from "../../../SharedComponents/Loader.vue";
 import HTTP from "../../Axios/axiosCongif";
+import {errorNotification, successNotification} from "../../../Services/NotificationService";
+import {extractValidationErrors} from "../../../Services/GlobalHelpers";
 
 export default {
     name: "AddProduct",
@@ -232,20 +234,29 @@ export default {
 
 
         const addProduct=async ()=>{
-            // setLoaded(true)
-            const productInfo=new FormData(document.querySelector('#productMainData'))
-            const productMetaData=new FormData(document.querySelector('#metaDataForm'))
-            for (const [key,value] of productMetaData) {
-                productInfo.append(key,value)
+            try {
+                setLoaded(true)
+                const productInfo=new FormData(document.querySelector('#productMainData'))
+                const productMetaData=new FormData(document.querySelector('#metaDataForm'))
+                for (const [key,value] of productMetaData) {
+                    productInfo.append(key,value)
+                }
+                productInfo.append('general_file',fileUploading.generalFile.value)
+                const files=allFiles(fileUploading.files.value,fileUploading.generalFile.value)
+                for(let i=0; i<files.length; i++) {
+                    productInfo.append('files[]', files[i]);
+                }
+                productInfo.append('colors',JSON.stringify(colorAndPrice.color.value.map(s=>s.id)))
+                productInfo.append('sizes',JSON.stringify(colorAndPrice.size.value.map(s=>s.id)))
+                let {data}=await HTTP.post('/product/store',productInfo)
+                if (data.success){
+                    successNotification('Auto opening product details','Product added successfully')
+                }
+
+            }catch (e) {
+                errorNotification(extractValidationErrors(e))
             }
-            productInfo.append('general_file',fileUploading.generalFile.value)
-            const files=allFiles(fileUploading.files.value,fileUploading.generalFile.value)
-            for(let i=0; i<files.length; i++) {
-                productInfo.append('files[]', files[i]);
-            }
-            productInfo.append('colors',JSON.stringify(colorAndPrice.color.value.map(s=>s.id)))
-            productInfo.append('sizes',JSON.stringify(colorAndPrice.size.value.map(s=>s.id)))
-            let {data}=await HTTP.post('/product/store',productInfo)
+            setLoaded(false)
 
 
 

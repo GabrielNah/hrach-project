@@ -96,9 +96,9 @@
                             </form>
                             <main class="w-50 d-flex flex-column">
                                 <h3 class="card-title text-center">Product files</h3>
-                                <section v-if="files.length">
+                                <section v-if="files.length+1">
                                     <figure class="general_image card position-relative">
-                                        <figcaption class="fw-bold card-title mt-1">Products general file</figcaption>
+                                        <figcaption class="fw-bold card-title mt-1">Products files</figcaption>
                                         <div v-if="selectedFile" class="checkmark tooltipp" @click="setGeneralFile(selectedFile)">
 
                                             <template v-if="fileIsGeneral(selectedFile)">

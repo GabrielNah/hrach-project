@@ -38,4 +38,10 @@ class Product extends Model
         return $this->hasOne(ProductAdditional::class,'product_id','id');
     }
 
+    public function generalFile():HasOne
+    {
+        return  $this->hasOne(File::class,'product_id','id')
+            ->where('general','1');
+    }
+
 }

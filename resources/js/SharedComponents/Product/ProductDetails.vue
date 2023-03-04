@@ -3,11 +3,11 @@
         <div class="container">
             <nav class="navbar">
                 <span class="navbar_text">Home</span>
-                <span class="navbar_text arrow"> > </span>
+                <span class="navbar_text arrow"> \ </span>
                 <span class="navbar_text"> All categories </span>
-                <span class="navbar_text arrow"> > </span>
+                <span class="navbar_text arrow"> \ </span>
                 <span class="navbar_text"> Category </span>
-                <span class="navbar_text arrow"> > </span>
+                <span class="navbar_text arrow"> \ </span>
                 <span class="navbar_text"> category</span>
             </nav>
             <section class="products_main_info">
@@ -67,13 +67,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="colors">
-                        <span class="product_data_text">Colors </span>
-                        <div class="d-flex align-items-center justify-content-between mt-1">
-                            <span v-for="i in 6" class="color"></span>
+                    <div class="colors border-top">
+                        <span class="product_data_text ">Colors </span>
+                        <div class="d-flex align-items-center justify-content-between mt-1 ">
+                            <span v-for="i in 6" class="color" :style="{backgroundColor:'#04515'+i*2}"></span>
                         </div>
                     </div>
-                    <div class="sizes">
+                    <div class="sizes border-top">
                         <span class="product_data_text">Sizes </span>
                         <div class="d-flex align-items-center justify-content-between mt-1">
                             <span v-for="i in 6" class="size text-center product_data_text">

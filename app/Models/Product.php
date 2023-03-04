@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasColorsAndSizes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,13 +10,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
 {
+    use HasColorsAndSizes;
     const TABLE='products';
     protected $table=self::TABLE;
 
     protected $guarded=[];
 
     protected $casts=[
-        'active'=>'boolean'
+        'active'=>'boolean',
+        'colors'=>'array',
+        'sizes'=>'array',
     ];
 
     public function files():HasMany
@@ -42,6 +46,13 @@ class Product extends Model
     {
         return  $this->hasOne(File::class,'product_id','id')
             ->where('general','1');
+    }
+
+
+    public function nonGeneralFiles():HasMany
+    {
+        return  $this->hasMany(File::class,'product_id','id')
+                    ->where('general','0');
     }
 
 }

@@ -85,12 +85,14 @@ export function useAddProductsInitialData() {
    const sizes=ref([]);
    const currencies=ref([]);
    const categories=ref([]);
+   const existingTags=ref([]);
 
    const setPageInitialValues=(data)=>{
        colors.value=data.colors
        sizes.value=data.sizes
        currencies.value=data.currencies
        categories.value=data.categories
+       existingTags.value=data.tag
     }
 
 
@@ -107,6 +109,7 @@ export function useAddProductsInitialData() {
     return{
        colors,
         sizes,
+        existingTags,
         currencies,
         categories
     }
@@ -142,6 +145,7 @@ export function usePriceAdder() {
 export function useProductSizeAndColorSetter() {
     const size=ref([]);
     const color=ref([]);
+    const tags=ref([]);
 
     const setSize=(val)=>{
         size.value=val
@@ -150,11 +154,17 @@ export function useProductSizeAndColorSetter() {
         color.value=val
     }
 
+    const setTags=(val)=>{
+        tags.value=val
+    }
+
 
     return {
         size,
         color,
         setColors,
-        setSize
+        setSize,
+        tags,
+        setTags
     }
 }

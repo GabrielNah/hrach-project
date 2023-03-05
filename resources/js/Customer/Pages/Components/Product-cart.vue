@@ -1,15 +1,15 @@
 <template>
     <div class="card card-product-grid product-item">
         <a href="#" class="img-wrap">
-            <img src="images/items/1.webp">
+            <img src="/images/items/1.webp">
         </a>
         <figcaption class="info-wrap">
             <ul class="rating-stars mb-1">
                 <li style="width:80%" class="stars-active">
-                    <img src="images/icons/stars-active.svg" alt="">
+                    <img src="/images/icons/stars-active.svg" alt="">
                 </li>
                 <li>
-                    <img src="images/icons/starts-disable.svg" alt="">
+                    <img src="/images/icons/starts-disable.svg" alt="">
                 </li>
             </ul>
             <div>

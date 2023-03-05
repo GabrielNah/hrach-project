@@ -49,6 +49,10 @@
                                             <multiselect :values="colors" @selected="setColors" :unique-key="'id'" :showable-key="'name'"/>
                                         </div>
                                         <div class="form-group ">
+                                            <label>Tags</label>
+                                            <multiselect :values="existingTags" @selected="setTags" :unique-key="'id'" :showable-key="'name'"/>
+                                        </div>
+                                        <div class="form-group ">
                                             <label>Prices</label>
                                             <div class="d-flex flex-row justify-content-between border p-1" v-for="price in priceCount" :key="price.id">
                                                 <div class="form-group ">
@@ -96,9 +100,9 @@
                             </form>
                             <main class="w-50 d-flex flex-column">
                                 <h3 class="card-title text-center">Product files</h3>
-                                <section v-if="files.length">
+                                <section v-if="files.length+1">
                                     <figure class="general_image card position-relative">
-                                        <figcaption class="fw-bold card-title mt-1">Products general file</figcaption>
+                                        <figcaption class="fw-bold card-title mt-1">Products files</figcaption>
                                         <div v-if="selectedFile" class="checkmark tooltipp" @click="setGeneralFile(selectedFile)">
 
                                             <template v-if="fileIsGeneral(selectedFile)">
@@ -217,6 +221,8 @@ import useProductFileUploading, {
 import useLoader from "../../../GlobalComposables/useLoader";
 import Loader from "../../../SharedComponents/Loader.vue";
 import HTTP from "../../Axios/axiosCongif";
+import {errorNotification, successNotification} from "../../../Services/NotificationService";
+import {extractValidationErrors} from "../../../Services/GlobalHelpers";
 
 export default {
     name: "AddProduct",
@@ -231,20 +237,55 @@ export default {
         const colorAndPrice=useProductSizeAndColorSetter()
 
 
-        const addProduct=async ()=>{
-            setLoaded(true)
-            const productInfo=new FormData(document.querySelector('#productMainData'))
-            const productMetaData=new FormData(document.querySelector('#metaDataForm'))
-            for (const [key,value] of productMetaData) {
-                productInfo.append(key,value)
+        const handleEmptyInputs=(e)=>{
+            if (!e.target.value.trim()){
+                e.target.value=null
             }
-            productInfo.append('general_file',fileUploading.generalFile.value)
-            productInfo.append('files',allFiles(fileUploading.files.value,fileUploading.generalFile.value))
-            console.log(colorAndPrice.color.value.map(s=>s.id))
-            console.log(colorAndPrice.size.value.map(s=>s.id))
-            productInfo.append('colors',colorAndPrice.color.value.map(s=>s.id))
-            productInfo.append('sizes',colorAndPrice.size.value.map(s=>s.id))
-            let {data}=await HTTP.post('/product/store',productInfo)
+        }
+
+        const addProduct=async ()=>{
+            try {
+                // setLoaded(true)
+                const productInfo=new FormData(document.querySelector('#productMainData'))
+                const productMetaData=new FormData(document.querySelector('#metaDataForm'))
+                for (const [key,value] of productMetaData) {
+                    productInfo.append(key,value)
+                }
+                productInfo.append('general_file',fileUploading.generalFile.value)
+                const files=allFiles(fileUploading.files.value,fileUploading.generalFile.value)??[]
+                for(let i=0; i<files.length; i++) {
+                    productInfo.append('files[]', files[i]);
+                }
+
+                colorAndPrice.tags.value.forEach((val)=>{
+                    if (!val?.id){
+                        return
+                    }
+                    productInfo.append('tags[]',val.id)
+                })
+                colorAndPrice.color.value.forEach((val)=>{
+                    if (!val?.id){
+                        return
+                    }
+                    productInfo.append('colors[]',val.id)
+                })
+                colorAndPrice.size.value.forEach((val)=>{
+                    if (!val?.id){
+                        return
+                    }
+                    productInfo.append('sizes[]',val.id)
+                })
+                let {data}=await HTTP.post('/product/store',productInfo)
+                // setLoaded(false)
+                if (data.success){
+                    successNotification('Auto opening product details','Product added successfully')
+                }
+
+            }catch (e) {
+                console.log(e)
+                errorNotification(extractValidationErrors(e))
+            }
+            setLoaded(false)
 
 
 
@@ -268,8 +309,10 @@ export default {
             addProduct,
             setColors:colorAndPrice.setColors,
             setSize:colorAndPrice.setSize,
+            setTags:colorAndPrice.setTags,
             reload,
-            loaded
+            loaded,
+            handleEmptyInputs
         }
     }
 

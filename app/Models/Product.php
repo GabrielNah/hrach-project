@@ -2,20 +2,23 @@
 
 namespace App\Models;
 
+use App\Traits\HasColorsAndSizes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
 {
+    use HasColorsAndSizes;
     const TABLE='products';
     protected $table=self::TABLE;
 
     protected $guarded=[];
 
     protected $casts=[
-        'active'=>'boolean'
+        'active'=>'boolean',
     ];
 
     public function files():HasMany
@@ -25,7 +28,7 @@ class Product extends Model
 
     public function category():BelongsTo
     {
-        return $this->belongsTo(Category::class,'id','category_id');
+        return $this->belongsTo(Category::class,'category_id','id');
     }
 
     public function prices():HasMany
@@ -37,5 +40,25 @@ class Product extends Model
     {
         return $this->hasOne(ProductAdditional::class,'product_id','id');
     }
+
+    public function generalFile():HasOne
+    {
+        return  $this->hasOne(File::class,'product_id','id')
+            ->where('general','1');
+    }
+
+
+    public function nonGeneralFiles():HasMany
+    {
+        return  $this->hasMany(File::class,'product_id','id')
+                    ->where('general','0');
+    }
+
+    public function tags():BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class,'product_tag','product_id','tag_id');
+    }
+
+
 
 }

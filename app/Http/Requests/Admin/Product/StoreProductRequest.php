@@ -29,7 +29,7 @@ class StoreProductRequest extends FormRequest
 
         return [
             'category'=>'required|integer|exists:categories,id',
-            'name'=>'string|required|unique:products,name',
+            'name'=>'string|required',
             'title'=>'required|string',
             'description'=>'required|string',
             'is_active'=>[Rule::in(['on','off'])],
@@ -107,10 +107,13 @@ class StoreProductRequest extends FormRequest
                 $pricesData = [];
                 foreach ($minCounts as $index => $minCount) {
                     $currency = $currencies[$index];
-                    if ($maxCounts[$index] < $minCount) {
-                        $fail('min_count should be less than max_count');
-                        return;
+                    if ($maxCounts[$index]){
+                        if ($maxCounts[$index] < $minCount) {
+                            $fail('min_count should be less than max_count');
+                            return;
+                        }
                     }
+
 
                     $priceData = [
                         'min_count' => $minCount,

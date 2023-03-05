@@ -37,7 +37,9 @@ class SettingController extends Controller
 
     public function deleteColor(int $id):JsonResponse
     {
-        Color::where('id',$id)->delete();
+        $color=Color::find($id);
+        $color->products()->detach();
+        $color->delete();
         return $this->deletedResponse();
     }
     /**
@@ -69,7 +71,9 @@ class SettingController extends Controller
 
     public function removeSize(int $id):JsonResponse
     {
-        Size::query()->where('id',$id)->delete();
+        $size=Size::find($id);
+        $size->products()->detach();
+        $size->delete();
         return  $this->deletedResponse();
     }
     /**
@@ -105,9 +109,20 @@ class SettingController extends Controller
         $tag=tap($tag,fn($tag)=>$tag->update($validated));
         return $this->successResponse(compact('tag'));
     }
+
+
+    public function removeTag(int $id):JsonResponse
+    {
+       $tag= Tag::find($id);
+       $tag->products()->detach();
+       $tag->delete();
+       return $this->deletedResponse();
+    }
     /**
             Tag end
      **/
+
+
 
 
 

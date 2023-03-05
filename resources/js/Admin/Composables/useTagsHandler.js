@@ -59,7 +59,16 @@ export default function () {
     }
 
     const deleteTag=async (tag)=>{
-
+        try {
+            const response=await HTTP.delete('/settings/tag/'+tag.id)
+            if (response.status === 204){
+                removeTag(tag)
+                resetModalData()
+                successNotification('Tag removed successfully')
+            }
+        }catch (e) {
+            console.log(e)
+        }
     }
 
     const startEditionOfModal=(tagData,then)=>{
@@ -87,6 +96,8 @@ export default function () {
         }
     }
 
+
+
     return {
         tag,
         setTag,
@@ -96,6 +107,7 @@ export default function () {
         removeTag,
         addTag,
         startEditionOfModal,
-        editTag
+        editTag,
+        deleteTag
     }
 }

@@ -237,6 +237,12 @@ export default {
         const colorAndPrice=useProductSizeAndColorSetter()
 
 
+        const handleEmptyInputs=(e)=>{
+            if (!e.target.value.trim()){
+                e.target.value=null
+            }
+        }
+
         const addProduct=async ()=>{
             try {
                 // setLoaded(true)
@@ -305,7 +311,8 @@ export default {
             setSize:colorAndPrice.setSize,
             setTags:colorAndPrice.setTags,
             reload,
-            loaded
+            loaded,
+            handleEmptyInputs
         }
     }
 

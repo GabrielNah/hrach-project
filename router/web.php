@@ -48,7 +48,7 @@ Route::group(['prefix'=>'admin'],function (){
             Route::group(['prefix'=>'tag'],function (){
                 Route::post('',[SettingController::class,'createTag']);
                 Route::put('/{tag}',[SettingController::class,'editTag']);
-                Route::delete('/{id}',[SettingController::class,'createTag']);
+                Route::delete('/{id}',[SettingController::class,'removeTag']);
             });
         });
 

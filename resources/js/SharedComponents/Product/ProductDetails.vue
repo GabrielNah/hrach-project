@@ -5,12 +5,12 @@
                 <span class="navbar_text">Home</span>
                 <span class="navbar_text arrow"> \ </span>
                 <span class="navbar_text"> All categories </span>
-                <span class="navbar_text arrow"> \ </span>
-                <span class="navbar_text"> {{  product.category.name  }} </span>
                 <template v-if="product.category.parent_category?.name">
                     <span class="navbar_text arrow"> \ </span>
                     <span class="navbar_text"> {{ product.category.parent_category?.name }}</span>
                 </template>
+                <span class="navbar_text arrow"> \ </span>
+                <span class="navbar_text"> {{  product.category.name  }} </span>
             </nav>
             <section class="products_main_info">
                 <div class="files_wrapper">
@@ -61,22 +61,24 @@
                     <div class="prices mt-1">
                         <nav>
                             <div class="nav nav-tabs" id="prices-tab" role="tablist">
-                                <button v-for="currency in ['RUB','EUR','USD']" class="nav-link " :id="`currency-${currency}`"
-                                        data-bs-toggle="tab"
-                                        :data-bs-target="`prices-${currency}`" type="button"
-                                        role="tab" :aria-controls="`prices-${currency}`" aria-selected="true">{{ currency }}</button>
+                                <button v-for="(prices,currency) in product.prices"
+                                        @click="setSelectedCurrency(currency)"
+                                        :class="{'active':selectedCurrency === currency}"
+                                        class="nav-link ">{{ currency }}
+                                </button>
                             </div>
                         </nav>
                         <div class="tab-content" id="prices-tabContent">
-                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="tab-pane fade show "  v-for="(prices,currency) in product.prices"
+                                 :class="{'active':selectedCurrency === currency}"
+                                 v-show="selectedCurrency === currency"
+                                 role="tabpanel"  :key="currency">
                                 <div class="product-price">
-                                    <div class="price-item" >
-                                        <div class="quality">RUB</div>
-                                        <div class="price"><span class=""> $295.66</span></div>
-                                    </div>
-                                    <div class="price-item" v-for="i in 3">
-                                        <div class="quality">10 - 99 sets</div>
-                                        <div class="price"><span class=""> $295.66</span></div>
+                                    <div class="price-item" v-for="price in prices">
+                                        <div class="quality">
+                                          {{renderTextForPrices(price)}}
+                                        </div>
+                                        <div class="price"><span class="">  {{ price.price }}  {{price.currency}} </span></div>
                                     </div>
                                 </div>
                             </div>
@@ -208,6 +210,10 @@ export default {
     setup(){
         const route=useRoute();
         const product=ref(null)
+        const selectedCurrency=ref('')
+        const setSelectedCurrency=(currency)=>{
+            selectedCurrency.value=currency
+        }
 
         const files=reactive({
             selected:null,
@@ -215,18 +221,42 @@ export default {
         })
 
         const setSelectedFile=(file)=>{
-            console.log(file)
             files.selected=file
+        }
+
+        const groupPrices=(product)=>{
+            const currencies=Array.from(new Set(product.prices.map(price=>price.currency)))
+            const product_currencies={};
+            currencies.forEach(currencie=>{
+                const prices=product.prices.filter((price)=>price.currency === currencie)
+                prices.sort((a, b) => a.min_count - b.min_count);
+                product_currencies[currencie]=prices
+            })
+            setSelectedCurrency(currencies[0])
+
+            return product_currencies
+        }
+        const renderTextForPrices=(price)=>{
+            if (price.min_count === price.max_count && price.max_count === 1){
+                return 'Min. Order : 1'
+            }
+            if (!price.max_count){
+                return  ' > '+ price.min_count+ 'sets'
+            }
+            return price.min_count +'-'+ price.max_count + 'sets'
         }
 
         onMounted(async ()=>{
             try {
                 let {data}  =  await axios.get('/api/product/'+route.params.id);
-                 product.value=data.product
+                product.value=data.product
+                product.value.prices=groupPrices(data.product)
+                console.log(product.value.prices)
                 files.selected=data.product.general_file
                 files.all=[data.product.general_file,...data.product.non_general_files]
 
-                console.log( typeof product.value.colors)
+
+
             }catch (e) {
 
             }
@@ -237,7 +267,10 @@ export default {
         return {
             product,
             files,
-            setSelectedFile
+            setSelectedFile,
+            selectedCurrency,
+            setSelectedCurrency,
+            renderTextForPrices
         }
     }
 }

@@ -20,7 +20,7 @@ return new class extends Migration
                 ->on(\App\Models\Product::TABLE)
                 ->onDelete('cascade');
             $table->bigInteger('min_count');
-            $table->bigInteger('max_count');
+            $table->bigInteger('max_count')->nullable();
             $table->decimal('price');
             $table->enum('currency',Price::CURRENCIES);
             $table->timestamps();

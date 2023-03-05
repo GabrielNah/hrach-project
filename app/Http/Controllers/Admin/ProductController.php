@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\Price;
 use App\Models\Size;
+use App\Models\Tag;
 use App\Services\ProductRepository;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,7 +26,8 @@ class ProductController extends Controller
         $sizes=Size::all();
         $categories=Category::query()->get();
         $currencies=Price::CURRENCIES;
-        return  $this->successResponse(compact('colors','sizes','categories','currencies'));
+        $tag=Tag::all();
+        return  $this->successResponse(compact('colors','sizes','categories','currencies','tag'));
     }
 
 

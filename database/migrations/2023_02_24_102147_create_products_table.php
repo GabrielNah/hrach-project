@@ -23,8 +23,6 @@ return new class extends Migration
             $table->string('title');
             $table->integer('rating');
             $table->longText('description');
-            $table->json('sizes');
-            $table->json('colors');
             $table->enum('active',['0','1']);
             $table->timestamps();
         });

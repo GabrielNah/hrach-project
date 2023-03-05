@@ -49,6 +49,10 @@
                                             <multiselect :values="colors" @selected="setColors" :unique-key="'id'" :showable-key="'name'"/>
                                         </div>
                                         <div class="form-group ">
+                                            <label>Tags</label>
+                                            <multiselect :values="existingTags" @selected="setTags" :unique-key="'id'" :showable-key="'name'"/>
+                                        </div>
+                                        <div class="form-group ">
                                             <label>Prices</label>
                                             <div class="d-flex flex-row justify-content-between border p-1" v-for="price in priceCount" :key="price.id">
                                                 <div class="form-group ">
@@ -235,25 +239,44 @@ export default {
 
         const addProduct=async ()=>{
             try {
-                setLoaded(true)
+                // setLoaded(true)
                 const productInfo=new FormData(document.querySelector('#productMainData'))
                 const productMetaData=new FormData(document.querySelector('#metaDataForm'))
                 for (const [key,value] of productMetaData) {
                     productInfo.append(key,value)
                 }
                 productInfo.append('general_file',fileUploading.generalFile.value)
-                const files=allFiles(fileUploading.files.value,fileUploading.generalFile.value)
+                const files=allFiles(fileUploading.files.value,fileUploading.generalFile.value)??[]
                 for(let i=0; i<files.length; i++) {
                     productInfo.append('files[]', files[i]);
                 }
-                productInfo.append('colors',JSON.stringify(colorAndPrice.color.value.map(s=>s.id)))
-                productInfo.append('sizes',JSON.stringify(colorAndPrice.size.value.map(s=>s.id)))
+
+                colorAndPrice.tags.value.forEach((val)=>{
+                    if (!val?.id){
+                        return
+                    }
+                    productInfo.append('tags[]',val.id)
+                })
+                colorAndPrice.color.value.forEach((val)=>{
+                    if (!val?.id){
+                        return
+                    }
+                    productInfo.append('colors[]',val.id)
+                })
+                colorAndPrice.size.value.forEach((val)=>{
+                    if (!val?.id){
+                        return
+                    }
+                    productInfo.append('sizes[]',val.id)
+                })
                 let {data}=await HTTP.post('/product/store',productInfo)
+                // setLoaded(false)
                 if (data.success){
                     successNotification('Auto opening product details','Product added successfully')
                 }
 
             }catch (e) {
+                console.log(e)
                 errorNotification(extractValidationErrors(e))
             }
             setLoaded(false)
@@ -280,6 +303,7 @@ export default {
             addProduct,
             setColors:colorAndPrice.setColors,
             setSize:colorAndPrice.setSize,
+            setTags:colorAndPrice.setTags,
             reload,
             loaded
         }

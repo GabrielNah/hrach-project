@@ -1,32 +1,47 @@
 <template>
-    <main class="main_content">
+    <main class="main_content" v-if="product">
         <div class="container">
             <nav class="navbar">
                 <span class="navbar_text">Home</span>
                 <span class="navbar_text arrow"> \ </span>
                 <span class="navbar_text"> All categories </span>
                 <span class="navbar_text arrow"> \ </span>
-                <span class="navbar_text"> Category </span>
-                <span class="navbar_text arrow"> \ </span>
-                <span class="navbar_text"> category</span>
+                <span class="navbar_text"> {{  product.category.name  }} </span>
+                <template v-if="product.category.parent_category?.name">
+                    <span class="navbar_text arrow"> \ </span>
+                    <span class="navbar_text"> {{ product.category.parent_category?.name }}</span>
+                </template>
             </nav>
             <section class="products_main_info">
                 <div class="files_wrapper">
-                    <div class="main_image">
-                        <img alt="" src="/images/items/1.webp">
+                    <div class="main_image" v-if="files.selected">
+                        <template v-if="files.selected.type==='video'">
+                            <video :src="'/'+files.selected.path"  controls autoplay muted></video>
+                        </template>
+                        <template v-if="files.selected.type==='image'">
+                            <img :src="'/'+files.selected.path" />
+                        </template>
                     </div>
-                    <div class="images">
-                        <img v-for="i in 10" alt="" class="single_image" src="/images/items/1.webp">
+                    <div class="images" v-if="files.all.length">
+                        <template v-for="file in files.all">
+                            <template v-if="file.type==='video'">
+                                <video @click="setSelectedFile(file)" class="single_image"  controls muted autoplay :src="'/'+file.path" ></video>
+                            </template>
+                            <template v-if="file.type==='image'">
+                                <img @click="setSelectedFile(file)" class="single_image" :src="'/'+file.path" />
+                            </template>
+                        </template>
+
                     </div>
                 </div>
                 <div class="product_info">
-                    <h3 class="product_name">Some text about product here</h3>
-                    <p class="product_data_text">Some text about product here</p>
+                    <h3 class="product_name"> {{ product.name }}</h3>
+                    <p class="product_data_text">{{ product.title }}</p>
                     <div class="product_rating">
                         <div class="rating d-flex flex-row">
                             <svg v-for="i in 5" fill="none" height="15" viewBox="0 0 16 15" width="16"
                                  xmlns="http://www.w3.org/2000/svg">
-                                <path :fill="1?'#FF9017':'#D5CDC5'" clip-rule="evenodd" d="M8 12.0553L12.944 15L11.632 9.45L16 5.71579L10.248 5.23421L8 0L5.752 5.23421L0 5.71579L4.368 9.45L3.056 15L8 12.0553Z"
+                                <path :fill="i <= product.rating ?'#FF9017':'#D5CDC5'" clip-rule="evenodd" d="M8 12.0553L12.944 15L11.632 9.45L16 5.71579L10.248 5.23421L8 0L5.752 5.23421L0 5.71579L4.368 9.45L3.056 15L8 12.0553Z"
                                       fill-rule="evenodd"/>
                             </svg>
                         </div>
@@ -67,17 +82,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="colors border-top">
+                    <div class="colors border-top" v-if="product.colors.length">
                         <span class="product_data_text ">Colors </span>
-                        <div class="d-flex align-items-center justify-content-between mt-1 ">
-                            <span v-for="i in 6" class="color" :style="{backgroundColor:'#04515'+i*2}"></span>
+                        <div class="d-flex align-items-center gap-1 mt-1 ">
+                            <span v-for="color in product.colors" class="color"
+                                  :style="{backgroundColor:color.value}"></span>
                         </div>
                     </div>
-                    <div class="sizes border-top">
+                    <div class="sizes border-top" v-if="product.sizes.length">
                         <span class="product_data_text">Sizes </span>
-                        <div class="d-flex align-items-center justify-content-between mt-1">
-                            <span v-for="i in 6" class="size text-center product_data_text">
-                                XX
+                        <div class="d-flex align-items-center gap-1 mt-1">
+                            <span v-for="size in product.sizes" class="size text-center product_data_text">
+                                {{ size.size }}
                             </span>
                         </div>
                     </div>
@@ -102,7 +118,7 @@
                                         class="nav-link" data-bs-target="#nav-comments" data-bs-toggle="tab"
                                         role="tab" type="button">Comments
                                 </button>
-                                <button id="nav-tags-tab" aria-controls="nav-profile" aria-selected="false"
+                                <button  v-if="product.tags.length" id="nav-tags-tab" aria-controls="nav-profile" aria-selected="false"
                                         class="nav-link" data-bs-target="#nav-tags" data-bs-toggle="tab" role="tab"
                                         type="button">Tags
                                 </button>
@@ -111,9 +127,9 @@
                         <div id="nav-tabContent" class="tab-content">
                             <div id="nav-description" aria-labelledby="nav-descripton-tab" class="tab-pane fade show active "
                                  role="tabpanel">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur deleniti ducimus
-                                eum exercitationem id libero nemo quisquam repudiandae vero! Ad blanditiis deserunt
-                                distinctio eaque est iure quam quis? Fugiat, voluptatum.
+                                {{
+                                    product.description
+                                }}
                             </div>
                             <div id="nav-comments" aria-labelledby="nav-comments-tab" class="tab-pane fade "
                                  role="tabpanel">
@@ -121,19 +137,27 @@
                                 fugit in maxime officia perspiciatis porro sequi. Culpa cum eius labore laboriosam
                                 maiores officiis perspiciatis quas quis sapiente.
                             </div>
-                            <div id="nav-tags" aria-labelledby="nav-tags-tab" class="tab-pane fade " role="tabpanel">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda delectus enim esse
-                                fugit in maxime officia perspiciatis porro sequi. Culpa cum eius labore laboriosam
-                                maiores officiis perspiciatis quas quis sapiente.
+                            <div v-if="product.tags.length" id="nav-tags" aria-labelledby="nav-tags-tab" class="tab-pane fade " role="tabpanel">
+                                       <div class="card mt-1 p-2" v-for="tag in product.tags" :key="tag.id">
+
+                                           <div class="card-header product_data_text font-weight-bold">
+                                               {{tag.name}}
+                                           </div>
+                                           <div class="card-body">
+                                               <span class="card-text product_data_text font-italic">{{tag.description}}</span>
+                                           </div>
+
+                                       </div>
+
                             </div>
                         </div>
                     </div>
 
                     <div class="meta_data">
                         <table>
-                            <tr v-for="i in 5">
-                                <td class="names">name</td>
-                                <td class="values">Value</td>
+                            <tr v-for="(value,key) in JSON.parse(product.additional.additional)">
+                                <td class="names">{{ key }}</td>
+                                <td class="values">{{ value }}</td>
                             </tr>
                         </table>
                     </div>
@@ -175,10 +199,47 @@
 
 <script>
 import ProductCart from "../../Customer/Pages/Components/Product-cart.vue";
+import {useRoute} from "vue-router";
+import {onMounted, reactive, ref} from "vue";
 
 export default {
     name: "ProductDetails",
-    components: {ProductCart}
+    components: {ProductCart},
+    setup(){
+        const route=useRoute();
+        const product=ref(null)
+
+        const files=reactive({
+            selected:null,
+            all:[]
+        })
+
+        const setSelectedFile=(file)=>{
+            console.log(file)
+            files.selected=file
+        }
+
+        onMounted(async ()=>{
+            try {
+                let {data}  =  await axios.get('/api/product/'+route.params.id);
+                 product.value=data.product
+                files.selected=data.product.general_file
+                files.all=[data.product.general_file,...data.product.non_general_files]
+
+                console.log( typeof product.value.colors)
+            }catch (e) {
+
+            }
+
+        })
+
+
+        return {
+            product,
+            files,
+            setSelectedFile
+        }
+    }
 }
 </script>
 

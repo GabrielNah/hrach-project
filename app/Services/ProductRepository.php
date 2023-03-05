@@ -21,6 +21,15 @@ class ProductRepository
             foreach ($productData['prices_for_one'] as $priceData){
                 $product->prices()->create(array_merge($priceData,['min_count'=>1,'max_count'=>1]));
             }
+            if (count($productData['tags'])){
+                $product->tags()->attach($productData['tags']);
+            }
+            if (count($productData['colors'])){
+                $product->sizes()->attach($productData['colors']);
+            }
+            if (count($productData['tags'])){
+                $product->colors()->attach($productData['sizes']);
+            }
             $generalFile=\request()->file('general_file');
             $mime = $generalFile->getClientMimeType();
             $fileType='';
@@ -33,12 +42,12 @@ class ProductRepository
             if (!in_array($fileType,File::FILE_TYPES)){
                 throw new \RuntimeException('Files type does not match requirements');
             }
-            $path='/Product'.$product->id;
+            $path='/public/Product'.$product->id;
             $filePath=$generalFile->store($path);
             $product->files()->create([
                 'type'=>$fileType,
                 'general'=>'1',
-                'path'=>$filePath
+                'path'=>str_replace('public','storage',$filePath)
                ]);
             if (\request()->has('files')){
                 foreach (\request()->file('files') as $file) {
@@ -53,12 +62,12 @@ class ProductRepository
                     if (!in_array($fileType,File::FILE_TYPES)){
                         throw new \RuntimeException('Files type does not match requirements');
                     }
-                     $path='/Product'.$product->id;
+                     $path='/public/Product'.$product->id;
                     $filePath=$file->store($path);
                     $product->files()->create([
                         'type'=>$fileType,
                         'general'=>'0',
-                        'path'=>$filePath
+                        'path'=>str_replace('public','storage',$filePath)
                     ]);
 
                 }

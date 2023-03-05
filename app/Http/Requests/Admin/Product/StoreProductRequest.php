@@ -34,6 +34,8 @@ class StoreProductRequest extends FormRequest
             'description'=>'required|string',
             'is_active'=>[Rule::in(['on','off'])],
             'rating'=>'required|numeric|min:1|max:5',
+            'tags'=>'array|present',
+            'tags.*'=>'integer|exists:tags,id',
             'price_for_one'=>['required','array',function ($attribute, $value, $fail) {
                 $prices = collect($value);
                 $currencies = collect($this->input('currencies_for_one'));
@@ -60,18 +62,22 @@ class StoreProductRequest extends FormRequest
             'general_file'=>'required|file',
             'files'=>['present','array'],
             'files.*'=>'file',
-            'colors'=>['required','string',function($attr,$value,$fail){
-                $colors=json_decode($value);
-                foreach ($colors as $color){
+            'colors'=>['present','array',function($attr,$value,$fail){
+                foreach ($value as $color){
+                    if (!$color){
+                        continue;
+                    }
                     if (!$this->colors->contains($color)){
                         $fail('Wrong color provided');
                         return;
                     }
                 }
             }],
-            'sizes'=>['required','string',function($attr,$value,$fail){
-                $sizes=json_decode($value);
-                foreach ($sizes as $size){
+            'sizes'=>['present','array',function($attr,$value,$fail){
+                foreach ($value as $size){
+                    if (!$size){
+                        continue;
+                    }
                     if (!$this->sizes->contains($size)){
                         $fail('Wrong size provided');
                         return;
@@ -181,11 +187,9 @@ class StoreProductRequest extends FormRequest
         $rating=$this->input('rating');
         $active=$this->input('is_active')==='on'?'1':'0';
         $title=$this->input('title');
-        $sizes=$this->input('sizes');
-        $colors=$this->input('colors');
 
         $this->merge([
-            'product_data'=>compact('name','description','title','category_id','active','sizes','colors','rating')
+            'product_data'=>compact('name','description','title','category_id','active','rating')
         ]);
     }
 

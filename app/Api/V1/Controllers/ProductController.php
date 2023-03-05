@@ -2,7 +2,6 @@
 
 namespace App\Api\V1\Controllers;
 
-use App\Api\V1\Resources\ProductResource;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 
@@ -21,13 +20,14 @@ class ProductController extends Controller
             'generalFile',
             'category.parentCategory',
             'prices',
-            'additional'
+            'additional',
+            'sizes',
+            'tags',
+            'colors'
         ]);
-        $product->colors=$product->getColors();
-        $product->sizes=$product->getSizes();
 
         return $this->successResponse([
-            'product'=>ProductResource::make($product)
+            'product'=>$product
         ]);
     }
 }

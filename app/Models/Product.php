@@ -59,6 +59,16 @@ class Product extends Model
         return $this->belongsToMany(Tag::class,'product_tag','product_id','tag_id');
     }
 
+    public function sizes():BelongsToMany
+    {
+        return $this->belongsToMany(Size::class,'product_size','product_id','size_id');
+    }
+
+    public function colors():BelongsToMany
+    {
+        return $this->belongsToMany(Color::class,'product_color','product_id','color_id');
+    }
+
 
 
 }

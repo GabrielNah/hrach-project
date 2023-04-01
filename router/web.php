@@ -56,6 +56,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::group(['prefix'=>'product'],function (){
             Route::get('',[ProductController::class,'create']);
             Route::post('/store',[ProductController::class,'store']);
+            Route::get('/edit/{product}',[ProductController::class,'show']);
         });
 
     });

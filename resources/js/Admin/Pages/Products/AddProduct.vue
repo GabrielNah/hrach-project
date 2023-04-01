@@ -282,7 +282,6 @@ export default {
                 }
 
             }catch (e) {
-                console.log(e)
                 errorNotification(extractValidationErrors(e))
             }
             setLoaded(false)

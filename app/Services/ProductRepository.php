@@ -31,45 +31,10 @@ class ProductRepository
                 $product->colors()->attach($productData['sizes']);
             }
             $generalFile=\request()->file('general_file');
-            $mime = $generalFile->getClientMimeType();
-            $fileType='';
-            if (str_contains($mime, 'video')) {
-              $fileType=File::VIDEO;
-            }
-            if (str_contains($mime, 'image')) {
-                $fileType=File::IMAGE;
-            }
-            if (!in_array($fileType,File::FILE_TYPES)){
-                throw new \RuntimeException('Files type does not match requirements');
-            }
-            $path='/public/Product'.$product->id;
-            $filePath=$generalFile->store($path);
-            $product->files()->create([
-                'type'=>$fileType,
-                'general'=>'1',
-                'path'=>str_replace('public','storage',$filePath)
-               ]);
+            $this->uploadOne($product,$generalFile,'1');
             if (\request()->has('files')){
                 foreach (\request()->file('files') as $file) {
-                    $mime = $file->getClientMimeType();
-                    $fileType='';
-                    if (str_contains($mime, 'video')) {
-                        $fileType=File::VIDEO;
-                    }
-                    if (str_contains($mime, 'image')) {
-                        $fileType=File::IMAGE;
-                    }
-                    if (!in_array($fileType,File::FILE_TYPES)){
-                        throw new \RuntimeException('Files type does not match requirements');
-                    }
-                     $path='/public/Product'.$product->id;
-                    $filePath=$file->store($path);
-                    $product->files()->create([
-                        'type'=>$fileType,
-                        'general'=>'0',
-                        'path'=>str_replace('public','storage',$filePath)
-                    ]);
-
+                    $this->uploadOne($product,$file);
                 }
             }
             DB::commit();
@@ -78,5 +43,27 @@ class ProductRepository
             throw new \RuntimeException($e->getMessage());
 
         }
+    }
+
+    public function uploadOne(Product $product,$file,$general='0')
+    {
+        $mime = $file->getClientMimeType();
+        $fileType = '';
+        if (str_contains($mime, 'video')) {
+            $fileType = File::VIDEO;
+        }
+        if (str_contains($mime, 'image')) {
+            $fileType = File::IMAGE;
+        }
+        if (!in_array($fileType, File::FILE_TYPES)) {
+            throw new \RuntimeException('Files type does not match requirements');
+        }
+        $path = '/public/Product' . $product->id;
+        $filePath = $file->store($path);
+        return $product->files()->create([
+            'type' => $fileType,
+            'general' => $general,
+            'path' => str_replace('public', 'storage', $filePath)
+        ]);
     }
 }

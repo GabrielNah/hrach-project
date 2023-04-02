@@ -16,7 +16,6 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        info('ancnuma');
         if(auth('admin')->check() && auth('admin')->user() instanceof Admin){
             return $next($request);
         }

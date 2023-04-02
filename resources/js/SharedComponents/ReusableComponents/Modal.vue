@@ -29,7 +29,7 @@ export default {
     justify-content: center;
     align-items: center;
     z-index: 99999999999;
-    background-color: #6c757d;
+    background-color: rgba(0,0,0,0.5);
 }
 .btn-close{
     position: absolute;

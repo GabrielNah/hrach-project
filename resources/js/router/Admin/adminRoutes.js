@@ -5,6 +5,7 @@ import Categories from "../../Admin/Pages/Categories.vue";
 import ProductList from "../../Admin/Pages/Products/ProductList.vue";
 import AddProduct from "../../Admin/Pages/Products/AddProduct.vue";
 import Settings from "../../Admin/Pages/Settings.vue";
+import EditProduct from "../../Admin/Pages/Products/EditProduct.vue";
 
 export const ADMIN_LOGIN_ROUTE='admin.login'
 export const ADMIN_DASHBOARD_ROUTE='admin.dashboard'
@@ -12,6 +13,7 @@ export const ADMIN_CATEGORIES_ROUTE='admin.categories'
 export const ADMIN_PRODUCT_LIST='admin.product.list'
 export const ADMIN_PRODUCT_ADD='admin.product.add'
 export const ADMIN_SETTING_ROUTE='admin.settings'
+export const ADMIN_PRODUCT_EDIT='admin.products.edit'
 
 export default ()=>([
     {
@@ -42,6 +44,11 @@ export default ()=>([
                 path:'products/add',
                 name:ADMIN_PRODUCT_ADD,
                 component:AddProduct
+            },
+            {
+                path: 'product/:id/edit',
+                name: ADMIN_PRODUCT_EDIT,
+                component:EditProduct ,
             },
             {
                 path:'settings',

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Api\V1\Resources\ProductResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Price;
+use App\Models\Product;
 use App\Models\Size;
 use App\Models\Tag;
 use App\Services\ProductRepository;
@@ -34,12 +36,21 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request):JsonResponse
     {
         try {
-
             $this->productRepository->store($request->validated());
             return $this->createdResponse();
         }catch (\Throwable $exception){
             return $this->errorResponse(['error'=>$exception->getMessage()]);
         }
+    }
 
+    public function show(Product $product):JsonResponse
+    {
+       if (!$product || empty($product->toArray())){
+           return  $this->errorResponse(['err'=>'Product not found']);
+       }
+       $product->load(['tags','nonGeneralFiles','generalFile','additional','prices','category.parentCategory','sizes','colors']);
+       return  $this->successResponse([
+           'product'=>ProductResource::make($product)
+       ]);
     }
 }

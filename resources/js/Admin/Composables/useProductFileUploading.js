@@ -7,6 +7,7 @@ export default function () {
     const fileUploader=ref(null)
 
     const generalFile=ref(null)
+
     const setGeneralFile = (file) => {
       generalFile.value=file
     }
@@ -60,6 +61,10 @@ export default function () {
 
 export function useMetaDataHandler() {
     const metadataCount=ref([{id:0}])
+
+    const setInitialMetadata=(initVal)=>{
+        metadataCount.value=initVal
+    }
     const addMetadata = () => {
         metadataCount.value.push({id:Date.now()})
     }
@@ -75,7 +80,8 @@ export function useMetaDataHandler() {
     return {
         metadataCount,
         removeMetaData,
-        addMetadata
+        addMetadata,
+        setInitialMetadata
     }
 }
 
@@ -107,7 +113,7 @@ export function useAddProductsInitialData() {
 
    onMounted(getInitialData)
     return{
-       colors,
+        colors,
         sizes,
         existingTags,
         currencies,

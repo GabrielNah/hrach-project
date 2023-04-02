@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductFileController;
 use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,8 +57,14 @@ Route::group(['prefix'=>'admin'],function (){
         Route::group(['prefix'=>'product'],function (){
             Route::get('',[ProductController::class,'create']);
             Route::post('/store',[ProductController::class,'store']);
-        });
+            Route::get('/edit/{product}',[ProductController::class,'show']);
 
+            Route::scopeBindings()->prefix('files')->group(function (){
+               Route::get('{product}',[ProductFileController::class,'index']);
+               Route::put('{product}/upload',[ProductFileController::class,'uploadOne']);
+               Route::delete('{product}/{file}',[ProductFileController::class,'destroy']);
+            });
+        });
     });
 
 });

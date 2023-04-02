@@ -5,9 +5,9 @@
                 <span class="navbar_text">Home</span>
                 <span class="navbar_text arrow"> \ </span>
                 <span class="navbar_text"> All categories </span>
-                <template v-if="product.category.parent_category?.name">
+                <template v-if="product.category.parentCategory">
                     <span class="navbar_text arrow"> \ </span>
-                    <span class="navbar_text"> {{ product.category.parent_category?.name }}</span>
+                    <span class="navbar_text"> {{ product.category.parentCategory.name }}</span>
                 </template>
                 <span class="navbar_text arrow"> \ </span>
                 <span class="navbar_text"> {{  product.category.name  }} </span>
@@ -100,12 +100,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="send_inquiry">
-                    <div class="send_inquiry_button">
-                        Send inquiry
-                    </div>
-
-                </div>
+                 <slot name="inquiry"/>
             </section>
             <div class="d-flex w-100 justify-content-between">
                 <section class="description">
@@ -143,10 +138,12 @@
                                        <div class="card mt-1 p-2" v-for="tag in product.tags" :key="tag.id">
 
                                            <div class="card-header product_data_text font-weight-bold">
-                                               {{tag.name}}
+                                               {{ tag.name }}
                                            </div>
                                            <div class="card-body">
-                                               <span class="card-text product_data_text font-italic">{{tag.description}}</span>
+                                               <span class="card-text product_data_text font-italic">
+                                                   {{ tag.description }}
+                                               </span>
                                            </div>
 
                                        </div>
@@ -157,7 +154,7 @@
 
                     <div class="meta_data">
                         <table>
-                            <tr v-for="(value,key) in JSON.parse(product.additional.additional)">
+                            <tr v-for="(value,key) in product.additional">
                                 <td class="names">{{ key }}</td>
                                 <td class="values">{{ value }}</td>
                             </tr>
@@ -165,36 +162,12 @@
                     </div>
                 </section>
 
-                <section class="prods_you_may_like">
-
-                    <h6>Products you may like</h6>
-
-                    <div class="prods">
-                        <div v-for="i in 15" class="single_prod">
-                            <img alt="" src="/images/posts/2.webp">
-                            <div class="d-flex flex-column justify-content-evenly">
-                                <span class="single_prod_text">Name</span>
-                                <span class="single_prod_price">$145.05</span>
-                            </div>
-
-                        </div>
-                    </div>
-                </section>
+                <slot name="product_yo_may_like"/>
 
 
             </div>
 
-
-            <div class="related_products">
-                <h6>Related products</h6>
-                <div class="d-flex w-100 related_products_wrapper">
-                    <div v-for="i in 8" class="one_related_product">
-                        <img alt="" src="/images/posts/1.webp">
-                        <span class="related_product_text">Product name</span>
-                        <span class="related_product_price">$32.00-$40.00</span>
-                    </div>
-                </div>
-            </div>
+            <slot name="related_product"/>
         </div>
     </main>
 </template>
@@ -203,11 +176,12 @@
 import ProductCart from "../../Customer/Pages/Components/Product-cart.vue";
 import {useRoute} from "vue-router";
 import {onMounted, reactive, ref} from "vue";
+import useProductModifier from "../../GlobalComposables/useProductModifier";
 
 export default {
     name: "ProductDetails",
     components: {ProductCart},
-    setup(){
+    setup(props,ctx){
         const route=useRoute();
         const product=ref(null)
         const selectedCurrency=ref('')
@@ -223,19 +197,6 @@ export default {
         const setSelectedFile=(file)=>{
             files.selected=file
         }
-
-        const groupPrices=(product)=>{
-            const currencies=Array.from(new Set(product.prices.map(price=>price.currency)))
-            const product_currencies={};
-            currencies.forEach(currencie=>{
-                const prices=product.prices.filter((price)=>price.currency === currencie)
-                prices.sort((a, b) => a.min_count - b.min_count);
-                product_currencies[currencie]=prices
-            })
-            setSelectedCurrency(currencies[0])
-
-            return product_currencies
-        }
         const renderTextForPrices=(price)=>{
             if (price.min_count === price.max_count && price.max_count === 1){
                 return 'Min. Order : 1'
@@ -245,18 +206,16 @@ export default {
             }
             return price.min_count +'-'+ price.max_count + 'sets'
         }
+        const productModifier=useProductModifier()
+        ctx.expose({product,productModifier})
 
         onMounted(async ()=>{
             try {
-                let {data}  =  await axios.get('/api/product/'+route.params.id);
-                product.value=data.product
-                product.value.prices=groupPrices(data.product)
-                console.log(product.value.prices)
-                files.selected=data.product.general_file
-                files.all=[data.product.general_file,...data.product.non_general_files]
-
-
-
+                let {data:{product:neededProduct}}  =  await axios.get('/api/product/'+route.params.id);
+                product.value = neededProduct
+                setSelectedCurrency(Object.keys(neededProduct.prices)[0])
+                setSelectedFile(neededProduct.general_file)
+                files.all=[neededProduct.general_file,...neededProduct.non_general_files]
             }catch (e) {
 
             }
@@ -276,7 +235,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" >
 .main_content {
     background-color: #F8F9FA;
 }

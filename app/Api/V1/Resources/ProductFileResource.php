@@ -10,8 +10,9 @@ class ProductFileResource extends JsonResource
     {
         return [
             'id' => $this->resource->id,
-           'path'=>$this->resource->path,
-           'type'=>$this->resource->type,
+            'path'=>$this->resource->path,
+            'type'=>$this->resource->type,
+            'general'=>(bool) $this->resource->general
         ];
     }
 

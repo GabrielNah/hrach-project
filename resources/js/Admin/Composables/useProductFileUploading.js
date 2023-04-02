@@ -7,6 +7,7 @@ export default function () {
     const fileUploader=ref(null)
 
     const generalFile=ref(null)
+
     const setGeneralFile = (file) => {
       generalFile.value=file
     }

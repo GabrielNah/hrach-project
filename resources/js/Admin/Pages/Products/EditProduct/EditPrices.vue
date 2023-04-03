@@ -112,6 +112,7 @@ export default {
  }
 
  const saveChanges = ({id,added=false})=>{
+     // if (added)
      const price = document.getElementById('price'+id)?.value;
      const min_cont = document.getElementById('min_count'+id).value;
      const max_count = document.getElementById('max_count'+id).value;
@@ -119,10 +120,7 @@ export default {
      if (index === -1){
          return;
      }
-     if (added){
-         prices.value[selectedCurrency.value].splice(index,1)
-         return;
-     }
+
 
 
  }

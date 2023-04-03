@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Product\UpsertPriceRequest;
 use App\Models\Price;
 use App\Models\Product;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ProductPriceController extends Controller

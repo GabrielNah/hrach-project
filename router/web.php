@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CurrencyRateController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductFileController;
 use App\Http\Controllers\Admin\ProductPriceController;
@@ -51,6 +52,10 @@ Route::group(['prefix'=>'admin'],function (){
                 Route::post('',[SettingController::class,'createTag']);
                 Route::put('/{tag}',[SettingController::class,'editTag']);
                 Route::delete('/{id}',[SettingController::class,'removeTag']);
+            });
+            Route::group(['prefix'=>'currency_rates'],function (){
+                Route::get('',[CurrencyRateController::class,'index']);
+                Route::post('',[CurrencyRateController::class,'store']);
             });
         });
 

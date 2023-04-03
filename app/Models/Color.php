@@ -12,6 +12,13 @@ class Color extends Model
     protected $guarded=[];
     public $timestamps=false;
 
+    const TYPE_INDIVIDUAL = 'individual';
+    const TYPE_GLOBAL     = 'global';
+    const TYPES=[
+      self::TYPE_GLOBAL,
+      self::TYPE_INDIVIDUAL,
+    ];
+
     public function products():BelongsToMany
     {
         return $this->belongsToMany(Product::class,'product_color','color_id','product_id');

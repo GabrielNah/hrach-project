@@ -1,8 +1,7 @@
 
 import { notify } from "@kyvg/vue3-notification";
 
-export const errorNotification=(text,title=null)=>{
-    console.log(text)
+export const errorNotification=(text,title='Error')=>{
     notify({
         title,
         text,
@@ -11,7 +10,7 @@ export const errorNotification=(text,title=null)=>{
     })
 }
 
-export const successNotification=(text,title=null)=>{
+export const successNotification=(text,title='Success')=>{
     notify({
         title,
         text,

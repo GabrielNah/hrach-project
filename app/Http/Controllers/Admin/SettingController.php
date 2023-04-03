@@ -15,8 +15,8 @@ class SettingController extends Controller
 {
     public function getSettings():JsonResponse
     {
-        $colors=Color::all();
-        $sizes=Size::all();
+        $colors=Color::query()->where('type',Color::TYPE_GLOBAL)->get();
+        $sizes=Size::query()->where('type',Size::TYPE_GLOBAL)->get();
         $tags=Tag::all();
         return $this->successResponse(compact('sizes','colors','tags'));
     }
@@ -25,7 +25,7 @@ class SettingController extends Controller
      **/
     public function storeColor(StoreColorRequest $request):JsonResponse
     {
-        $color=Color::create($request->validated());
+        $color=Color::create(array_merge($request->validated(),['type'=>Color::TYPE_GLOBAL]));
         return $this->createdResponse(compact('color'));
     }
 
@@ -55,7 +55,7 @@ class SettingController extends Controller
         $validated=$request->validate([
             'size'=>'required|string|unique:sizes,size'
         ]);
-        $size=Size::query()->create($validated);
+        $size=Size::query()->create(array_merge($validated,['type'=>Size::TYPE_GLOBAL]));
         return $this->successResponse(compact('size'));
     }
 

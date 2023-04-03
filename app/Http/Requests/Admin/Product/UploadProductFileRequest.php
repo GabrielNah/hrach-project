@@ -9,7 +9,6 @@ class UploadProductFileRequest extends FormRequest
 {
     public function rules():array
     {
-        info(json_encode(request()->all()));
         return [
             'uploaded_file'=>'required|file'
         ];

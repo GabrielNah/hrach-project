@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductFileController;
+use App\Http\Controllers\Admin\ProductPriceController;
 use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,7 +63,14 @@ Route::group(['prefix'=>'admin'],function (){
             Route::scopeBindings()->prefix('files')->group(function (){
                Route::get('{product}',[ProductFileController::class,'index']);
                Route::put('{product}/upload',[ProductFileController::class,'uploadOne']);
+               Route::patch('{product}/multiupload',[ProductFileController::class,'uploadMany']);
+               Route::post('/general/{product}/{file}',[ProductFileController::class,'markGeneral']);
                Route::delete('{product}/{file}',[ProductFileController::class,'destroy']);
+            });
+
+            Route::scopeBindings()->prefix('prices')->group(function (){
+               Route::get('{product}',[ProductPriceController::class,'index']);
+               Route::post('{product}/{price?}',[ProductPriceController::class,'upsert']);
             });
         });
     });

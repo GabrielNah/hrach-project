@@ -24,14 +24,16 @@
 
     <teleport to="#app">
         <Modal v-if="chosenAction" @close="actions.selectAction('')">
-            <edit-files v-if="chosenAction === actions.ACTIONS.EDIT_FILES" />
-            <template v-if="chosenAction === actions.ACTIONS.EDIT_MAIN_INFO">
-                <h1>main</h1>
-            </template>
+            <edit-files v-if="chosenAction === actions.ACTIONS.EDIT_FILES"
+                @close="actions.selectAction('')"
+            />
+            <edit-prices v-if="chosenAction === actions.ACTIONS.EDIT_PRICES"
+            />
+
             <template v-if="chosenAction === actions.ACTIONS.EDIT_ADDITIONAL_INFO">
                 <h1>add</h1>
             </template>
-            <template v-if="chosenAction === actions.ACTIONS.EDIT_PRICES">
+            <template v-if="chosenAction === actions.ACTIONS.EDIT_MAIN_INFO">
                 <h1>price</h1>
             </template>
         </Modal>
@@ -44,9 +46,10 @@ import {computed, ref, watch, watchEffect} from "vue";
 import ProductDetails from "../../../SharedComponents/Product/ProductDetails.vue";
 import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
 import EditFiles from "./EditProduct/EditFiles.vue";
+import EditPrices from "./EditProduct/EditPrices.vue"
 export default {
     name: "EditProduct",
-    components: {EditFiles, ProductDetails,Modal},
+    components: {EditPrices, EditFiles, ProductDetails,Modal},
     setup(){
         const key = ref(0)
         const rerenderProduct=()=>{

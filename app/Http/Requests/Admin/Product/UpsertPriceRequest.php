@@ -14,46 +14,64 @@ class UpsertPriceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'currency'=>Rule::in(Price::CURRENCIES),
-            'min_count'=>'required|numeric|min:0',
-            'max_count'=>['required','numeric','max:0',function($attr,$val,$fail){
-                if ($val!==0 && $this->get('min_count') !== 0){
-                    if ($val && $val < $this->get('min_count')){
-                        $fail('min_count should be less then max_count');
-                    }
-                }
-            }],
-            'price'=>'required|numeric|regex:/^\d+(\.\d{1,2})?$/'
+            'min_count'=>'required|array|min:1',
+            'min_count.*'=>'numeric|min:1',
+            'max_count'=>['required','array','min:1'],
+            'price'=>['required','array','min:1'],
+            'max_count.*'=>['nullable','numeric','min:1'],
+            'price.*'=>'required|numeric|regex:/^\d+(\.\d{1,2})?$/'
         ];
     }
 
-    public function withValidator(Validator $validator){
-        $validator->after(function (Validator $validator){
-            $product = $this->route('product');
-            $min_count = $this->get('min_count');
-            $max_count = $this->get('max_count');
-            $editablePrice=compact('min_count','max_count');
-            $prices = $product->prices()
-                ->where('currency', $this->get('currency'))
-                ->when($this->route('price'), function ($query) {
-                    return $query->where('id', '!=', $this->route('price')->id);
-                })
-                ->get(['min_count', 'max_count']);
-            $prices=collect($prices)->push($editablePrice)->sort('min_count');
-            $prices->each(function ($price,$index)use ($validator,$prices){
-                $prev = $prices[$index - 1] ?? null;
-                $next = $prices[$index + 1] ?? null;
-
-               if (isset($prev) && $prev['max_count'] >= $price['min_count']) {
-                   $validator->errors()->add('min_count', 'The minimum count of the current price overlaps with the maximum count of the previous price.');
-                    return;
-               }
-               if (isset($next) && $price['max_count'] && $price['max_count'] >= $next['min_count']) {
-                   $validator->errors()->add('max_count', 'The maximum count of the current price overlaps with the minimum count of the next price.');
-                    return;
-               }
-            });
-
-        });
+    private function getModifiedData():array
+    {
+        $min_count=$this->get('min_count');
+        $max_count=$this->get('max_count');
+        $prices=$this->get('price');
+        $validatedPrices = [];
+        foreach ($prices as $index => $price){
+            $result=[];
+            $result['price']=$price;
+            $result['min_count']=$min_count[$index];
+            $result['max_count']=$max_count[$index];
+            $validatedPrices[]=$result;
+        }
+        return  $validatedPrices;
     }
+
+    private function pricesAreOverwlaped():bool
+    {
+        $prices = $this->getModifiedData();
+        foreach ($prices as $index => $price){
+            $prev = $prices[$index - 1] ?? null;
+            $next = $prices[$index + 1] ?? null;
+
+            if (isset($prev) && $prev['max_count'] >= $price['min_count']) {
+                return true;
+            }
+            if (isset($next) && $price['max_count'] && $price['max_count'] >= $next['min_count']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function withValidator(Validator $validator):void
+    {
+      $validator->after(function (Validator $validator){
+            if ($this->pricesAreOverwlaped()){
+                $validator->errors()->add('Prices','Prices should not be overwlaped');
+            }
+      });
+    }
+
+    public function validated($key = null, $default = null)
+    {
+        $validated=[];
+        $validated['prices']=$this->getModifiedData();
+        return data_get($validated, $key, $validated);
+    }
+
+
 }

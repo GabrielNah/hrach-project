@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Product\UpsertPriceRequest;
 use App\Models\Price;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ProductPriceController extends Controller
@@ -20,20 +21,37 @@ class ProductPriceController extends Controller
         ]);
     }
 
-    public function upsert(UpsertPriceRequest $request,Product $product,Price $price): JsonResponse
+    public function upsert(UpsertPriceRequest $request,Product $product): JsonResponse
     {
-        $data = [
-            'min_count'=>$request->input('min_count'),
-            'max_count'=>$request->input('max_count'),
-            'price'=>$request->input('price'),
-        ];
-        if ($price?->id){
-            $price = tap($price,fn()=>$price->update($data));
+        try {
+            $product->prices()->delete();
+
+            foreach ($request->validated()['prices'] as $price){
+               $product->prices()->create($price);
+            }
+            return $this->successResponse([
+                'prices' => PriceResource::collection($product->prices()->get())
+            ]);
+
+        }catch (\Throwable $exception){
+            return $this->errorResponse(['e'=>$exception->getMessage()]);
         }
-        if (!$price?->id){
-            $price = $product->prices()->create($data);
+    }
+
+    public function destroy(Product $product,Price $price)
+    {
+        try {
+
+            if (!$price && empty($price->toArray())){
+                throw new ModelNotFoundException('Price under ID:'.request()->route('price').' not found');
+
+            }
+                $price->delete();
+                return $this->deletedResponse();
+        }catch (\Throwable $exception){
+            return $this->errorResponse(['e'=>$exception->getMessage()]);
         }
-        return $this->successResponse(compact('price'));
+
     }
 
 

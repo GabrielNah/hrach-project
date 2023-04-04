@@ -75,7 +75,8 @@ Route::group(['prefix'=>'admin'],function (){
 
             Route::scopeBindings()->prefix('prices')->group(function (){
                Route::get('{product}',[ProductPriceController::class,'index']);
-               Route::post('{product}/{price?}',[ProductPriceController::class,'upsert']);
+               Route::post('{product}',[ProductPriceController::class,'upsert']);
+               Route::delete('{product}/{price}',[ProductPriceController::class,'destroy']);
             });
         });
     });

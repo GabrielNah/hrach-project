@@ -15,6 +15,12 @@
             <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_MAIN_INFO)">
                 Main info
             </button>
+            <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_MAIN_INFO)">
+                Discounts
+            </button>
+            <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_MAIN_INFO)">
+               Colors and Sizes
+            </button>
         </div>
 
     </div>

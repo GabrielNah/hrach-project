@@ -89,14 +89,12 @@ export function useMetaDataHandler() {
 export function useAddProductsInitialData() {
    const colors=ref([]);
    const sizes=ref([]);
-   const currencies=ref([]);
    const categories=ref([]);
    const existingTags=ref([]);
 
    const setPageInitialValues=(data)=>{
        colors.value=data.colors
        sizes.value=data.sizes
-       currencies.value=data.currencies
        categories.value=data.categories
        existingTags.value=data.tag
     }
@@ -116,16 +114,15 @@ export function useAddProductsInitialData() {
         colors,
         sizes,
         existingTags,
-        currencies,
         categories
     }
 }
 
 
 export function usePriceAdder() {
-    const priceCount=ref([{id:0,forMany:false}])
+    const priceCount=ref([{id:0}])
     const addPrice = () => {
-        priceCount.value.push({id:Date.now(),forMany:false})
+        priceCount.value.push({id:Date.now()})
     }
 
     const removePrice = (value) => {
@@ -172,5 +169,64 @@ export function useProductSizeAndColorSetter() {
         setSize,
         tags,
         setTags
+    }
+}
+
+export function useIndividualColors(){
+    const colorsCount=ref([{
+        id:Date.now()+Math.round(Math.random())
+    }])
+    const addColor = ()=>colorsCount.value.push({
+        id:Date.now()+Math.round(Math.random())
+    })
+    const handleFileUpload=(e,i)=>{
+        const file=e.target.files[0]
+        const reader = new FileReader()
+        reader.onload=()=>{
+            document.querySelector('#individual_size'+i).src=reader.result
+        }
+        reader.readAsDataURL(file)
+    }
+
+    const removeOne=(id)=>{
+        let index= colorsCount.value.findIndex((sz)=>sz.id === id)
+        if (index === -1){
+            return;
+        }
+        colorsCount.value.splice(index,1)
+    }
+
+
+    return {
+        colorsCount,
+        addColor,
+        handleFileUpload,
+        removeOne
+    }
+}
+
+
+export const useIndividualSizeHandler = ()=>{
+    const sizesCount=ref([{
+        id:Date.now()+Math.round(Math.random())
+    }])
+    const addSize = ()=>sizesCount.value.push({
+        id:Date.now()+Math.round(Math.random())
+    })
+
+
+    const removeOne=(id)=>{
+        let index= sizesCount.value.findIndex((sz)=>sz.id === id)
+        if (index === -1){
+            return;
+        }
+        sizesCount.value.splice(index,1)
+    }
+
+
+    return {
+        sizesCount,
+        addSize,
+        removeOne
     }
 }

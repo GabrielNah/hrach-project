@@ -22,7 +22,6 @@ return new class extends Migration
             $table->bigInteger('min_count');
             $table->bigInteger('max_count')->nullable();
             $table->decimal('price');
-            $table->enum('currency',Price::CURRENCIES);
             $table->timestamps();
         });
     }

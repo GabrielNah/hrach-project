@@ -34,35 +34,14 @@ class StoreProductRequest extends FormRequest
             'description'=>'required|string',
             'is_active'=>[Rule::in(['on','off'])],
             'rating'=>'required|numeric|min:1|max:5',
-            'tags'=>'array|present',
+            'tags'=>'array|nullable',
             'tags.*'=>'integer|exists:tags,id',
-            'price_for_one'=>['required','array',function ($attribute, $value, $fail) {
-                $prices = collect($value);
-                $currencies = collect($this->input('currencies_for_one'));
-
-                if ($prices->count() !== $currencies->count()) {
-                    $fail('Number of prices and currencies should match');
-                    return;
-                }
-
-                $objects = $prices->map(function ($price, $index) use ($currencies) {
-                    return [
-                        'price' => $price,
-                        'currency' => $currencies[$index],
-                    ];
-                });
-
-                if ($objects->count() !== $objects->unique()->count()) {
-                    $fail('Prices and currencies should be unique');
-                }
-            },],
-            'price_for_one.*'=>'numeric|regex:/^\d+(\.\d{1,2})?$/',
-            'currencies_for_one'=>['required','array'],
-            'currencies_for_one.*'=>[Rule::in(Price::CURRENCIES)],
+            'prices.*'=>'numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'price_for_one'=>'numeric|regex:/^\d+(\.\d{1,2})?$/',
             'general_file'=>'required|file',
             'files'=>['present','array'],
             'files.*'=>'file',
-            'colors'=>['present','array',function($attr,$value,$fail){
+            'colors'=>['nullable','array',function($attr,$value,$fail){
                 foreach ($value as $color){
                     if (!$color){
                         continue;
@@ -73,7 +52,7 @@ class StoreProductRequest extends FormRequest
                     }
                 }
             }],
-            'sizes'=>['present','array',function($attr,$value,$fail){
+            'sizes'=>['nullable','array',function($attr,$value,$fail){
                 foreach ($value as $size){
                     if (!$size){
                         continue;
@@ -95,47 +74,50 @@ class StoreProductRequest extends FormRequest
             'metaDataValue'=>'nullable|array',
             'metaDataName.*'=>'string',
             'metaDataValue.*'=>'string',
-            'prices.*' => [
-                'numeric',
-                'regex:/^\d+(\.\d{1,2})?$/'
-            ],
-            'prices'=>['array','required_with_all:count_max,counts_min,currencies', function ($attribute, $value, $fail) {
-                $minCounts = $this->get('counts_min');
-                $maxCounts = $this->get('count_max');
-                $currencies = $this->get('currencies');
-
-                $pricesData = [];
-                foreach ($minCounts as $index => $minCount) {
-                    $currency = $currencies[$index];
-                    if ($maxCounts[$index]){
-                        if ($maxCounts[$index] < $minCount) {
-                            $fail('min_count should be less than max_count');
-                            return;
-                        }
-                    }
-
-
-                    $priceData = [
-                        'min_count' => $minCount,
-                        'max_count' => $maxCounts[$index],
-                        'price' => $value[$index],
-                        'currency' => $currency,
-                    ];
-
-                    $pricesData[$currency][] = $priceData;
+            'individual_size_name'=>['nullable','array',function($attr,$val,$fail){
+                $size_names = collect($val);
+                if($size_names->count() !== $size_names->unique()->count()){
+                    $fail('Size names should be unique');
                 }
-
-                foreach ($pricesData as $currency => $priceArray) {
-                    $uniquePriceArray = collect($priceArray)->unique();
-                    if ($uniquePriceArray->count() !== count($priceArray)) {
-                        $fail("Provided parameters count of `prices for many` does not match for currency $currency");
-                    }
+            }],
+            'individual_colors_name'=>['nullable','array',function($attr,$val,$fail){
+                $size_names = collect($val);
+                if($size_names->count() !== $size_names->unique()->count()){
+                    $fail('Size names should be unique');
                 }
-            },],
-            'count_max'=>'array|required_with_all:prices,counts_min,currencies',
-            'counts_min'=>'array|required_with_all:prices,counts_min,currencies',
-            'currencies'=>['array','required_with_all:count_max,counts_min,prices'],
+            }],
+            'individual_colors'=>['array','required_with:individual_colors_name',function($attr,$val,$fail){
+                if (count($val)!== count($this->get('individual_colors_name'))){
+                    $fail('Every individual color should have it`s own unique name');
+                }
+            }],
+            'individual_colors.*'=>'image',
+            'prices'=>['array','required_with_all:count_max,counts_min', function ($attribute, $value, $fail) {
+                $prices = collect($value)->map(function ($val,$index){
+                    $price=[];
+                    $price['price']=$val;
+                    $price['min_count']=$this->get('counts_min')[$index];
+                    $price['max_count']=$this->get('count_max')[$index];
+                    return $price;
+                });
+                $prices->each(function ($price,$index) use ($fail){
+                    $prev = $prices[$index - 1] ?? null;
+                    $next = $prices[$index + 1] ?? null;
 
+                    if (isset($prev) && $prev['max_count'] >= $price['min_count']) {
+                        $fail('min_count', 'The minimum count of the current price overlaps with the maximum count of the previous price.');
+                        return;
+                    }
+                    if (isset($next) && $price['max_count'] && $price['max_count'] >= $next['min_count']) {
+                        $fail('max_count', 'The maximum count of the current price overlaps with the minimum count of the next price.');
+                    }
+                });
+
+            }],
+            'count_max'=>'array|required_with_all:prices,counts_min',
+            'count_max.*'=>'nullable|integer',
+            'counts_min.*'=>'integer',
+            'counts_min'=>'array|required_with_all:prices,counts_min',
         ];
     }
 
@@ -143,43 +125,24 @@ class StoreProductRequest extends FormRequest
 
     private function modifyPriceData():void
     {
-        $priceForOne = $this->input('price_for_one');
-        $currenciesForOne = $this->input('currencies_for_one');
-        $pricesForOne = [];
+        $prices = [];
+        $price_for_one=[];
+        $price_for_one['price']=$this->get('price_for_one');
+        $price_for_one['min_count']=1;
+        $price_for_one['max_count']=1;
+        $prices[]=$price_for_one;
 
-        if ($priceForOne && $currenciesForOne){
-            foreach ($priceForOne as $key => $price) {
-                $pricesForOne[] = [
-                    'price' => $price,
-                    'currency' => $currenciesForOne[$key]
-                ];
-            }
-
-            $this->merge([
-                'prices_for_one' => $pricesForOne
-            ]);
+        foreach ($this->get('prices') as $index => $price){
+            $price_data=[];
+            $price_data['price']=$price;
+            $price_data['min_count']=$this->get('counts_min')[$index];
+            $price_data['max_count']=$this->get('count_max')[$index];
+            $prices[]=$price_data;
         }
 
-
-        $countsMin = $this->input('counts_min');
-        $countsMax = $this->input('count_max');
-        $currencies = $this->input('currencies');
-        $prices = $this->input('prices');
-        $pricesForMany = [];
-        if ($countsMin && $countsMax && $currencies && $prices){
-            foreach ($countsMin as $key => $countMin) {
-                $pricesForMany[] = [
-                    'min_count' => $countMin,
-                    'max_count' => $countsMax[$key],
-                    'price' => $prices[$key],
-                    'currency' => $currencies[$key]
-                ];
-            }
-
             $this->merge([
-                'prices_for_many' => $pricesForMany
+                'prices' => $prices
             ]);
-        }
 
     }
     private function modifyProductData():void

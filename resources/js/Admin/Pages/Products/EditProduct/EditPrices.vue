@@ -19,12 +19,20 @@
                     <th scope="col">Price</th>
                     <th scope="col">Min set</th>
                     <th scope="col">Max set</th>
-                    <th scope="col">Actions</th>
-                    <button @click="addPrice" class="btn btn-success d-flex justify-content-center align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                        </svg>
-                    </button>
+                    <th scope="col">Remove</th>
+                    <div class="d-flex gap-1">
+                        <button class="btn btn-success btn-sm " type="button" data-toggle="tooltip" data-placement="top" title="Edit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                            </svg>
+                        </button>
+                        <button @click="addPrice" class="btn btn-success d-flex justify-content-center align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                            </svg>
+                        </button>
+                    </div>
+
                 </tr>
                 </thead>
                 <tbody>
@@ -34,22 +42,30 @@
                     >
                         <th scope="row">{{ index + 1 }}</th>
                         <td >
-                            <input name="price" :id="'price'+price.id" class="w-100" :value=" price.price ">
+                            <input name="price" :id="'price'+price.id" class="w-100"
+                                   v-bind="{
+                                        'disabled':price.currency !=='USD',
+                                        'readonly':price.currency !=='USD',
+                                   }"
+                                   :value=" price.price ">
                         </td>
                         <td>
                             <input type="text" :id="'min_count'+price.id" class="w-100"
+                                   v-bind="{
+                                        'disabled':price.currency !=='USD',
+                                        'readonly':price.currency !=='USD',
+                                   }"
                                    name="min_count" :value="price.min_count">
                         </td>
                         <td>
                             <input type="text" :id="'max_count'+price.id" class="w-100"
+                                   v-bind="{
+                                        'disabled':price.currency !=='USD',
+                                        'readonly':price.currency !=='USD',
+                                   }"
                                    name="max_count" :value="price.max_count">
                         </td>
                         <td>
-                              <button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Edit">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                                      <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
-                                  </svg>
-                              </button>
                               <button
                                   @click="removePrice(price)"
                                   style="margin-left: 5px" class="btn btn-danger btn-sm rounded-0" type="button"
@@ -93,10 +109,14 @@ export default {
  }
 
  const addPrice = ()=>{
-     prices.value[selectedCurrency.value].push({
+     if (selectedCurrency.value !== 'USD'){
+         return;
+     }
+     prices.value['USD'].push({
          id:Date.now(),
          min_count:'',
          max_count:'',
+         currency:'USD',
          added:true
      })
  }
@@ -120,8 +140,6 @@ export default {
      if (index === -1){
          return;
      }
-
-
 
  }
 

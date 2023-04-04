@@ -18,3 +18,13 @@ export const successNotification=(text,title='Success')=>{
         ignoreDuplicates:true,
     })
 }
+
+export const infoNotification = (text,title='Info')=>{
+    notify({
+        title,
+        text,
+        type:'info',
+        ignoreDuplicates:true,
+        duration:1500,
+    })
+}

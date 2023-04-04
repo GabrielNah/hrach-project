@@ -24,21 +24,21 @@ class ProductController extends Controller
 
     public function create():JsonResponse
     {
-        $colors=Color::all();
-        $sizes=Size::all();
-        $categories=Category::query()->get();
-        $currencies=Price::CURRENCIES;
+        $colors=Color::query()->where('type',Color::TYPE_GLOBAL)->get();
+        $sizes=Size::query()->where('type',Color::TYPE_GLOBAL)->get();
+        $categories=Category::query()->where('active','1')->get();
         $tag=Tag::all();
-        return  $this->successResponse(compact('colors','sizes','categories','currencies','tag'));
+        return  $this->successResponse(compact('colors','sizes','categories','tag'));
     }
 
 
     public function store(StoreProductRequest $request):JsonResponse
     {
         try {
-            $this->productRepository->store($request->validated());
-            return $this->createdResponse();
+            $product_id = $this->productRepository->store($request->validated());
+            return $this->createdResponse(compact('product_id'));
         }catch (\Throwable $exception){
+            info($exception->getTraceAsString());
             return $this->errorResponse(['error'=>$exception->getMessage()]);
         }
     }

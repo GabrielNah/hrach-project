@@ -18,7 +18,7 @@
         <section class="d-flex justify-content-between w-100" v-if="selectedFile">
             <div class="border-gray product_file p-2 d-flex justify-content-center align-items-center w-75">
                 <template v-if="selectedFile.type === 'video'">
-                    <video style="width: 95%" :src="(selectedFile.uploaded ? '':'/')+selectedFile.path" autoplay controls></video>
+                    <video style="width: 95%"  class="product_select_file" :src="(selectedFile.uploaded ? '':'/')+selectedFile.path" autoplay controls></video>
                 </template>
                 <template v-if="selectedFile.type === 'image'">
                     <img style="width: 95%" class="product_select_file" :src="(selectedFile.uploaded ? '':'/')+selectedFile.path" />
@@ -94,11 +94,15 @@ export default {
 import {computed, onMounted, ref, watch, watchEffect,defineEmits} from "vue";
   import HTTP from "../../../Axios/axiosCongif";
   import {useRoute} from "vue-router";
+import {errorNotification, successNotification} from "../../../../Services/NotificationService";
+import {extractValidationErrors} from "../../../../Services/GlobalHelpers";
  const emit = defineEmits(['close'])
   const files = ref([]);
   const uploadedFiles=ref(null)
   const selectedFile=ref(null)
   const needsToSaveChanges=ref(false)
+  const startedProcess=ref(false)
+  const markProcess=(state)=>startedProcess.value=state
 
   const hasNoGeneral = computed(()=>{
       if (!files.value.length){
@@ -143,6 +147,10 @@ import {computed, onMounted, ref, watch, watchEffect,defineEmits} from "vue";
       }
   }
   const uploadOneFile=async ()=>{
+      if (startedProcess.value){
+          return;
+      }
+      markProcess(true)
       const data= new FormData();
       const file= [...uploadedFiles.value.files].at(selectedFile.value.index)
       if (!file){
@@ -160,11 +168,17 @@ import {computed, onMounted, ref, watch, watchEffect,defineEmits} from "vue";
               selectedFile.value = data.file
               selectedFile.value.uploaded = false
               files.value[fileIndex]=selectedFile.value
+              successNotification('File uploaded successfully')
           }
-      })
+      }).catch(e=>errorNotification(extractValidationErrors(e)))
+      .finally(()=>markProcess(false))
 
   }
   const removeFile=()=>{
+      if (startedProcess.value){
+          return;
+      }
+      markProcess(true)
       let index = files.value.findIndex(fl=>fl.id === selectedFile.value.id)
       if (index === -1){
           return;
@@ -179,21 +193,33 @@ import {computed, onMounted, ref, watch, watchEffect,defineEmits} from "vue";
           if (res.status === 204){
               files.value.splice(index,1)
               selectedFile.value=files.value.at(0)
+              successNotification('File removed successfully')
           }
 
-      })
+      }).catch(e=>errorNotification(extractValidationErrors(e)))
+         .finally(()=>markProcess(false))
   }
   const getFiles =(id)=>{
       HTTP.get('/product/files/'+id)
           .then(({data})=>{
               files.value=data.files
+              if (files.value.length){
+                  selectedFile.value=files.value[0]
+              }
           })
   }
 
   const saveChanges= ()=>{
+      console.log(startedProcess.value)
+      if (startedProcess.value){
+          return;
+      }
+      markProcess(true)
       const nonUploadeds = files.value.filter((fl)=>fl.uploaded)
       if (!nonUploadeds.length){
           needsToSaveChanges.value = false;
+          successNotification('Files edited successfully')
+          emit('close')
           return;
       }
       let data = new FormData;
@@ -205,13 +231,18 @@ import {computed, onMounted, ref, watch, watchEffect,defineEmits} from "vue";
       HTTP.post(`/product/files/${id.value}/multiupload`, data)
       .then(({data})=>{
             if (data.success){
+                successNotification('Files edited successfully')
                 emit('close')
             }
-      }).catch(e=>console.warn(e))
-
+      }).catch(e=>errorNotification(extractValidationErrors(e)))
+       .finally(()=>markProcess(false))
   }
 
   const markAsGeneral=()=>{
+       if (startedProcess.value){
+           return;
+       }
+       markProcess(true)
         HTTP.post(`/product/files/general/${id.value}/${selectedFile.value.id}`)
         .then(({data})=>{
             if (data.success){
@@ -222,8 +253,10 @@ import {computed, onMounted, ref, watch, watchEffect,defineEmits} from "vue";
                 }
                files.value.forEach(fl => fl.general = false)
                files.value[indexOfGeneral].general = true;
+                successNotification('Marked as general successfully')
             }
-        })
+        }).catch(e=>errorNotification(extractValidationErrors(e)))
+            .finally(()=>markProcess(false))
     }
 
   onMounted(()=>{
@@ -243,6 +276,9 @@ import {computed, onMounted, ref, watch, watchEffect,defineEmits} from "vue";
     left: 0;
     right: 0;
     bottom: 0;
+}
+.product_select_file{
+    height: 500px;
 }
 .product_file_wrapper{
     flex-direction: row;

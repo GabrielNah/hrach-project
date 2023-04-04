@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Color;
 use App\Models\File;
 use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Models\Size;
 use Illuminate\Support\Facades\DB;
 
 class ProductRepository
@@ -15,21 +16,44 @@ class ProductRepository
             DB::beginTransaction();
             $product=Product::query()->create($productData['product_data']);
             $product->additional()->create(['additional'=>$productData['additional']]);
-            foreach ($productData['prices_for_many'] as $priceData){
+
+            foreach ($productData['prices'] as $priceData){
                 $product->prices()->create($priceData);
             }
-            foreach ($productData['prices_for_one'] as $priceData){
-                $product->prices()->create(array_merge($priceData,['min_count'=>1,'max_count'=>1]));
-            }
-            if (count($productData['tags'])){
+            if (count($productData['tags'] ?? [])){
                 $product->tags()->attach($productData['tags']);
             }
-            if (count($productData['colors'])){
-                $product->sizes()->attach($productData['colors']);
+            if (count($productData['colors'] ?? []) || count(\request()->file('individual_colors') ?? [])){
+                $colors=$productData['colors'] ?? [];
+                if (\request()->hasFile('individual_colors')){
+                    foreach (\request()->file('individual_colors') as $index=> $file){
+                        $path = '/public/Product' . $product->id.'/Colors';
+                        $filePath = $file->store($path);
+                        $color= Color::query()->create([
+                            'type' => Color::TYPE_INDIVIDUAL,
+                            'name' => $productData['individual_colors_name'][$index],
+                            'value' => str_replace('public', 'storage', $filePath)
+                        ]);
+                        $colors[]=$color->id;
+                    }
+                }
+                $product->colors()->attach($colors);
+
             }
-            if (count($productData['tags'])){
-                $product->colors()->attach($productData['sizes']);
+            if (count($productData['sizes'] ?? []) || count($productData['individual_size_name'] ?? [])) {
+                $sizes=$productData['sizes'] ?? [];
+                if ($productData['individual_size_name']){
+                    foreach ($productData['individual_size_name'] as $individual_size){
+                        $size=Size::query()->create([
+                            'size'=>$individual_size,
+                            'type'=>Size::TYPE_INDIVIDUAL
+                        ]);
+                        $sizes[]=$size->id;
+                    }
+                }
+                $product->sizes()->attach($sizes);
             }
+
             $generalFile=\request()->file('general_file');
             $this->uploadOne($product,$generalFile,'1');
             if (\request()->has('files')){
@@ -38,6 +62,7 @@ class ProductRepository
                 }
             }
             DB::commit();
+            return $product->id;
         }catch (\Throwable $e){
             DB::rollBack();
             throw new \RuntimeException($e->getMessage());

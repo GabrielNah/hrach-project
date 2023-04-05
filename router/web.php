@@ -62,8 +62,10 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::group(['prefix'=>'product'],function (){
             Route::get('',[ProductController::class,'create']);
+            Route::get('all',[ProductController::class,'index']);
             Route::post('/store',[ProductController::class,'store']);
             Route::get('/edit/{product}',[ProductController::class,'show']);
+            Route::delete('/{product}',[ProductController::class,'destroy']);
 
             Route::scopeBindings()->prefix('files')->group(function (){
                Route::get('{product}',[ProductFileController::class,'index']);

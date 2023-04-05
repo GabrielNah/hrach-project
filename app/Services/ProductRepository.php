@@ -6,7 +6,12 @@ use App\Models\Color;
 use App\Models\File;
 use App\Models\Product;
 use App\Models\Size;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductRepository
 {
@@ -90,5 +95,66 @@ class ProductRepository
             'general' => $general,
             'path' => str_replace('public', 'storage', $filePath)
         ]);
+    }
+
+
+    public function index(Request $request):LengthAwarePaginator
+    {
+
+        return  Product::query()
+                    ->when($request->query('search'),function (Builder $builder) use ($request){
+                        return $builder->where('name','LIKE','%'.$request->query('search').'%')
+                                       ->orWhere('title','LIKE','%'.$request->query('search').'%')
+                                       ->orWhere('description','LIKE','%'.$request->query('search').'%')
+                                        ->orWhereHas('category', function (Builder $q) use ($request) {
+                                            $q->where('name', 'LIKE', '%' . $request->query('search') . '%');
+                                        });
+                    })
+                    ->with(['generalFile','priceForOne','category'])
+                    ->paginate($request->query('count')??2);
+    }
+
+
+    public function destroy(Product $product):void
+    {
+        try {
+            DB::beginTransaction();
+            $product->prices()->delete();
+            $product->additional()->delete();
+            $product->tags()->detach();
+            Size::query()->whereIn('id',$product->sizes()->pluck('size_id')
+                ->toArray())
+                ->where('type',Size::TYPE_INDIVIDUAL)
+                ->delete();
+            $product->sizes()->detach();
+
+            $individual = $product->colors()
+                ->where('type',Color::TYPE_INDIVIDUAL)
+                ->get();
+            foreach ($individual as $color){
+                     $product->colors()->detach($color->id);
+                     $this->removeFile($color->value);
+                     Color::query()->where('id',$color->id)->delete();
+            }
+
+            foreach ($product->files as $file){
+                 $this->removeFile($file->path);
+                 File::query()->where('id',$file->id)->delete();
+                Storage::deleteDirectory('public/Product'.$product->id);
+            }
+            $product->delete();
+            DB::commit();
+        }catch (\Throwable $e){
+            DB::rollBack();
+            throw new \LogicException($e->getMessage());
+        }
+    }
+
+    private function removeFile(string $path):void
+    {
+        $file_path = str_replace('storage','/app/public',$path);
+        if (\Illuminate\Support\Facades\File::exists(storage_path($file_path))){
+            \Illuminate\Support\Facades\File::delete(storage_path($file_path));
+        };
     }
 }

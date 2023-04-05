@@ -7,12 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
 use App\Models\Category;
 use App\Models\Color;
-use App\Models\Price;
 use App\Models\Product;
 use App\Models\Size;
 use App\Models\Tag;
 use App\Services\ProductRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ProductController extends Controller
@@ -52,5 +53,28 @@ class ProductController extends Controller
        return  $this->successResponse([
            'product'=>ProductResource::make($product)
        ]);
+    }
+
+    public function index(Request $request):JsonResponse
+    {
+         $response=$this->productRepository->index($request);
+         return $this->successResponse(compact('response'));
+    }
+
+    public function destroy(Product $product):JsonResponse
+    {
+        try {
+            if (!$product || empty($product->toArray())){
+                throw new ModelNotFoundException('Product under ID:'.\request()->route('product').' not found');
+            }
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            $this->productRepository->destroy($product);
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            return $this->deletedResponse();
+        }catch (\Throwable $e){
+            DB::rollBack();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            return  $this->errorResponse(['e'=>$e->getMessage()]);
+        }
     }
 }

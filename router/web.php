@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CurrencyRateController;
 use App\Http\Controllers\Admin\ProductAdditionalController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductFileController;
+use App\Http\Controllers\Admin\ProductMainInfoConroller;
 use App\Http\Controllers\Admin\ProductPriceController;
 use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
@@ -84,6 +85,10 @@ Route::group(['prefix'=>'admin'],function (){
             Route::group(['prefix'=>'additional'],function (){
                 Route::get('{product}',[ProductAdditionalController::class,'index']);
                 Route::post('{product}',[ProductAdditionalController::class,'edit']);
+            });
+            Route::group(['prefix'=>'main'],function (){
+                Route::get('{product}',[ProductMainInfoConroller::class,'index']);
+                Route::post('{product}',[ProductMainInfoConroller::class,'edit']);
             });
         });
     });

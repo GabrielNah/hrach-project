@@ -10,16 +10,19 @@
                 Prices
             </button>
             <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_ADDITIONAL_INFO)">
-                Additional info
+                Metadata
             </button>
             <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_MAIN_INFO)">
                 Main info
             </button>
-            <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_MAIN_INFO)">
+            <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_DISCOUNTS)">
                 Discounts
             </button>
-            <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_MAIN_INFO)">
-               Colors and Sizes
+            <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_COMMENTS)">
+                Comments
+            </button>
+            <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_TAGABLES)">
+               Colors,Sizes,Tags
             </button>
         </div>
 
@@ -39,9 +42,8 @@
             <edit-additional-info v-if="chosenAction === actions.ACTIONS.EDIT_ADDITIONAL_INFO"
             />
 
-                <template v-if="chosenAction === actions.ACTIONS.EDIT_MAIN_INFO">
-                    <h1>price</h1>
-                </template>
+                <edit-main-info v-if="chosenAction === actions.ACTIONS.EDIT_MAIN_INFO"
+                />
         </Modal>
 
     </teleport>
@@ -54,9 +56,10 @@ import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
 import EditFiles from "./EditProduct/EditFiles.vue";
 import EditPrices from "./EditProduct/EditPrices.vue"
 import EditAdditionalInfo from "./EditProduct/EditAdditionalInfo.vue";
+import EditMainInfo from "./EditProduct/EditMainInfo.vue";
 export default {
     name: "EditProduct",
-    components: {EditAdditionalInfo, EditPrices, EditFiles, ProductDetails,Modal},
+    components: {EditMainInfo, EditAdditionalInfo, EditPrices, EditFiles, ProductDetails,Modal},
     setup(){
         const key = ref(0)
         const rerenderProduct=()=>{
@@ -74,6 +77,9 @@ export default {
                 EDIT_MAIN_INFO:'edit_main',
                 EDIT_FILES:'edit_files',
                 EDIT_ADDITIONAL_INFO:'edit_additional',
+                EDIT_COMMENTS:'edit_comments',
+                EDIT_DISCOUNTS:'edit_discounts',
+                EDIT_TAGABLES:'edit_edittabgables',
             };
 
             return{

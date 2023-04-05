@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CurrencyRateController;
+use App\Http\Controllers\Admin\ProductAdditionalController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductFileController;
 use App\Http\Controllers\Admin\ProductPriceController;
@@ -79,6 +80,10 @@ Route::group(['prefix'=>'admin'],function (){
                Route::get('{product}',[ProductPriceController::class,'index']);
                Route::post('{product}',[ProductPriceController::class,'upsert']);
                Route::delete('{product}/{price}',[ProductPriceController::class,'destroy']);
+            });
+            Route::group(['prefix'=>'additional'],function (){
+                Route::get('{product}',[ProductAdditionalController::class,'index']);
+                Route::post('{product}',[ProductAdditionalController::class,'edit']);
             });
         });
     });

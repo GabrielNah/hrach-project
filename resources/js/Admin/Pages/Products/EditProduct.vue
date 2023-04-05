@@ -36,12 +36,12 @@
             <edit-prices v-if="chosenAction === actions.ACTIONS.EDIT_PRICES"
             />
 
-            <template v-if="chosenAction === actions.ACTIONS.EDIT_ADDITIONAL_INFO">
-                <h1>add</h1>
-            </template>
-            <template v-if="chosenAction === actions.ACTIONS.EDIT_MAIN_INFO">
-                <h1>price</h1>
-            </template>
+            <edit-additional-info v-if="chosenAction === actions.ACTIONS.EDIT_ADDITIONAL_INFO"
+            />
+
+                <template v-if="chosenAction === actions.ACTIONS.EDIT_MAIN_INFO">
+                    <h1>price</h1>
+                </template>
         </Modal>
 
     </teleport>
@@ -53,9 +53,10 @@ import ProductDetails from "../../../SharedComponents/Product/ProductDetails.vue
 import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
 import EditFiles from "./EditProduct/EditFiles.vue";
 import EditPrices from "./EditProduct/EditPrices.vue"
+import EditAdditionalInfo from "./EditProduct/EditAdditionalInfo.vue";
 export default {
     name: "EditProduct",
-    components: {EditPrices, EditFiles, ProductDetails,Modal},
+    components: {EditAdditionalInfo, EditPrices, EditFiles, ProductDetails,Modal},
     setup(){
         const key = ref(0)
         const rerenderProduct=()=>{

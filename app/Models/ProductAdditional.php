@@ -10,6 +10,7 @@ class ProductAdditional extends Model
     protected $table=self::TABLE;
     protected $guarded=[];
     protected $casts=[
-        'additional'=>'array'
+        'additional'=>'array',
+        'size'      =>'array'
     ];
 }

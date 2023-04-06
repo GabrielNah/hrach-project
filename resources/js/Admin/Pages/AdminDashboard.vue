@@ -1,10 +1,12 @@
 <template>
-<h2>admin dashboard tempate</h2>
+<currency-rates/>
 </template>
 
 <script>
+import CurrencyRates from "./Settings/CurrencyRates.vue";
 export default {
-    name: "AdminDashboard"
+    name: "AdminDashboard",
+    components: {CurrencyRates}
 }
 </script>
 

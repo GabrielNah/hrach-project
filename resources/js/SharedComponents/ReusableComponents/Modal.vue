@@ -28,7 +28,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 99999999999;
+    z-index: 4555;
     background-color: rgba(0,0,0,0.5);
 }
 .btn-close{

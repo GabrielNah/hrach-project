@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 
 class Product extends Model
 {
@@ -34,6 +35,12 @@ class Product extends Model
     public function prices():HasMany
     {
         return $this->hasMany(Price::class,'product_id','id');
+    }
+
+    public function priceForOne():HasOne
+    {
+        return $this->hasOne(Price::class,'product_id','id')
+            ->where('min_count',1)->where('max_count',1);
     }
 
     public function additional():HasOne

@@ -40,54 +40,89 @@
                                             <label >Rating</label>
                                             <input class="form-control" min="0"  max="5" type="number" name="rating" >
                                         </div>
-                                        <div class="form-group ">
-                                            <label >Sizes</label>
-                                            <multiselect :values="sizes" @selected="setSize" :unique-key="'id'" :showable-key="'size'"/>
+                                        <div class="d-flex flex-column mt-2 p-1" style="border: 1px solid #050a1b">
+                                            <h4 class="text-center text-white w-100 bg-dark">Sizes</h4>
+                                            <div class="form-group mt-2">
+                                                <div class="d-flex justify-content-between w-100 ">
+                                                    <label>Individual Sizes</label>
+                                                    <button type="button" class="btn btn-primary" @click="individualSizes.addSize">Add One</button>
+                                                </div>
+                                                <div class="w-100 d-flex align-items-start justify-content-center mt-1 position-relative"
+                                                     v-for="(i,index) in individualSizes.sizesCount.value"
+                                                     :key="i.id"
+                                                >
+                                                    <input type="text" class="w-100" style="height:30px " name="individual_size_name[]" placeholder="name"/>
+
+                                                    <button class="btn btn-close"  @click.self="individualSizes.removeOne(i.id)" type="button"></button>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>General Sizes</label>
+                                                <multiselect :values="sizes" @selected="setSize" :unique-key="'id'" :showable-key="'size'"/>
+                                            </div>
                                         </div>
-                                        <div class="form-group ">
-                                            <label>Colors</label>
-                                            <multiselect :values="colors" @selected="setColors" :unique-key="'id'" :showable-key="'name'"/>
+
+                                        <div class="d-flex flex-column mt-2 p-1" style="border: 1px solid #050a1b">
+                                            <h4 class="text-center text-white w-100 bg-dark">Colors</h4>
+                                            <div class="form-group mt-2">
+                                                <div class="d-flex justify-content-between w-100 ">
+                                                    <label>Individual Colors</label>
+                                                    <button type="button" class="btn btn-primary" @click="individualColors.addColor">Add One</button>
+                                                </div>
+                                                <div class="w-100 d-flex align-items-start mt-1 position-relative"
+                                                     v-for="(i,index) in individualColors.colorsCount.value"
+                                                     :key="i.id"
+                                                >
+                                                    <input type="text" style="height:30px " name="individual_colors_name[]" placeholder="name"/>
+
+                                                    <label class="position-relative btn btn-secondary btn-sm">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
+                                                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                                            <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                                                        </svg>
+                                                        <input type="file"
+                                                               class="position-absolute d-none"
+                                                               style="left: 0;right: 0;bottom: 0;top: 0"
+                                                               name="individual_colors[]"
+                                                               @change="individualColors.handleFileUpload($event,i.id)"
+                                                        >
+                                                    </label>
+                                                    <div class="flex-grow-1 d-flex justify-content-center align-items-center">
+                                                        <img class="w-75" :id="'individual_size'+i.id"/>
+                                                    </div>
+                                                    <button class="btn btn-close"  @click.self="individualColors.removeOne(i.id)" type="button"></button>
+                                                </div>
+                                            </div>
+                                            <div class="form-group ">
+                                                <label>General Colors</label>
+                                                <multiselect :values="colors" @selected="setColors" :unique-key="'id'" :showable-key="'name'"/>
+                                            </div>
                                         </div>
-                                        <div class="form-group ">
+                                        <div class="form-group mt-1" >
                                             <label>Tags</label>
                                             <multiselect :values="existingTags" @selected="setTags" :unique-key="'id'" :showable-key="'name'"/>
                                         </div>
-                                        <div class="form-group ">
-                                            <label>Prices</label>
-                                            <div class="d-flex flex-row justify-content-between border p-1" v-for="price in priceCount" :key="price.id">
+                                        <div class="form-group p-1" style="border: 1px solid #050a1b">
+                                            <h4 class="text-white bg-dark w-100 text-center">Prices</h4>
+                                            <div class="form-group ">
+                                                <label>Price for one</label>
+                                                <input class="form-control" name='price_for_one' type="text">
+                                            </div>
+                                            <label >Prices for many</label>
+                                            <div class="d-flex flex-row justify-content-between border p-1 position-relative mt-2" v-for="price in priceCount" :key="price.id">
                                                 <div class="form-group ">
                                                     <label>Price</label>
-                                                    <input class="form-control" :name="price.forMany ? 'prices[]' : 'price_for_one[]'" type="text">
-                                                    <label >Currency</label>
-                                                    <select class="form-select" :name="price.forMany ? 'currencies[]':'currencies_for_one[]'">
-                                                        <option selected>Open this select menu</option>
-                                                        <option v-for="(currency,index) in currencies" :key="index" :value="currency">
-                                                            {{ currency }}
-                                                        </option>
-                                                    </select>
+                                                    <input class="form-control" name='prices[]' type="text">
                                                 </div>
-                                                <div class="form-group">
-                                                    <div class="form-check form-group form-switch d-flex justify-content-between gap-5">
-                                                        <label class="form-check-label" >Price for many
-                                                            <input v-model="price.forMany" class="form-check-input"  type="checkbox"  >
-                                                        </label>
-                                                        <div class="position-relative" @click="removePrice(price)">
-                                                            <button type="button" class="btn-close"></button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group " v-if="price.forMany">
-                                                        <label class="d-flex">
-                                                              <span style="margin-right: 5px;">Min </span>
-                                                              <input class="form-control" name="counts_min[]" type="text">
-                                                        </label>
-                                                        <label class="d-flex mt-3">
-                                                                <span style="margin-right: 5px;">Max </span>
-                                                                <input class="form-control" name="count_max[]" type="text">
-                                                        </label>
-                                                    </div>
+                                                <div class="form-group ">
+                                                    <label>Min set</label>
+                                                    <input class="form-control" name='counts_min[]' type="text">
                                                 </div>
-
-
+                                                <div class="form-group ">
+                                                    <label>Max max</label>
+                                                    <input class="form-control" name='count_max[]' type="text">
+                                                </div>
+                                                 <button type="button" class="btn-close position-absolute" @click="removePrice(price)"></button>
                                             </div>
                                             <button type="button" @click="addPrice" class="btn btn-primary mt-2">Add price</button>
                                         </div>
@@ -215,14 +250,16 @@ import Multiselect from "../../../SharedComponents/ReusableComponents/Multiselec
 import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
 import {getCurrentInstance, ref, watch} from "vue";
 import useProductFileUploading, {
-    useAddProductsInitialData,
+    useAddProductsInitialData, useIndividualColors, useIndividualSizeHandler,
     useMetaDataHandler, usePriceAdder, useProductSizeAndColorSetter
 } from "../../Composables/useProductFileUploading";
 import useLoader from "../../../GlobalComposables/useLoader";
 import Loader from "../../../SharedComponents/Loader.vue";
 import HTTP from "../../Axios/axiosCongif";
-import {errorNotification, successNotification} from "../../../Services/NotificationService";
-import {extractValidationErrors} from "../../../Services/GlobalHelpers";
+import {errorNotification, infoNotification, successNotification} from "../../../Services/NotificationService";
+import {extractValidationErrors, redirectToRouteByName} from "../../../Services/GlobalHelpers";
+import {useRouter} from "vue-router";
+import {ADMIN_PRODUCT_EDIT} from "../../../router/Admin/adminRoutes";
 
 export default {
     name: "AddProduct",
@@ -235,7 +272,9 @@ export default {
         const initialData=useAddProductsInitialData();
         const priceAdder=usePriceAdder();
         const colorAndPrice=useProductSizeAndColorSetter()
-
+        const individualColors = useIndividualColors()
+        const individualSizes = useIndividualSizeHandler()
+        const router = useRouter()
 
         const handleEmptyInputs=(e)=>{
             if (!e.target.value.trim()){
@@ -275,10 +314,17 @@ export default {
                     }
                     productInfo.append('sizes[]',val.id)
                 })
+                infoNotification('Inserting products, please wait')
                 let {data}=await HTTP.post('/product/store',productInfo)
                 // setLoaded(false)
                 if (data.success){
                     successNotification('Auto opening product details','Product added successfully')
+                    setTimeout(()=>{
+                        router.push({
+                            name:ADMIN_PRODUCT_EDIT,
+                            params:{id:data.product_id}
+                        })
+                    },2000)
                 }
 
             }catch (e) {
@@ -311,7 +357,9 @@ export default {
             setTags:colorAndPrice.setTags,
             reload,
             loaded,
-            handleEmptyInputs
+            handleEmptyInputs,
+            individualColors,
+            individualSizes
         }
     }
 
@@ -339,6 +387,8 @@ export default {
 .files_wrapper{
     overflow: hidden;
     overflow-x: scroll;
+    display: flex;
+    flex-direction: row;
 }
 .file_input{
     position: absolute;

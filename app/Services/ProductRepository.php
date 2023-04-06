@@ -2,10 +2,16 @@
 
 namespace App\Services;
 
+use App\Models\Color;
 use App\Models\File;
 use App\Models\Product;
+use App\Models\Size;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductRepository
 {
@@ -15,21 +21,44 @@ class ProductRepository
             DB::beginTransaction();
             $product=Product::query()->create($productData['product_data']);
             $product->additional()->create(['additional'=>$productData['additional']]);
-            foreach ($productData['prices_for_many'] as $priceData){
+
+            foreach ($productData['prices'] as $priceData){
                 $product->prices()->create($priceData);
             }
-            foreach ($productData['prices_for_one'] as $priceData){
-                $product->prices()->create(array_merge($priceData,['min_count'=>1,'max_count'=>1]));
-            }
-            if (count($productData['tags'])){
+            if (count($productData['tags'] ?? [])){
                 $product->tags()->attach($productData['tags']);
             }
-            if (count($productData['colors'])){
-                $product->sizes()->attach($productData['colors']);
+            if (count($productData['colors'] ?? []) || count(\request()->file('individual_colors') ?? [])){
+                $colors=$productData['colors'] ?? [];
+                if (\request()->hasFile('individual_colors')){
+                    foreach (\request()->file('individual_colors') as $index=> $file){
+                        $path = '/public/Product' . $product->id.'/Colors';
+                        $filePath = $file->store($path);
+                        $color= Color::query()->create([
+                            'type' => Color::TYPE_INDIVIDUAL,
+                            'name' => $productData['individual_colors_name'][$index],
+                            'value' => str_replace('public', 'storage', $filePath)
+                        ]);
+                        $colors[]=$color->id;
+                    }
+                }
+                $product->colors()->attach($colors);
+
             }
-            if (count($productData['tags'])){
-                $product->colors()->attach($productData['sizes']);
+            if (count($productData['sizes'] ?? []) || count($productData['individual_size_name'] ?? [])) {
+                $sizes=$productData['sizes'] ?? [];
+                if ($productData['individual_size_name']){
+                    foreach ($productData['individual_size_name'] as $individual_size){
+                        $size=Size::query()->create([
+                            'size'=>$individual_size,
+                            'type'=>Size::TYPE_INDIVIDUAL
+                        ]);
+                        $sizes[]=$size->id;
+                    }
+                }
+                $product->sizes()->attach($sizes);
             }
+
             $generalFile=\request()->file('general_file');
             $this->uploadOne($product,$generalFile,'1');
             if (\request()->has('files')){
@@ -38,6 +67,7 @@ class ProductRepository
                 }
             }
             DB::commit();
+            return $product->id;
         }catch (\Throwable $e){
             DB::rollBack();
             throw new \RuntimeException($e->getMessage());
@@ -65,5 +95,66 @@ class ProductRepository
             'general' => $general,
             'path' => str_replace('public', 'storage', $filePath)
         ]);
+    }
+
+
+    public function index(Request $request):LengthAwarePaginator
+    {
+
+        return  Product::query()
+                    ->when($request->query('search'),function (Builder $builder) use ($request){
+                        return $builder->where('name','LIKE','%'.$request->query('search').'%')
+                                       ->orWhere('title','LIKE','%'.$request->query('search').'%')
+                                       ->orWhere('description','LIKE','%'.$request->query('search').'%')
+                                        ->orWhereHas('category', function (Builder $q) use ($request) {
+                                            $q->where('name', 'LIKE', '%' . $request->query('search') . '%');
+                                        });
+                    })
+                    ->with(['generalFile','priceForOne','category'])
+                    ->paginate($request->query('count')??2);
+    }
+
+
+    public function destroy(Product $product):void
+    {
+        try {
+            DB::beginTransaction();
+            $product->prices()->delete();
+            $product->additional()->delete();
+            $product->tags()->detach();
+            Size::query()->whereIn('id',$product->sizes()->pluck('size_id')
+                ->toArray())
+                ->where('type',Size::TYPE_INDIVIDUAL)
+                ->delete();
+            $product->sizes()->detach();
+
+            $individual = $product->colors()
+                ->where('type',Color::TYPE_INDIVIDUAL)
+                ->get();
+            foreach ($individual as $color){
+                     $product->colors()->detach($color->id);
+                     $this->removeFile($color->value);
+                     Color::query()->where('id',$color->id)->delete();
+            }
+
+            foreach ($product->files as $file){
+                 $this->removeFile($file->path);
+                 File::query()->where('id',$file->id)->delete();
+                Storage::deleteDirectory('public/Product'.$product->id);
+            }
+            $product->delete();
+            DB::commit();
+        }catch (\Throwable $e){
+            DB::rollBack();
+            throw new \LogicException($e->getMessage());
+        }
+    }
+
+    private function removeFile(string $path):void
+    {
+        $file_path = str_replace('storage','/app/public',$path);
+        if (\Illuminate\Support\Facades\File::exists(storage_path($file_path))){
+            \Illuminate\Support\Facades\File::delete(storage_path($file_path));
+        };
     }
 }

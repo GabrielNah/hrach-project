@@ -85,16 +85,28 @@
                         </div>
                     </div>
                     <div class="colors border-top" v-if="product.colors.length">
-                        <span class="product_data_text ">Colors </span>
+                        <span class="product_data_text ">Color : {{ info.color?.name ?? '' }} </span>
                         <div class="d-flex align-items-center gap-1 mt-1 ">
-                            <span v-for="color in product.colors" class="color"
-                                  :style="{backgroundColor:color.value}"></span>
+                            <template v-for="color in product.colors">
+                                <img  v-if="color.individual ?? false" class="color"
+                                      @click="selectColor(color)"
+                                      :src="'/'+color.value" alt=""
+                                >
+                                <span v-else class="color"
+                                       @click="selectColor(color)"
+                                       :style="{backgroundColor:color.value}"
+                                ></span>
+                            </template>
+
                         </div>
                     </div>
                     <div class="sizes border-top" v-if="product.sizes.length">
-                        <span class="product_data_text">Sizes </span>
+                        <span class="product_data_text">Size : {{ info.size?.size ?? '' }}</span>
                         <div class="d-flex align-items-center gap-1 mt-1">
-                            <span v-for="size in product.sizes" class="size text-center product_data_text">
+                            <span v-for="size in product.sizes"
+                                @click="selectSize(size)"
+                                  class="size text-center product_data_text"
+                            >
                                 {{ size.size }}
                             </span>
                         </div>
@@ -188,6 +200,23 @@ export default {
         const setSelectedCurrency=(currency)=>{
             selectedCurrency.value=currency
         }
+        const info=reactive({
+            color:null,
+            size:null
+        })
+
+        const selectColor=(color)=>{
+            if (color.individual){
+                setSelectedFile({
+                    type:'image',
+                    path:color.value
+                })
+            }
+            info.color = color
+        }
+        const selectSize=(color)=>{
+            info.size = color
+        }
 
         const files=reactive({
             selected:null,
@@ -229,7 +258,10 @@ export default {
             setSelectedFile,
             selectedCurrency,
             setSelectedCurrency,
-            renderTextForPrices
+            renderTextForPrices,
+            info,
+            selectColor,
+            selectSize
         }
     }
 }
@@ -319,7 +351,7 @@ export default {
 }
 
 .main_image {
-    width: 335px;
+    width: 100%;
     height: 335px;
     border: 1px solid #DEE2E7;
     border-radius: 12px;
@@ -506,7 +538,7 @@ export default {
         border: 1px solid #DEE2E7;
         width: 40px;
         height: 40px;
-        background: red;
+        cursor: pointer;
     }
 }
 
@@ -519,8 +551,8 @@ export default {
 
     div .size {
         border: 1px solid #DEE2E7;
-        width: 40px;
-        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
         display: flex;
         justify-content: center;
         align-items: center;

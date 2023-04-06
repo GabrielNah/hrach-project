@@ -56,5 +56,33 @@ class ProductFileController extends Controller
 
     }
 
+    public function uploadMany(Request $request,Product $product,ProductRepository $productRepository):JsonResponse
+    {
+        try {
+            $request->validate([
+                'files'=>'array|required',
+                'files.*' => 'file'
+            ]);
+            foreach ($request->file('files') as $file){
+                $productRepository->uploadOne($product,$file);
+            }
+            return $this->successResponse();
+        }catch (\Throwable $e){
+            return $this->errorResponse(['e'=>$e->getMessage()]);
+        }
+
+    }
+
+
+    public function markGeneral(Product $product,File $file):JsonResponse
+    {
+
+        $product->generalFile()->update([
+            'general'=>'0'
+        ]);
+        $file->update(['general'=>'1']);
+        return $this->successResponse();
+    }
+
 
 }

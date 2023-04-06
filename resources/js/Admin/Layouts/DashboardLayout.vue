@@ -80,7 +80,7 @@
             </li>
         </ul>
     </nav>
-    <div class="w-100 d-flex justify-content-center" style="background-color: #2d3748">
+    <div class="w-100 d-flex justify-content-center" style="background-color: #2d3748;min-height: calc(100vh - 56px)">
         <div class="container" >
             <router-view v-if="loaded"/>
             <div v-else class="w-100 d-flex justify-content-center align-items-center " style="margin-top: 25%">

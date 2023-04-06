@@ -7,7 +7,9 @@
                     Add files
                  <input type="file" ref="uploadedFiles" @change="getUploadedFiles" class="invisible_input" multiple>
             </label>
-            <button class="btn btn-success" v-if="needsToSaveChanges">
+            <button class="btn btn-success" v-if="needsToSaveChanges"
+                @click="saveChanges"
+            >
                 Save changes
             </button>
 
@@ -16,14 +18,16 @@
         <section class="d-flex justify-content-between w-100" v-if="selectedFile">
             <div class="border-gray product_file p-2 d-flex justify-content-center align-items-center w-75">
                 <template v-if="selectedFile.type === 'video'">
-                    <video style="width: 95%" :src="(selectedFile.uploaded ? '':'/')+selectedFile.path" autoplay controls></video>
+                    <video style="width: 95%"  class="product_select_file" :src="(selectedFile.uploaded ? '':'/')+selectedFile.path" autoplay controls></video>
                 </template>
                 <template v-if="selectedFile.type === 'image'">
                     <img style="width: 95%" class="product_select_file" :src="(selectedFile.uploaded ? '':'/')+selectedFile.path" />
                 </template>
             </div>
             <div class="d-flex flex-column flex-grow-1 pt-2">
-                <label style="cursor: pointer" v-if="!(selectedFile.general || selectedFile.uploaded)">
+                <label style="cursor: pointer" v-if="!(selectedFile.general || selectedFile.uploaded)"
+                    @click="markAsGeneral"
+                >
                     <button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Edit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
                             <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
@@ -63,7 +67,11 @@
 
         <div class="p-2 d-flex product_file_wrapper">
             <div v-for="file in files"
-                 :key="file.id" :class="{'general':!!file.general}"
+                 :key="file.id"
+                 :class="{
+                     'general':file.general,
+                     'active': selectedFile && (selectedFile.id === file.id)
+                 }"
                  @click="selectFile(file)"
             >
                 <template v-if="file.type === 'video'">
@@ -83,14 +91,18 @@ export default {
 }
 </script>
 <script setup>
-import {computed, onMounted, ref, watch, watchEffect} from "vue";
+import {computed, onMounted, ref, watch, watchEffect,defineEmits} from "vue";
   import HTTP from "../../../Axios/axiosCongif";
   import {useRoute} from "vue-router";
-
+import {errorNotification, successNotification} from "../../../../Services/NotificationService";
+import {extractValidationErrors} from "../../../../Services/GlobalHelpers";
+ const emit = defineEmits(['close'])
   const files = ref([]);
   const uploadedFiles=ref(null)
   const selectedFile=ref(null)
   const needsToSaveChanges=ref(false)
+  const startedProcess=ref(false)
+  const markProcess=(state)=>startedProcess.value=state
 
   const hasNoGeneral = computed(()=>{
       if (!files.value.length){
@@ -98,6 +110,8 @@ import {computed, onMounted, ref, watch, watchEffect} from "vue";
       }
       return files.value.every((file) => file.general === false)
   })
+
+
   const selectFile=(file)=>{
       selectedFile.value = file
   }
@@ -133,6 +147,10 @@ import {computed, onMounted, ref, watch, watchEffect} from "vue";
       }
   }
   const uploadOneFile=async ()=>{
+      if (startedProcess.value){
+          return;
+      }
+      markProcess(true)
       const data= new FormData();
       const file= [...uploadedFiles.value.files].at(selectedFile.value.index)
       if (!file){
@@ -143,18 +161,24 @@ import {computed, onMounted, ref, watch, watchEffect} from "vue";
       HTTP.post(`/product/files/${id.value}/upload`, data)
       .then(({data})=>{
           if (data.success){
-              let  file = files.value.find(fn=>fn.id === selectedFile.value.id)
-              if (!file){
+              let  fileIndex = files.value.findIndex(fn=>fn.id === selectedFile.value.id)
+              if (fileIndex === -1 ){
                   return;
               }
               selectedFile.value = data.file
               selectedFile.value.uploaded = false
-              file = selectedFile.value
+              files.value[fileIndex]=selectedFile.value
+              successNotification('File uploaded successfully')
           }
-      })
+      }).catch(e=>errorNotification(extractValidationErrors(e)))
+      .finally(()=>markProcess(false))
 
   }
   const removeFile=()=>{
+      if (startedProcess.value){
+          return;
+      }
+      markProcess(true)
       let index = files.value.findIndex(fl=>fl.id === selectedFile.value.id)
       if (index === -1){
           return;
@@ -169,22 +193,72 @@ import {computed, onMounted, ref, watch, watchEffect} from "vue";
           if (res.status === 204){
               files.value.splice(index,1)
               selectedFile.value=files.value.at(0)
+              successNotification('File removed successfully')
           }
 
-      })
+      }).catch(e=>errorNotification(extractValidationErrors(e)))
+         .finally(()=>markProcess(false))
   }
   const getFiles =(id)=>{
       HTTP.get('/product/files/'+id)
           .then(({data})=>{
               files.value=data.files
+              if (files.value.length){
+                  selectedFile.value=files.value[0]
+              }
           })
   }
 
-    watch(() => files.value, (val) => {
-        if (val.some((file) => file.uploaded === true)) {
-            needsToSaveChanges.value = true;
-        }
-    });
+  const saveChanges= ()=>{
+      console.log(startedProcess.value)
+      if (startedProcess.value){
+          return;
+      }
+      markProcess(true)
+      const nonUploadeds = files.value.filter((fl)=>fl.uploaded)
+      if (!nonUploadeds.length){
+          needsToSaveChanges.value = false;
+          successNotification('Files edited successfully')
+          emit('close')
+          return;
+      }
+      let data = new FormData;
+      data.append('_method','PATCH')
+      nonUploadeds.forEach((fl)=>{
+          const file= [...uploadedFiles.value.files].at(fl.index)
+          data.append('files[]',file)
+      })
+      HTTP.post(`/product/files/${id.value}/multiupload`, data)
+      .then(({data})=>{
+            if (data.success){
+                successNotification('Files edited successfully')
+                emit('close')
+            }
+      }).catch(e=>errorNotification(extractValidationErrors(e)))
+       .finally(()=>markProcess(false))
+  }
+
+  const markAsGeneral=()=>{
+       if (startedProcess.value){
+           return;
+       }
+       markProcess(true)
+        HTTP.post(`/product/files/general/${id.value}/${selectedFile.value.id}`)
+        .then(({data})=>{
+            if (data.success){
+                selectedFile.value.general = true;
+               let indexOfGeneral =  files.value.findIndex((fl)=>fl.id === selectedFile.value.id)
+                if (indexOfGeneral === -1){
+                    return;
+                }
+               files.value.forEach(fl => fl.general = false)
+               files.value[indexOfGeneral].general = true;
+                successNotification('Marked as general successfully')
+            }
+        }).catch(e=>errorNotification(extractValidationErrors(e)))
+            .finally(()=>markProcess(false))
+    }
+
   onMounted(()=>{
       if (id.value){
         getFiles(id.value)
@@ -203,6 +277,9 @@ import {computed, onMounted, ref, watch, watchEffect} from "vue";
     right: 0;
     bottom: 0;
 }
+.product_select_file{
+    height: 500px;
+}
 .product_file_wrapper{
     flex-direction: row;
     height: 150px;
@@ -216,6 +293,9 @@ import {computed, onMounted, ref, watch, watchEffect} from "vue";
 .general{
     border: #00b517 solid 4px;
 }
+    .active {
+        border: orange solid 5px;
+    }
 div{
     cursor: pointer;
 }

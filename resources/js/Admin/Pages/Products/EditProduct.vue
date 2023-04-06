@@ -42,8 +42,12 @@
             <edit-additional-info v-if="chosenAction === actions.ACTIONS.EDIT_ADDITIONAL_INFO"
             />
 
-                <edit-main-info v-if="chosenAction === actions.ACTIONS.EDIT_MAIN_INFO"
-                />
+            <edit-main-info v-if="chosenAction === actions.ACTIONS.EDIT_MAIN_INFO"
+            />
+
+            <edit-tagbles v-if="chosenAction === actions.ACTIONS.EDIT_TAGABLES"
+            />
+
         </Modal>
 
     </teleport>
@@ -57,9 +61,17 @@ import EditFiles from "./EditProduct/EditFiles.vue";
 import EditPrices from "./EditProduct/EditPrices.vue"
 import EditAdditionalInfo from "./EditProduct/EditAdditionalInfo.vue";
 import EditMainInfo from "./EditProduct/EditMainInfo.vue";
+import EditTagbles from "./EditProduct/EditTagbles.vue";
 export default {
     name: "EditProduct",
-    components: {EditMainInfo, EditAdditionalInfo, EditPrices, EditFiles, ProductDetails,Modal},
+    components: {
+        EditTagbles,
+        EditMainInfo,
+        EditAdditionalInfo,
+        EditPrices,
+        EditFiles,
+        ProductDetails,
+        Modal},
     setup(){
         const key = ref(0)
         const rerenderProduct=()=>{

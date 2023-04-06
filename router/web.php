@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductFileController;
 use App\Http\Controllers\Admin\ProductMainInfoConroller;
 use App\Http\Controllers\Admin\ProductPriceController;
+use App\Http\Controllers\Admin\ProductTagablesController;
 use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
@@ -89,6 +90,18 @@ Route::group(['prefix'=>'admin'],function (){
             Route::group(['prefix'=>'main'],function (){
                 Route::get('{product}',[ProductMainInfoConroller::class,'index']);
                 Route::post('{product}',[ProductMainInfoConroller::class,'edit']);
+            });
+            Route::group(['prefix'=>'tagables'],function (){
+                Route::get('{product}',[ProductTagablesController::class,'index']);
+                Route::post('tags/{product}',[ProductTagablesController::class,'editTags']);
+
+                Route::group(['prefix'=>'sizes'],function(){
+                    Route::post('general/{product}',[ProductTagablesController::class,'editGeneralSizes']);
+                    Route::delete('individual/{product}/{size}',[ProductTagablesController::class,'destroySize']);
+                });
+                Route::group(['prefix'=>'colors'],function(){
+
+                });
             });
         });
     });

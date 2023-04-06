@@ -8,7 +8,7 @@
                 @click="selectValue(value)"
                 style="margin-top: 2px"
                 class="d-flex flex-row justify-content-between p-1  pointer"
-                :class="{active:selectedValues.includes(value)}"
+                :class="{active:itemIsSelected(value)}"
                 :key="uniqueKey ? uniqueKey : index">
                 <span  class="dropdown-item" >
                     {{ showableKey ? value[showableKey] : value }}
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import {computed, onMounted, ref, watch} from "vue";
+import {computed,  ref, watch, watchEffect} from "vue";
 
 export default {
     name: "Multiselect",
@@ -34,8 +34,15 @@ export default {
         const selectedValues=ref([]);
         const menuOpened=ref(false)
         const toggleManu=()=>menuOpened.value=!menuOpened.value
+        const initialValuesReceived = ref(false)
+        const itemIsSelected = (item) =>{
+            if (props.uniqueKey){
+                return selectedValues.value.some((it)=>it[props.uniqueKey] === item[props.uniqueKey])
+            }
+            return selectedValues.value.includes(item)
+        }
         const selectValue = (value) => {
-          if (selectedValues.value.includes(value)){
+          if (itemIsSelected(value)){
               let index=selectedValues.value.findIndex((vl)=>{
                   if (props.uniqueKey){
                       return  vl[props.uniqueKey] === value[props.uniqueKey]
@@ -70,9 +77,10 @@ export default {
         watch(()=>[...selectedValues.value],(value)=>{
             ctx.emit('selected',value)
         })
-        onMounted(()=>{
-            if (props.initialValues){
-                selectedValues.value=props.initialValues
+        watchEffect(()=>{
+            if (props.initialValues.length && !initialValuesReceived.value){
+                initialValuesReceived.value = true
+                selectedValues.value = props.initialValues
             }
         })
 
@@ -81,7 +89,8 @@ export default {
             selectedValues,
             selectButtonText,
             menuOpened,
-            toggleManu
+            toggleManu,
+            itemIsSelected
         }
     }
 }

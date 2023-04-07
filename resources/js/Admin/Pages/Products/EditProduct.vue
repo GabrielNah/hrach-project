@@ -2,7 +2,7 @@
     <div class="w-100 p-1 ">
         <!-- HTML !-->
         <h4 class="text-center text-white"> What do you want to edit ?</h4>
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
             <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_FILES)">
                 Files
             </button>
@@ -14,9 +14,6 @@
             </button>
             <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_MAIN_INFO)">
                 Main info
-            </button>
-            <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_DISCOUNTS)">
-                Discounts
             </button>
             <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_COMMENTS)">
                 Comments
@@ -48,13 +45,16 @@
             <edit-tagbles v-if="chosenAction === actions.ACTIONS.EDIT_TAGABLES"
             />
 
+            <edit-comments v-if="chosenAction === actions.ACTIONS.EDIT_COMMENTS"
+            />
+
         </Modal>
 
     </teleport>
 </template>
 
 <script>
-import {computed, ref, watch, watchEffect} from "vue";
+import {computed, ref, watch} from "vue";
 import ProductDetails from "../../../SharedComponents/Product/ProductDetails.vue";
 import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
 import EditFiles from "./EditProduct/EditFiles.vue";
@@ -62,9 +62,11 @@ import EditPrices from "./EditProduct/EditPrices.vue"
 import EditAdditionalInfo from "./EditProduct/EditAdditionalInfo.vue";
 import EditMainInfo from "./EditProduct/EditMainInfo.vue";
 import EditTagbles from "./EditProduct/EditTagbles.vue";
+import EditComments from "./EditProduct/EditComments.vue";
 export default {
     name: "EditProduct",
     components: {
+        EditComments,
         EditTagbles,
         EditMainInfo,
         EditAdditionalInfo,
@@ -90,7 +92,6 @@ export default {
                 EDIT_FILES:'edit_files',
                 EDIT_ADDITIONAL_INFO:'edit_additional',
                 EDIT_COMMENTS:'edit_comments',
-                EDIT_DISCOUNTS:'edit_discounts',
                 EDIT_TAGABLES:'edit_edittabgables',
             };
 

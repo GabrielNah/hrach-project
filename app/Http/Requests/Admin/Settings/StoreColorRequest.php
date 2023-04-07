@@ -3,7 +3,9 @@
 namespace App\Http\Requests\Admin\Settings;
 
 use App\Models\Admin;
+use App\Models\Color;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreColorRequest extends FormRequest
 {
@@ -23,7 +25,7 @@ class StoreColorRequest extends FormRequest
     public function rules(): array
     {
         return [
-                'name'=>'required|string|unique:colors,name',
+                'name'=>'required|string|'.Rule::unique('colors','name')->where('type',Color::TYPE_GLOBAL),
                 'value'=>'required|string|unique:colors,value'
             ];
     }

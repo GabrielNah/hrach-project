@@ -13,7 +13,17 @@ class ProductController extends Controller
         if (!$product || empty($product->toArray())){
             return  $this->errorResponse(['err'=>'Product not found']);
         }
-        $product->load(['tags','nonGeneralFiles','generalFile','additional','prices','category.parentCategory','sizes','colors']);
+        $product->load(['tags',
+            'nonGeneralFiles',
+            'generalFile',
+            'additional',
+            'prices',
+            'category.parentCategory',
+            'sizes',
+            'colors',
+            'comments'=>function($q){
+                    $q->where('active',true);
+            }]);
         return  $this->successResponse([
             'product'=>ProductResource::make($product)
         ]);

@@ -125,6 +125,7 @@
                                 </button>
                                 <button id="nav-comments-tab" aria-controls="nav-profile" aria-selected="false"
                                         class="nav-link" data-bs-target="#nav-comments" data-bs-toggle="tab"
+                                        v-if="product.comments?.length"
                                         role="tab" type="button">Comments
                                 </button>
                                 <button  v-if="product.tags.length" id="nav-tags-tab" aria-controls="nav-profile" aria-selected="false"
@@ -134,20 +135,49 @@
                             </div>
                         </nav>
                         <div id="nav-tabContent" class="tab-content">
-                            <div id="nav-description" aria-labelledby="nav-descripton-tab" class="tab-pane fade show active "
+                            <div id="nav-description" aria-labelledby="nav-descripton-tab" class="tab-pane fade show active product-tab"
                                  role="tabpanel">
                                 {{
                                     product.description
                                 }}
                             </div>
-                            <div id="nav-comments" aria-labelledby="nav-comments-tab" class="tab-pane fade "
+                            <div v-if="product?.comments?.length" id="nav-comments" aria-labelledby="nav-comments-tab" class="tab-pane fade product-tab"
                                  role="tabpanel">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda delectus enim esse
-                                fugit in maxime officia perspiciatis porro sequi. Culpa cum eius labore laboriosam
-                                maiores officiis perspiciatis quas quis sapiente.
+
+                                <div class="d-flex w-100  overflow-auto h-100" >
+                                    <div class="d-flex flex-column comment-container  h-100 " style="min-width: 100%"
+                                         v-for="(comment,index) in product.comments"
+                                         :key="comment.id"
+                                    >
+                                        <div class="bg-white w-100">
+                                            <div class="flex-row d-flex w-100">
+                                                <div class="d-flex flex-column justify-content-start ml-2 w-100">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <span class="d-block font-weight-bold name">
+                                                            {{ comment.writer }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center mt-2" >
+                                                <svg v-for="i in 5" fill="none" height="15" viewBox="0 0 16 15" width="16"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path :fill="i <= comment.rating ?'#FF9017':'#D5CDC5'" clip-rule="evenodd" d="M8 12.0553L12.944 15L11.632 9.45L16 5.71579L10.248 5.23421L8 0L5.752 5.23421L0 5.71579L4.368 9.45L3.056 15L8 12.0553Z"
+                                                          fill-rule="evenodd"/>
+                                                </svg>
+                                            </div>
+                                            <div class="mt-3">
+                                                <p class="comment-text">
+                                                    {{ comment.review }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
-                            <div v-if="product.tags.length" id="nav-tags" aria-labelledby="nav-tags-tab" class="tab-pane fade " role="tabpanel">
-                                       <div class="card mt-1 p-2" v-for="tag in product.tags" :key="tag.id">
+                            <div v-if="product?.tags?.length" id="nav-tags" aria-labelledby="nav-tags-tab" class="tab-pane fade product-tab" role="tabpanel">
+                                       <div class="card mt-1 p-2 " style="min-width: 100%" v-for="tag in product.tags" :key="tag.id">
 
                                            <div class="card-header product_data_text font-weight-bold">
                                                {{ tag.name }}
@@ -268,6 +298,51 @@ export default {
 </script>
 
 <style lang="scss" >
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700');
+
+
+body{
+    margin: 0px;
+    font-family: "Poppins", sans-serif !important;
+}
+
+.height-vh{
+    height: 100vh;
+}
+
+.comment-container{
+    padding: 10px !important;
+    background: white;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+.product-tab{
+    height: 200px;
+    overflow: auto;
+}
+.date{
+    font-size: 12px;
+}
+
+.comment-text{
+    font-size: 14px;
+    line-height: 1.2rem;
+}
+
+.fs-14{
+    font-size: 14px;
+}
+
+.name{
+    color: #FE654F;
+}
+
+.cursor{
+    cursor: pointer;
+}
+
+.cursor:hover{
+    color: blue;
+}
 .main_content {
     background-color: #F8F9FA;
 }

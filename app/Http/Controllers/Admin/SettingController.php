@@ -9,6 +9,7 @@ use App\Models\Color;
 use App\Models\Size;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SettingController extends Controller
@@ -53,7 +54,7 @@ class SettingController extends Controller
     public function storeSize(Request $request):JsonResponse
     {
         $validated=$request->validate([
-            'size'=>'required|string|unique:sizes,size'
+            'size'=>'required|string|'.Rule::unique(Size::TABLE,'size')->where('type',Size::TYPE_GLOBAL)
         ]);
         $size=Size::query()->create(array_merge($validated,['type'=>Size::TYPE_GLOBAL]));
         return $this->successResponse(compact('size'));
@@ -63,7 +64,7 @@ class SettingController extends Controller
     public function editSize(int $id,Request $request):JsonResponse
     {
         $validated=$request->validate([
-            'size'=>'required|string|unique:sizes,size,'.$id
+            'size'=>'required|string|'.Rule::unique(Size::TABLE,'size')->where('type',Size::TYPE_GLOBAL)->ignore($id)
         ]);
         Size::query()->where('id',$id)->update($validated);
         return  $this->successResponse();

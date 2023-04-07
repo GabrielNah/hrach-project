@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\CurrencyRateController;
 use App\Http\Controllers\Admin\ProductAdditionalController;
 use App\Http\Controllers\Admin\ProductController;
@@ -98,11 +99,21 @@ Route::group(['prefix'=>'admin'],function (){
                 Route::group(['prefix'=>'sizes'],function(){
                     Route::post('general/{product}',[ProductTagablesController::class,'editGeneralSizes']);
                     Route::delete('individual/{product}/{size}',[ProductTagablesController::class,'destroySize']);
+                    Route::post('individual/{product}/{size?}',[ProductTagablesController::class,'upsert']);
                 });
                 Route::group(['prefix'=>'colors'],function(){
-
+                    Route::post('general/{product}',[ProductTagablesController::class,'editGeneralColors']);
+                    Route::delete('individual/{product}/{color}',[ProductTagablesController::class,'deleteIndividualColor']);
+                    Route::post('individual/{product}/{color?}',[ProductTagablesController::class,'upsertColors']);
                 });
             });
+        });
+
+        Route::group(['prefix'=>'comment'],function (){
+            Route::get('/{product}',[CommentController::class,'index']);
+            Route::post('/{product}',[CommentController::class,'store']);
+            Route::put('/{comment}',[CommentController::class,'edit']);
+            Route::delete('/{comment}',[CommentController::class,'destroy']);
         });
     });
 

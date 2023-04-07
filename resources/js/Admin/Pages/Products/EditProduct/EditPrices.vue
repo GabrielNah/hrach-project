@@ -19,19 +19,25 @@
                         <th scope="col">Price</th>
                         <th scope="col">Min set</th>
                         <th scope="col">Max set</th>
-                        <th scope="col">Remove</th>
-                        <div class="d-flex gap-1">
-                            <button class="btn btn-success btn-sm " type="submit" data-toggle="tooltip" data-placement="top" title="Edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
-                                </svg>
-                            </button>
-                            <button @click="addPrice" type="button" class="btn btn-success d-flex justify-content-center align-items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                                </svg>
-                            </button>
-                        </div>
+                        <th scope="col">Discount (%)</th>
+                        <th scope="col">Discounted price</th>
+                        <template v-if="selectedCurrency === 'USD'">
+                            <th scope="col">Remove</th>
+                            <div class="d-flex gap-1" >
+                                <button class="btn btn-success btn-sm " type="submit" data-toggle="tooltip" data-placement="top" title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                    </svg>
+                                </button>
+                                <button @click="addPrice" type="button" class="btn btn-success d-flex justify-content-center align-items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </template>
+
+
 
                     </tr>
                     </thead>
@@ -47,7 +53,7 @@
                                         'disabled':price.currency !=='USD',
                                         'readonly':price.currency !=='USD',
                                    }"
-                                   :value=" price.price ">
+                                   v-model="price.price ">
                         </td>
                         <td>
                             <input type="text"  class="w-100"
@@ -55,7 +61,7 @@
                                         'disabled':price.currency !=='USD',
                                         'readonly':price.currency !=='USD',
                                    }"
-                                   name="min_count[]" :value="price.min_count">
+                                   name="min_count[]" v-model="price.min_count">
                         </td>
                         <td>
                             <input type="text"  class="w-100"
@@ -63,10 +69,23 @@
                                         'disabled':price.currency !=='USD',
                                         'readonly':price.currency !=='USD',
                                    }"
-                                   name="max_count[]" :value="price.max_count">
+                                   name="max_count[]" v-model="price.max_count">
                         </td>
                         <td>
-                            <button v-if="selectedCurrency === 'USD'"
+                            <input type="text"  class="w-100"
+                                   v-bind="{
+                                        'disabled':price.currency !=='USD',
+                                        'readonly':price.currency !=='USD',
+                                   }"
+                                   name="discount[]" v-model="price.discount">
+                        </td>
+                        <td>
+                            <span>
+                                {{ calcDiscountedPrice(price) }}
+                            </span>
+                        </td>
+                        <td v-if="selectedCurrency === 'USD'">
+                            <button
                                 @click="wrapWithinProcess(()=>removePrice(price))"
                                 style="margin-left: 5px" class="btn btn-danger btn-sm rounded-0" type="button"
                                 data-toggle="tooltip" data-placement="top" title="Delete"
@@ -107,9 +126,9 @@ export default {
 </script>
 <script setup>
  import {useRoute} from "vue-router";
- import {computed, onMounted, ref} from "vue";
+ import {computed, onMounted, ref, watch} from "vue";
  import HTTP from "../../../Axios/axiosCongif";
- import {errorNotification, successNotification} from "../../../../Services/NotificationService";
+ import {errorNotification, infoNotification, successNotification} from "../../../../Services/NotificationService";
  import {extractValidationErrors} from "../../../../Services/GlobalHelpers";
 
  const route = useRoute()
@@ -125,19 +144,34 @@ export default {
      selectedCurrency.value = currency
  }
 
+ const discountsOfUsdPrices = computed(()=>{
+     return prices.value['USD']?.map((price)=>[price.id,price.discount])??[]
+ })
+
  const addPrice = ()=>{
      if (selectedCurrency.value !== 'USD'){
+         infoNotification('Can`t add price while selected currency is not "USD"')
          return;
      }
      prices.value['USD'].push({
          id:Date.now(),
          min_count:'',
          max_count:'',
+         price:'',
+         discount:0,
          currency:'USD',
          added:true
      })
  }
  const removePrice =(price)=>{
+     if (selectedCurrency.value!=='USD'){
+         infoNotification('Can`t remove price while selected currency is not "USD"');
+         return;
+     }
+     if (price.min_count === 1 && price.max_count === 1 ){
+            infoNotification('Can`t remove price for one');
+            return;
+     }
      let index = prices.value[selectedCurrency.value].findIndex((pr)=>pr.id === price.id)
      if (index === -1){
          return;
@@ -155,9 +189,18 @@ export default {
          }).catch(e=>errorNotification(extractValidationErrors(e)))
 
  }
-
+ const calcDiscountedPrice = (price)=>{
+     if (!price.price){
+         return ''
+     }
+     return +( (+price.price * ( 100 - +price.discount )/100) ).toFixed(2);
+ }
  const saveChanges = (e)=>{
      e.preventDefault();
+     if (selectedCurrency.value !== 'USD'){
+         infoNotification('Can`t save changes while selected currency is not "USD"');
+         return;
+     }
      const data = new FormData(e.target)
      HTTP.post(`/product/prices/${productId.value}`,data)
      .then(({data})=>{
@@ -169,7 +212,23 @@ export default {
          }
      }).catch((e)=>errorNotification(extractValidationErrors(e)))
  }
+ watch(()=>discountsOfUsdPrices.value,(val)=>{
+     if (Array.isArray(val) && val.length){
+         val.forEach(([id,discount],index)=>{
+             for (const currency in prices.value) {
+                 if (currency === "USD"){
+                     continue;
+                 }
+                 const index = prices.value[currency].findIndex(pr=>pr.id === id)
+                 if (index === -1){
+                     continue;
+                 }
+                 prices.value[currency][index].discount = discount;
+             }
+         })
 
+     }
+ })
  onMounted(()=>{
      HTTP.get('/product/prices/'+productId.value)
      .then(({data})=>{

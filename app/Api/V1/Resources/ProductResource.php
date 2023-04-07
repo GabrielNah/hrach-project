@@ -22,7 +22,8 @@ class ProductResource extends JsonResource
             'colors' => ColorResource::collection($this->resource->colors),
             'sizes' => SizeResource::collection($this->resource->sizes),
             'tags'=> TagResource::collection($this->resource->tags),
-            'category'=>CategoryResource::make($this->resource->category)
+            'category'=>CategoryResource::make($this->resource->category),
+            'comments'=>$this->resource->comments ?? []
         ];
     }
 }

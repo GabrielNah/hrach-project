@@ -17,6 +17,8 @@ class UpsertPriceRequest extends FormRequest
             'min_count'=>'required|array|min:1',
             'min_count.*'=>'numeric|min:1',
             'max_count'=>['required','array','min:1'],
+            'discount'=>['required','array','min:1'],
+            'discount.*'=>['required','numeric','min:0','max:100'],
             'price'=>['required','array','min:1'],
             'max_count.*'=>['nullable','numeric','min:1'],
             'price.*'=>'required|numeric|regex:/^\d+(\.\d{1,2})?$/'
@@ -28,12 +30,14 @@ class UpsertPriceRequest extends FormRequest
         $min_count=$this->get('min_count');
         $max_count=$this->get('max_count');
         $prices=$this->get('price');
+        $discounts=$this->get('discount');
         $validatedPrices = [];
         foreach ($prices as $index => $price){
             $result=[];
             $result['price']=(integer)$price;
             $result['min_count']=(integer)$min_count[$index];
-            $result['max_count']=(integer)$max_count[$index];
+            $result['max_count']= $max_count[$index] ? (integer)$max_count[$index] : null;
+            $result['discount']=(integer)$discounts[$index];
             $validatedPrices[]=$result;
         }
         return  $validatedPrices;
@@ -48,14 +52,10 @@ class UpsertPriceRequest extends FormRequest
             $next = $prices[$index + 1] ?? null;
 
             if (isset($prev) && $prev['max_count'] >= $price['min_count']) {
-                info($prev['max_count']);
-                info($price['min_count']);
-               info('stex ');
                 return true;
 
             }
             if (isset($next) && $price['max_count'] && $price['max_count'] >= $next['min_count']) {
-                info('stex 2');
                 return true;
             }
         }

@@ -11,4 +11,7 @@ class Comment extends Model
     const TABLE='comments';
     protected $table=self::TABLE;
     protected $guarded=[];
+    protected $casts=[
+        'active'=>'boolean'
+    ];
 }

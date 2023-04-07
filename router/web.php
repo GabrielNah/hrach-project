@@ -98,9 +98,12 @@ Route::group(['prefix'=>'admin'],function (){
                 Route::group(['prefix'=>'sizes'],function(){
                     Route::post('general/{product}',[ProductTagablesController::class,'editGeneralSizes']);
                     Route::delete('individual/{product}/{size}',[ProductTagablesController::class,'destroySize']);
+                    Route::post('individual/{product}/{size?}',[ProductTagablesController::class,'upsert']);
                 });
                 Route::group(['prefix'=>'colors'],function(){
-
+                    Route::post('general/{product}',[ProductTagablesController::class,'editGeneralColors']);
+                    Route::delete('individual/{product}/{color}',[ProductTagablesController::class,'deleteIndividualColor']);
+                    Route::post('individual/{product}/{color?}',[ProductTagablesController::class,'upsertColors']);
                 });
             });
         });

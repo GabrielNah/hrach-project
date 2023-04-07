@@ -30,6 +30,8 @@ class Controller extends BaseController
 
     public function errorResponse(?array $data=[]):JsonResponse
     {
+        $val=array_values($data)[0] ?? 'Something went wrong';
+        $data= ['ERROR'=>$val];
         return $this->successResponse($data,Response::HTTP_BAD_REQUEST);
     }
 }

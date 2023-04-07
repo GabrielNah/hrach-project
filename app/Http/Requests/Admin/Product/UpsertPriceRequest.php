@@ -31,9 +31,9 @@ class UpsertPriceRequest extends FormRequest
         $validatedPrices = [];
         foreach ($prices as $index => $price){
             $result=[];
-            $result['price']=$price;
-            $result['min_count']=$min_count[$index];
-            $result['max_count']=$max_count[$index];
+            $result['price']=(integer)$price;
+            $result['min_count']=(integer)$min_count[$index];
+            $result['max_count']=(integer)$max_count[$index];
             $validatedPrices[]=$result;
         }
         return  $validatedPrices;
@@ -42,14 +42,20 @@ class UpsertPriceRequest extends FormRequest
     private function pricesAreOverwlaped():bool
     {
         $prices = $this->getModifiedData();
+        $prices = collect($prices)->sortBy(fn($pr)=>$pr['min_count'])->values()->all();
         foreach ($prices as $index => $price){
             $prev = $prices[$index - 1] ?? null;
             $next = $prices[$index + 1] ?? null;
 
             if (isset($prev) && $prev['max_count'] >= $price['min_count']) {
+                info($prev['max_count']);
+                info($price['min_count']);
+               info('stex ');
                 return true;
+
             }
             if (isset($next) && $price['max_count'] && $price['max_count'] >= $next['min_count']) {
+                info('stex 2');
                 return true;
             }
         }

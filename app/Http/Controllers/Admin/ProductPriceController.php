@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Product\UpsertPriceRequest;
 use App\Models\Price;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ProductPriceController extends Controller
@@ -41,6 +42,9 @@ class ProductPriceController extends Controller
     public function destroy(Product $product,Price $price)
     {
         try {
+            if ($product->prices()->count() === 1){
+                throw new \InvalidArgumentException('Can`t remove last price of product');
+            }
 
             if (!$price && empty($price->toArray())){
                 throw new ModelNotFoundException('Price under ID:'.request()->route('price').' not found');

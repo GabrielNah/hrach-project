@@ -109,7 +109,7 @@ export default {
  import {useRoute} from "vue-router";
  import {computed, onMounted, ref} from "vue";
  import HTTP from "../../../Axios/axiosCongif";
- import {errorNotification, successNotification} from "../../../../Services/NotificationService";
+ import {errorNotification, infoNotification, successNotification} from "../../../../Services/NotificationService";
  import {extractValidationErrors} from "../../../../Services/GlobalHelpers";
 
  const route = useRoute()
@@ -126,8 +126,11 @@ export default {
  }
 
  const addPrice = ()=>{
-     if (selectedCurrency.value !== 'USD'){
+     if (selectedCurrency.value && selectedCurrency.value !== 'USD'){
          return;
+     }
+     if (!selectedCurrency.value){
+         selectedCurrency.value = 'USD'
      }
      prices.value['USD'].push({
          id:Date.now(),
@@ -138,6 +141,10 @@ export default {
      })
  }
  const removePrice =(price)=>{
+     if (price.min_count === 1 && price.max_count === 1 ){
+            infoNotification('Can`t remove price for one');
+            return;
+     }
      let index = prices.value[selectedCurrency.value].findIndex((pr)=>pr.id === price.id)
      if (index === -1){
          return;

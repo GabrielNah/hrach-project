@@ -2,7 +2,7 @@
     <div class="w-100 p-1 ">
         <!-- HTML !-->
         <h4 class="text-center text-white"> What do you want to edit ?</h4>
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
             <button class="button-37" role="button" @click="actions.selectAction(actions.ACTIONS.EDIT_FILES)">
                 Files
             </button>

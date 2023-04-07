@@ -48,6 +48,12 @@
             <edit-tagbles v-if="chosenAction === actions.ACTIONS.EDIT_TAGABLES"
             />
 
+            <edit-comments v-if="chosenAction === actions.ACTIONS.EDIT_COMMENTS"
+            />
+
+            <edit-discounts v-if="chosenAction === actions.ACTIONS.EDIT_DISCOUNTS"
+            />
+
         </Modal>
 
     </teleport>
@@ -62,9 +68,13 @@ import EditPrices from "./EditProduct/EditPrices.vue"
 import EditAdditionalInfo from "./EditProduct/EditAdditionalInfo.vue";
 import EditMainInfo from "./EditProduct/EditMainInfo.vue";
 import EditTagbles from "./EditProduct/EditTagbles.vue";
+import EditComments from "./EditProduct/EditComments.vue";
+import EditDiscounts from "./EditProduct/EditDiscounts.vue";
 export default {
     name: "EditProduct",
     components: {
+        EditDiscounts,
+        EditComments,
         EditTagbles,
         EditMainInfo,
         EditAdditionalInfo,

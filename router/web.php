@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\CurrencyRateController;
 use App\Http\Controllers\Admin\ProductAdditionalController;
 use App\Http\Controllers\Admin\ProductController;
@@ -106,6 +107,13 @@ Route::group(['prefix'=>'admin'],function (){
                     Route::post('individual/{product}/{color?}',[ProductTagablesController::class,'upsertColors']);
                 });
             });
+        });
+
+        Route::group(['prefix'=>'comment'],function (){
+            Route::get('/{product}',[CommentController::class,'index']);
+            Route::post('/{product}',[CommentController::class,'store']);
+            Route::put('/{comment}',[CommentController::class,'edit']);
+            Route::delete('/{comment}',[CommentController::class,'destroy']);
         });
     });
 

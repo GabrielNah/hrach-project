@@ -6,14 +6,16 @@ import ProductList from "../../Admin/Pages/Products/ProductList.vue";
 import AddProduct from "../../Admin/Pages/Products/AddProduct.vue";
 import Settings from "../../Admin/Pages/Settings.vue";
 import EditProduct from "../../Admin/Pages/Products/EditProduct.vue";
+import SliderMaker from "../../Admin/Pages/Slider/SliderMaker.vue";
 
-export const ADMIN_LOGIN_ROUTE='admin.login'
-export const ADMIN_DASHBOARD_ROUTE='admin.dashboard'
-export const ADMIN_CATEGORIES_ROUTE='admin.categories'
-export const ADMIN_PRODUCT_LIST='admin.product.list'
-export const ADMIN_PRODUCT_ADD='admin.product.add'
-export const ADMIN_SETTING_ROUTE='admin.settings'
-export const ADMIN_PRODUCT_EDIT='admin.products.edit'
+export const ADMIN_LOGIN_ROUTE='admin.login';
+export const ADMIN_DASHBOARD_ROUTE='admin.dashboard';
+export const ADMIN_CATEGORIES_ROUTE='admin.categories';
+export const ADMIN_PRODUCT_LIST='admin.product.list';
+export const ADMIN_PRODUCT_ADD='admin.product.add';
+export const ADMIN_SETTING_ROUTE='admin.settings';
+export const ADMIN_PRODUCT_EDIT='admin.products.edit';
+export const ADMIN_SLIDER_EDIT = 'admin.slider.edit';
 
 export default ()=>([
     {
@@ -55,6 +57,11 @@ export default ()=>([
                 name:ADMIN_SETTING_ROUTE,
                 component:Settings
             },
+            {
+                path:'slider',
+                name:ADMIN_SLIDER_EDIT,
+                component: SliderMaker
+            }
         ]
     }
 ])

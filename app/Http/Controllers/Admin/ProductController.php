@@ -11,9 +11,12 @@ use App\Models\Product;
 use App\Models\Size;
 use App\Models\Tag;
 use App\Services\ProductRepository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ProductController extends Controller
@@ -76,5 +79,39 @@ class ProductController extends Controller
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             return  $this->errorResponse(['e'=>$e->getMessage()]);
         }
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        $request->validate([
+            'type'=>Rule::in(['default','tags','categories','sizes','colors','discounts']),
+            'value'=>['string','required',function($attr,$val,$fail) use ($request){
+                $type=$request->input('type');
+                if ($type==='discounts'){
+                    $operators=collect(['>','<','<=','>=','=','!=']);
+                    $containedOperator=null;
+                    foreach ($operators as $operator) {
+                            if (Str::startsWith($val,$operator)){
+                                $containedOperator=$operator;
+                            }
+                    }
+                    if (is_null($containedOperator)){
+                        $fail('Value should contain operators at start');
+                        return;
+                    }
+                    $operator = substr($val, 0, strlen($containedOperator)); // extract first two characters as operator
+                    $rest = substr($val, strlen($containedOperator)); // extract the rest of the string
+                    if (!ctype_digit($rest)){
+                        $fail('Text after operator should contain only integers');
+                        return;
+                    }
+                    $request->merge(compact('operator'));
+                    $request->merge(['value'=>(integer)$rest])  ;
+                }
+            }],
+        ]);
+        $products = $this->productRepository->search($request);
+        return $this->successResponse(compact('products'));
+
     }
 }

@@ -157,4 +157,43 @@ class ProductRepository
             \Illuminate\Support\Facades\File::delete(storage_path($file_path));
         };
     }
+
+    public function search(Request $request):LengthAwarePaginator
+    {
+        return Product::query()
+            ->with('priceForOne','generalFile','tags')
+            ->when($request->input('type')==='default',function (Builder $q)use ($request){
+                $q->where('name','LIKE','%'.$request->input('value').'%')
+                    ->orWhere('title','LIKE','%'.$request->input('value').'%')
+                    ->orWhere('description','LIKE','%'.$request->input('value').'%');
+            })
+            ->when($request->input('type')==='tags',function (Builder $q)use ($request){
+                $q->whereHas('tags',function (Builder $q)use ($request){
+                    $q->where('name','LIKE','%'.$request->input('value').'%')
+                        ->orWhere('description','LIKE','%'.$request->input('value').'%');
+                });
+            })
+            ->when($request->input('type')==='categories',function (Builder $q)use ($request){
+                $q->whereHas('category',function (Builder $q)use ($request){
+                    $q->where('name','LIKE','%'.$request->input('value').'%');
+                });
+            })
+            ->when($request->input('type')==='sizes',function (Builder $q)use ($request){
+                $q->whereHas('sizes',function (Builder $q)use ($request){
+                    $q->where('size','LIKE','%'.$request->input('value').'%');
+                });
+            })
+            ->when($request->input('type')==='colors',function (Builder $q)use ($request){
+                $q->whereHas('colors',function (Builder $q)use ($request){
+                    $q->where('name','LIKE','%'.$request->input('value').'%');
+                });
+            })
+            ->when($request->input('type')==='discounts',function (Builder $q)use ($request){
+                $q->whereHas('prices',function (Builder $q)use ($request){
+                    $q->where('discount',$request->input('operator'),$request->input('value'));
+                });
+            })
+            ->paginate(2);
+
+    }
 }

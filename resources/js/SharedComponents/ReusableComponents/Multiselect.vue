@@ -78,7 +78,7 @@ export default {
             ctx.emit('selected',value)
         })
         watchEffect(()=>{
-            if (props.initialValues.length && !initialValuesReceived.value){
+            if (props?.initialValues?.length && !initialValuesReceived?.value){
                 initialValuesReceived.value = true
                 selectedValues.value = props.initialValues
             }

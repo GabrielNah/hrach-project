@@ -1,6 +1,6 @@
 <template>
     <div class="area"></div>
-    <nav class="main-menu position-fixed">
+    <nav class="main-menu position-fixed d-flex align-items-center">
         <ul class="mt-lg-5 d-flex flex-column justify-content-center align-content-center gap-1">
             <li>
                 <router-link :to="{name:ADMIN_CATEGORIES_ROUTE}" active-class="active">
@@ -20,14 +20,13 @@
                 </router-link>
 
             </li>
-            <li class="has-subnav">
-                <a href="#">
-                    <i class="fa fa-comments fa-2x"></i>
+            <li>
+                <router-link :to="{name:ADMIN_SLIDER_EDIT}" active-class="active">
+                    <i class="fa fa-cogs fa-2x"></i>
                     <span class="nav-text">
-                            Group Hub Forums
+                            Slider
                         </span>
-                </a>
-
+                </router-link>
             </li>
             <li class="has-subnav">
                 <a href="#">
@@ -95,7 +94,13 @@
 
 
 import {inject, onMounted, ref} from "vue";
-import {ADMIN_LOGIN_ROUTE, ADMIN_CATEGORIES_ROUTE, ADMIN_PRODUCT_LIST,ADMIN_SETTING_ROUTE} from "../../router/Admin/adminRoutes";
+import {
+    ADMIN_LOGIN_ROUTE,
+    ADMIN_CATEGORIES_ROUTE,
+    ADMIN_PRODUCT_LIST,
+    ADMIN_SETTING_ROUTE,
+    ADMIN_SLIDER_EDIT
+} from "../../router/Admin/adminRoutes";
 import {redirectToRouteByName} from "../../Services/GlobalHelpers";
 import Loader from "../../SharedComponents/Loader.vue";
 
@@ -121,7 +126,8 @@ export default {
             redirectToRouteByName,
             ADMIN_CATEGORIES_ROUTE,
             ADMIN_PRODUCT_LIST,
-            ADMIN_SETTING_ROUTE
+            ADMIN_SETTING_ROUTE,
+            ADMIN_SLIDER_EDIT
         }
     }
 }

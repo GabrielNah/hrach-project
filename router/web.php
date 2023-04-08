@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ProductMainInfoConroller;
 use App\Http\Controllers\Admin\ProductPriceController;
 use App\Http\Controllers\Admin\ProductTagablesController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SliderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -68,6 +69,7 @@ Route::group(['prefix'=>'admin'],function (){
             Route::get('',[ProductController::class,'create']);
             Route::get('all',[ProductController::class,'index']);
             Route::post('/store',[ProductController::class,'store']);
+            Route::post('/search',[ProductController::class,'search']);
             Route::get('/edit/{product}',[ProductController::class,'show']);
             Route::delete('/{product}',[ProductController::class,'destroy']);
 
@@ -114,6 +116,11 @@ Route::group(['prefix'=>'admin'],function (){
             Route::post('/{product}',[CommentController::class,'store']);
             Route::put('/{comment}',[CommentController::class,'edit']);
             Route::delete('/{comment}',[CommentController::class,'destroy']);
+        });
+
+        Route::prefix('slider')->group(function (){
+            Route::get('index',[SliderController::class,'index']);
+            Route::get('initial',[SliderController::class,'getInitialDataForSearchHelp']);
         });
     });
 

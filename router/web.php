@@ -70,6 +70,7 @@ Route::group(['prefix'=>'admin'],function (){
             Route::get('all',[ProductController::class,'index']);
             Route::post('/store',[ProductController::class,'store']);
             Route::post('/search',[ProductController::class,'search']);
+            Route::post('/exact',[ProductController::class,'getExactProducts']);
             Route::get('/edit/{product}',[ProductController::class,'show']);
             Route::delete('/{product}',[ProductController::class,'destroy']);
 
@@ -121,6 +122,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::prefix('slider')->group(function (){
             Route::get('index',[SliderController::class,'index']);
             Route::get('initial',[SliderController::class,'getInitialDataForSearchHelp']);
+            Route::post('store',[SliderController::class,'store']);
         });
     });
 

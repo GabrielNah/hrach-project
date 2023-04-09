@@ -114,4 +114,17 @@ class ProductController extends Controller
         return $this->successResponse(compact('products'));
 
     }
+
+    public function getExactProducts(Request $request):JsonResponse
+    {
+        $request->validate([
+            'ids'=>'array|required|min:1',
+            'ids.*'=>'integer|exists:products,id'
+        ]);
+
+        $products = $this->productRepository->getExactProducts($request->input('ids'));
+
+        return $this->successResponse(compact('products'));
+
+    }
 }

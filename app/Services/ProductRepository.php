@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -47,7 +48,8 @@ class ProductRepository
             }
             if (count($productData['sizes'] ?? []) || count($productData['individual_size_name'] ?? [])) {
                 $sizes=$productData['sizes'] ?? [];
-                if ($productData['individual_size_name']){
+                if (array_key_exists('individual_size_name',$productData)
+                    && count($productData['individual_size_name'] ?? [])){
                     foreach ($productData['individual_size_name'] as $individual_size){
                         $size=Size::query()->create([
                             'size'=>$individual_size,
@@ -193,7 +195,16 @@ class ProductRepository
                     $q->where('discount',$request->input('operator'),$request->input('value'));
                 });
             })
-            ->paginate(2);
+            ->paginate(15);
 
+    }
+
+    public function getExactProducts(array $ids):Collection
+    {
+        return Product::query()
+            ->with('priceForOne','generalFile','tags')
+            ->whereIn('id',$ids)
+            ->get()
+            ->collect();
     }
 }

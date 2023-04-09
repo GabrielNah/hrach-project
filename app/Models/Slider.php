@@ -12,5 +12,7 @@ class Slider extends Model
     const TABLE='sliders';
     protected $table=self::TABLE;
     protected $guarded=[];
-
+    protected $casts=[
+        'value'=>'array'
+    ];
 }

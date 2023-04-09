@@ -23,3 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['prefix'=>'product'],function (){
     Route::get('/{product}',[ProductController::class,'show']);
 });
+Route::group(['prefix'=>'slider'],function (){
+    Route::get('',\App\Api\V1\Controllers\SliderController::class);
+});

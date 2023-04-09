@@ -29,3 +29,4 @@ Route::group(['prefix'=>'slider'],function (){
 Route::get('/banners',\App\Api\V1\Controllers\BannerController::class);
 
 Route::post('/comment/{product}',\App\Api\V1\Controllers\CommentController::class);
+Route::post('/inquiry/{product}',\App\Api\V1\Controllers\InquiryController::class);

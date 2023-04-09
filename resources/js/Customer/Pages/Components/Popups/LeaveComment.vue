@@ -95,7 +95,6 @@ const leaveComment = ()=>{
         if (e?.response?.status === 422){
             const errorsMsgs =e.response.data.errors;
             for (const key in errorsMsgs) {
-                console.log(errorsMsgs[key][0])
                 errors[key]=errorsMsgs[key][0]
             }
         }

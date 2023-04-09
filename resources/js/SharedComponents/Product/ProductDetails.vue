@@ -204,12 +204,12 @@
                     </div>
                 </section>
 
-                <slot name="product_yo_may_like"/>
+                <slot name="product_yo_may_like" :likables="likableProducts"/>
 
 
             </div>
 
-            <slot name="related_product"/>
+            <slot name="related_product" :relatedProducts="relatedProducts"/>
         </div>
     </main>
 </template>
@@ -227,6 +227,8 @@ export default {
         const route=useRoute();
         const product=ref(null)
         const selectedCurrency=ref('')
+        const likableProducts=ref([])
+        const relatedProducts=ref([])
         const setSelectedCurrency=(currency)=>{
             selectedCurrency.value=currency
         }
@@ -270,8 +272,10 @@ export default {
 
         onMounted(async ()=>{
             try {
-                let {data:{product:neededProduct}}  =  await axios.get('/api/product/'+route.params.id);
+                let {data:{product:neededProduct,likable,related}}  =  await axios.get('/api/product/'+route.params.id);
                 product.value = neededProduct
+                likableProducts.value=likable
+                relatedProducts.value=related
                 setSelectedCurrency(Object.keys(neededProduct.prices)[0])
                 setSelectedFile(neededProduct.general_file)
                 files.all=[neededProduct.general_file,...neededProduct.non_general_files]
@@ -291,7 +295,9 @@ export default {
             renderTextForPrices,
             info,
             selectColor,
-            selectSize
+            selectSize,
+            likableProducts,
+            relatedProducts
         }
     }
 }

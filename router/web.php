@@ -123,7 +123,11 @@ Route::group(['prefix'=>'admin'],function (){
             Route::get('index',[SliderController::class,'index']);
             Route::get('initial',[SliderController::class,'getInitialDataForSearchHelp']);
             Route::post('store',[SliderController::class,'store']);
+            Route::put('/{slider}/edit',[SliderController::class,'edit']);
+            Route::delete('/{slider}',[SliderController::class,'destroy']);
         });
+
+        Route::apiResource('banners',\App\Http\Controllers\Admin\BannerController::class);
     });
 
 });

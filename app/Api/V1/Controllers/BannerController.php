@@ -3,16 +3,16 @@
 namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Slider;
+use App\Models\Banner;
 
-class SliderController extends Controller
+class BannerController extends Controller
 {
    public function __invoke(): \Symfony\Component\HttpFoundation\JsonResponse
    {
-       $sliders=Slider::query()->get()->collect()->map(function ($slider){
+       $banners=Banner::query()->get()->collect()->map(function ($slider){
            $slider->value = json_decode($slider->value,false);
            return $slider;
        });
-       return $this->successResponse(compact('sliders'));
+       return $this->successResponse(compact('banners'));
    }
 }

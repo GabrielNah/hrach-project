@@ -2,12 +2,6 @@
     <div id="carouselExampleCaptions" v-show="slides.length"
          class="carousel slide" data-bs-interval="3000"
          data-bs-ride="carousel">
-        <div class="carousel-indicators">
-            <button type="button" v-for="i in slides.length"
-                    data-bs-target="#carouselExampleCaptions" :data-bs-slide-to="i" class="active" aria-current="true" aria-label="Slide 1">
-
-            </button>
-        </div>
         <div class="carousel-inner" id="slider-component">
             <template v-for="(slide,index) in slides" :key="slide.id">
                     <div class="carousel-item "  :class="{'active':index===0}">
@@ -15,7 +9,7 @@
                             <slot :slider="slides[activeIndex]"/>
                         </div>
                         <img :src="'/'+slide.image" class="d-block w-100" alt="...">
-                        <div class="carousel-caption d-none d-md-block">
+                        <div class="carousel-caption  d-md-block">
                             <h5>{{ slide.title }}</h5>
                             <p>{{ slide.link_text}}</p>
                         </div>

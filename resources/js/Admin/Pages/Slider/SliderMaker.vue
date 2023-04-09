@@ -10,7 +10,7 @@
                 </template>
             </slider-component>
             <section class="d-flex flex-column w-100 p-1 m-0">
-                <form >
+                <form @submit.prevent="wrapWithinProcess(actionsWithSlides.saveChanges)">
                     <div class="form-group">
                         <label class="text-white"> Slider title </label>
                         <input type="text" class="form-control"
@@ -68,13 +68,24 @@
                             {{ slider.values.length ? "View" : "Select" }} products
                         </label>
                         <span class="fonted text-white">
-                            {{ slider.values.length ?? "0" }} product selected
+                            {{ slider.values.length }} product selected
                         </span>
                     </div>
-                    <div class="d-flex justify-content-center align-items-center mt-1"
-                        @click="wrapWithinProcess(actionsWithSlides.addNew)"
+                    <div class="d-flex justify-content-center align-items-center mt-1 gap-1 "
                     >
-                        <button class="btn btn-primary" type="button">Save changes</button>
+                        <button class="btn btn-primary" type="submit">
+                            Save changes
+                        </button>
+                        <button class="btn btn-secondary " type="button"
+                            @click="actionsWithSlides.dropSliderData"
+                        >
+                            Drop
+                        </button>
+                        <button class="btn btn-danger" type="button" v-if="slider.id"
+                            @click="wrapWithinProcess(actionsWithSlides.deleteSlider)"
+                        >
+                            Delete
+                        </button>
                     </div>
                 </form>
             </section>
@@ -105,7 +116,7 @@ export default {
 <script setup>
 import {reactive, ref, watch} from "vue";
 import HTTP from "../../Axios/axiosCongif";
-import {errorNotification, successNotification} from "../../../Services/NotificationService";
+import {errorNotification, infoNotification, successNotification} from "../../../Services/NotificationService";
 import {extractValidationErrors} from "../../../Services/GlobalHelpers";
 const searchProductsIsOpen=ref(false);
 const toggleProductSearch=()=>{
@@ -116,8 +127,9 @@ const removeUploadedImage = ()=>{
     slider.img.uploaded.value=null
 }
 const editProduct=(product)=>{
+    console.log(product)
     slider.id =product.id
-    slider.title=product.id
+    slider.title=product.title
     slider.link_text = product.link_text
     slider.values = product.value
     slider.img.value = product.image
@@ -137,14 +149,58 @@ const actionsWithSlides={
         .then(({data})=>{
             if (data.success){
                 successNotification('Reloading slider component to view changes');
-                slider.title=""
-                slider.link_text=""
-                slider.values=[]
-                slider.img.uploaded.value=null
-                slider.img.uploaded.path=''
-                slider.img.value=''
+                actionsWithSlides.dropSliderData();
                 reloadSlider();
-                return;
+            }
+        })
+        .catch(e=>errorNotification(extractValidationErrors(e)))
+    },
+    updateSlider(){
+        const data=new FormData
+        data.append('title',slider.title)
+        data.append('link_text',slider.link_text)
+        slider.values.forEach((id)=>data.append('value[]',id))
+        if (slider.img.uploaded.value){
+            data.append('image',slider.img.uploaded.value)
+        }
+        data.append('_method','PUT')
+        HTTP.post(`/slider/${slider.id}/edit`,data)
+            .then(({data})=>{
+                if (data.success){
+                    successNotification('Reloading slider component to view changes');
+                    actionsWithSlides.dropSliderData();
+                    reloadSlider();
+                }
+            })
+            .catch(e=>errorNotification(extractValidationErrors(e)))
+    },
+    dropSliderData(){
+        slider.id=0
+        slider.title=""
+        slider.link_text=""
+        slider.values=[]
+        slider.img.uploaded.value=null
+        slider.img.uploaded.path=''
+        slider.img.value=''
+    },
+    saveChanges(){
+        if (slider.id){
+            actionsWithSlides.updateSlider();
+            return;
+        }
+        actionsWithSlides.addNew();
+    },
+    deleteSlider(){
+        if (!slider.id){
+            infoNotification('Cant fulfill removal if slider is not selected');
+            return;
+        }
+        HTTP.delete('/slider/'+slider.id)
+        .then((r)=>{
+            if (r.status === 204){
+                successNotification('Removed successfully');
+                reloadSlider();
+                actionsWithSlides.dropSliderData();
             }
         })
         .catch(e=>errorNotification(extractValidationErrors(e)))
@@ -169,7 +225,7 @@ const fileUploader = {
     }
 }
 const slider=reactive({
-    id:'',
+    id:0,
     title:'',
     link_text:'',
     img:{

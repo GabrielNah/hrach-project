@@ -1,13 +1,22 @@
 <template>
     <section class="padding-bottom">
         <div class="d-flex flex-row justify-content-around align-items-center flex-wrap w-100 ">
-            <div class="col-5 mb-3" v-for="i in 3">
+            <div class="col-5 mb-3 position-relative" v-for="banner in banners"
+                 :key="banner.id"
+            >
                 <div class="card card-banner-lg bg-dark">
-                    <img src="images/banners/slide3.webp" class="card-img opacity">
+                    <img :src="'/'+banner.image" class="card-img opacity">
+                    <slot  :banner="banner" />
                     <div class="card-img-overlay text-white">
-                        <h2 class="card-title">Big Deal on Clothes</h2>
-                        <p class="card-text" style="max-width: 80%">This is a wider card with text below and Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo ab quae nihil praesentium impedit libero possimus id vero</p>
-                        <a href="#" class="btn btn-light">Discover</a>
+                        <h2 class="card-title">
+                            {{ banner.title }}
+                        </h2>
+                        <p class="card-text" style="max-width: 80%">
+                            {{ banner.description }}
+                        </p>
+                        <a href="#" class="btn btn-light">
+                            {{ banner.link_text }}
+                        </a>
                     </div>
                 </div>
             </div>
@@ -17,7 +26,22 @@
 
 <script>
 export default {
-    name: "BannersComponent"
+    name: "BannersComponent",
+    data:()=>({
+        banners:[],
+    }),
+    methods:{
+        getBanners(){
+            axios.get('/api/banners')
+            .then(({data})=>{
+              this.banners=data.banners
+            })
+        },
+    },
+    mounted() {
+        this.getBanners()
+    }
+
 }
 </script>
 

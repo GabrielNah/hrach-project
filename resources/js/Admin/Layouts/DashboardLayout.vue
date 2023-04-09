@@ -38,12 +38,13 @@
 
             </li>
             <li>
-                <a href="#">
-                    <i class="fa fa-film fa-2x"></i>
+                <router-link :to="{name:ADMIN_BANNERS_EDIT}" active-class="active">
+
+                <i class="fa fa-film fa-2x"></i>
                     <span class="nav-text">
-                            Surveying Tutorials
+                          Banners
                         </span>
-                </a>
+                </router-link>
             </li>
             <li>
                 <a href="#">
@@ -99,7 +100,7 @@ import {
     ADMIN_CATEGORIES_ROUTE,
     ADMIN_PRODUCT_LIST,
     ADMIN_SETTING_ROUTE,
-    ADMIN_SLIDER_EDIT
+    ADMIN_SLIDER_EDIT, ADMIN_BANNERS_EDIT
 } from "../../router/Admin/adminRoutes";
 import {redirectToRouteByName} from "../../Services/GlobalHelpers";
 import Loader from "../../SharedComponents/Loader.vue";
@@ -127,7 +128,8 @@ export default {
             ADMIN_CATEGORIES_ROUTE,
             ADMIN_PRODUCT_LIST,
             ADMIN_SETTING_ROUTE,
-            ADMIN_SLIDER_EDIT
+            ADMIN_SLIDER_EDIT,
+            ADMIN_BANNERS_EDIT
         }
     }
 }

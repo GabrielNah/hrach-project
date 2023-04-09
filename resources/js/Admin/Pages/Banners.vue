@@ -2,7 +2,7 @@
     <div class="d-flex container flex-column ">
         <banners-component :key="key">
             <template #default="{banner}">
-                <button class="btn btn-success btn-sm rounded-0" @click="selectBanner(banner)"
+                <button class="btn btn-success btn-sm rounded-0 position-absolute" @click="selectBanner(banner)"
                      style="top: 10px;right: 10px;z-index: 200"
                      type="button" data-toggle="tooltip" data-placement="top" title="Edit">
                     <i class="fa fa-edit"></i>

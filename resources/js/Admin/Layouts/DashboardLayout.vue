@@ -2,10 +2,22 @@
     <div class="area"></div>
     <nav class="main-menu position-fixed d-flex align-items-center">
         <ul class="mt-lg-5 d-flex flex-column justify-content-center align-content-center gap-1">
+            <li >
+                <router-link :to="{name:ADMIN_DASHBOARD_ROUTE}"
+                             :class="{'active':$route.name === ADMIN_DASHBOARD_ROUTE}"
+                >
+                    <i class="fa fa-home fa-2x"></i>
+                    <span class="nav-text">
+                            Home
+                    </span>
+                </router-link>
+            </li>
             <li>
                 <router-link :to="{name:ADMIN_CATEGORIES_ROUTE}" active-class="active">
-                    <i class="fa fa-home fa-2x"></i>
-                    <span  class="nav-text text-decoration-none" >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="36" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                    </svg>
+                    <span  class="nav-text " >
                            Categories
                     </span>
                 </router-link>
@@ -22,20 +34,12 @@
             </li>
             <li>
                 <router-link :to="{name:ADMIN_SLIDER_EDIT}" active-class="active">
-                    <i class="fa fa-cogs fa-2x"></i>
+                    <i class="fa fa-camera-retro fa-2x"></i>
+
                     <span class="nav-text">
                             Slider
                         </span>
                 </router-link>
-            </li>
-            <li class="has-subnav">
-                <a href="#">
-                    <i class="fa fa-camera-retro fa-2x"></i>
-                    <span class="nav-text">
-                            Survey Photos
-                        </span>
-                </a>
-
             </li>
             <li>
                 <router-link :to="{name:ADMIN_BANNERS_EDIT}" active-class="active">
@@ -47,20 +51,29 @@
                 </router-link>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa fa-book fa-2x"></i>
-                    <span class="nav-text">
-                           Surveying Jobs
-                        </span>
-                </a>
-            </li>
-            <li>
                 <router-link :to="{name:ADMIN_SETTING_ROUTE}" active-class="active">
                     <i class="fa fa-cogs fa-2x"></i>
                     <span class="nav-text">
                             Settings
                         </span>
                 </router-link>
+            </li>
+            <li class="has-subnav">
+                <a href="#">
+                    <i class="fa fa-cogs fa-2x"></i>
+                    <span class="nav-text">
+                            Survey Photos
+                        </span>
+                </a>
+
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-book fa-2x"></i>
+                    <span class="nav-text">
+                           Surveying Jobs
+                        </span>
+                </a>
             </li>
             <li>
                 <a href="#">
@@ -100,7 +113,7 @@ import {
     ADMIN_CATEGORIES_ROUTE,
     ADMIN_PRODUCT_LIST,
     ADMIN_SETTING_ROUTE,
-    ADMIN_SLIDER_EDIT, ADMIN_BANNERS_EDIT
+    ADMIN_SLIDER_EDIT, ADMIN_BANNERS_EDIT, ADMIN_DASHBOARD_ROUTE
 } from "../../router/Admin/adminRoutes";
 import {redirectToRouteByName} from "../../Services/GlobalHelpers";
 import Loader from "../../SharedComponents/Loader.vue";
@@ -129,7 +142,8 @@ export default {
             ADMIN_PRODUCT_LIST,
             ADMIN_SETTING_ROUTE,
             ADMIN_SLIDER_EDIT,
-            ADMIN_BANNERS_EDIT
+            ADMIN_BANNERS_EDIT,
+            ADMIN_DASHBOARD_ROUTE
         }
     }
 }
@@ -139,6 +153,16 @@ export default {
 
 @import url(//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
 @import url(https://fonts.googleapis.com/css?family=Titillium+Web:300);
+
+svg{
+    position: relative;
+    display: table-cell;
+    width: 60px;
+    height: 36px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 20px;
+}
 .active{
     background-color: #2d3748;
 }

@@ -4,9 +4,9 @@
             <div class="col-5 mb-3 position-relative" v-for="banner in banners"
                  :key="banner.id"
             >
+                 <slot  :banner="banner" />
                 <div class="card card-banner-lg bg-dark">
                     <img :src="'/'+banner.image" class="card-img opacity">
-                    <slot  :banner="banner" />
                     <div class="card-img-overlay text-white">
                         <h2 class="card-title">
                             {{ banner.title }}

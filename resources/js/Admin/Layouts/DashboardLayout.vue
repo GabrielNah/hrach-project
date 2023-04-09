@@ -35,8 +35,7 @@
             <li>
                 <router-link :to="{name:ADMIN_SLIDER_EDIT}" active-class="active">
                     <i class="fa fa-camera-retro fa-2x"></i>
-
-                    <span class="nav-text">
+                        <span class="nav-text">
                             Slider
                         </span>
                 </router-link>

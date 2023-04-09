@@ -1,9 +1,20 @@
 <template>
-    <product-details>
+    <product-details ref="product">
         <template v-slot:inquiry>
-            <div class="send_inquiry">
-                <div class="send_inquiry_button">
-                    Send inquiry
+            <div class="d-flex flex-column gap-1 flex-grow-1 align-items-center">
+                <div class="send_inquiry " style="width: 80%">
+                    <div class="send_inquiry_button pointer"
+                         @click.stop="chooseAction(ACTION_SEND_INQUIRY)"
+                    >
+                        Send inquiry
+                    </div>
+                </div>
+                <div class="send_inquiry " style="width: 80%">
+                    <div class="send_inquiry_button pointer"
+                        @click.stop="chooseAction(ACTION_LEAVE_COMMENT)"
+                    >
+                        Leave comment
+                    </div>
                 </div>
             </div>
         </template>
@@ -37,16 +48,51 @@
             </div>
         </template>
     </product-details>
+
+    <teleport to="#app">
+        <Modal v-if="chosenAction" @close="chosenAction=''">
+            <leave-comment
+                v-if="chosenAction===ACTION_LEAVE_COMMENT"
+                @close="registerNewComment"
+            />
+        </Modal>
+    </teleport>
 </template>
 
 <script>
+import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
 import ProductDetails from "../../../SharedComponents/Product/ProductDetails.vue";
+import LeaveComment from "./Popups/LeaveComment.vue";
 export default {
     name: "Product-Details",
-    components: {ProductDetails}
+    components: {ProductDetails,LeaveComment,Modal}
 }
+</script>
+<script setup>
+import {reactive, ref} from "vue";
+    const product=ref(null)
+    const ACTION_LEAVE_COMMENT='leave.comment';
+    const ACTION_SEND_INQUIRY='send.inquiry';
+
+    const chosenAction = ref('')
+    const chooseAction = (action) => chosenAction.value=action
+
+    const registerNewComment=(comment)=>{
+        let productComments=product.value.product.comments;
+        if (productComments && Array.isArray(productComments)){
+            productComments.push(comment);
+            chooseAction('')
+            return;
+        }
+        productComments=[comment]
+        chooseAction('')
+    }
+
+
 </script>
 
 <style scoped>
-
+.pointer{
+    cursor: pointer;
+}
 </style>

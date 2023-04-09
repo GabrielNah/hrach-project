@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpsertCategoryRequest;
 use App\Models\Category;
 use App\Services\CategoryRepasitory;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -58,5 +59,16 @@ class CategoryController extends Controller
             return $this->deletedResponse();
         }
         return $this->errorResponse(['msg'=>'Something went wrong,refresh page and and try again']);
+    }
+
+    public function makeCategoriesShowable(Request $request):JsonResponse
+    {
+        $request->validate([
+            'ids'=>'array|required|min:1',
+            'ids.*'=>'required|integer|exists:categories,id'
+        ]);
+        $this->categoryRepasitory->makeShowable($request->input('ids'));
+        return $this->successResponse();
+
     }
 }

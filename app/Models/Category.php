@@ -12,11 +12,12 @@ class Category extends Model
     const TABLE='categories';
     protected $table=self::TABLE;
     protected $fillable=[
-        'name','active'
+        'name','active','in_header'
     ];
 
     protected $casts=[
-        'active'=>'boolean'
+        'active'=>'boolean',
+        'in_header'=>'boolean'
     ];
 
     public function subCategories():HasManyThrough

@@ -36,6 +36,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::group(['prefix'=>'category'],function (){
             Route::get('',[CategoryController::class,'index']);
             Route::post('store/{category?}',[CategoryController::class,'store']);
+            Route::put('showable',[CategoryController::class,'makeCategoriesShowable']);
             Route::delete('/{category}',[CategoryController::class,'delete']);
         });
 

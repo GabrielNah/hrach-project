@@ -64,4 +64,12 @@ class CategoryRepasitory
             return false;
         }
     }
+
+    public function makeShowable(array $ids):void
+    {
+        Category::query()
+            ->whereIn('id',$ids)
+            ->update(['in_header'=>true]);
+
+    }
 }

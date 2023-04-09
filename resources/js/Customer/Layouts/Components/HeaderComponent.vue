@@ -69,27 +69,7 @@
                         </a> <!-- brand-wrap.// -->
                     </div>
                     <div class="col-6 col-sm col-md col-lg flex-md-grow-0">
-
-                        <!-- mobile-only -->
-                        <div class="d-md-none float-right">
-                            <a href="#" class="btn btn-light"> <i class="fa fa-bell"></i> </a>
-                            <a href="#" class="btn btn-light"> <i class="fa fa-user"></i> </a>
-                            <a href="#" class="btn btn-light"> <i class="fa fa-shopping-cart"></i> 2 </a>
-                        </div>
-                        <!-- mobile-only //end  -->
-
-                        <div class="category-wrap  dropdown ">
-                            <button type="button" class="btn btn-light dropdown-toggle" id="dropdownShopByMenuButton" data-bs-toggle="dropdown" aria-expanded="false">   Shop by
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownShopByMenuButton">
-                                <a class="dropdown-item" href="#">Machinery / Mechanical Parts / Tools </a>
-                                <a class="dropdown-item" href="#">Consumer Electronics / Home Appliances </a>
-                                <a class="dropdown-item" href="#">Auto / Transportation</a>
-                                <a class="dropdown-item" href="#">Apparel / Textiles / Timepieces </a>
-                                <a class="dropdown-item" href="#">Home & Garden / Construction / Lights </a>
-                                <a class="dropdown-item" href="#">Beauty & Personal Care / Health </a>
-                            </div>
-                        </div>  <!-- category-wrap.// -->
+<!-- category-wrap.// -->
                     </div> <!-- col.// -->
                     <div class="col-lg-6 col-xl col-md-5 col-sm-12 flex-grow-1">
                         <form action="#" class="search-header">

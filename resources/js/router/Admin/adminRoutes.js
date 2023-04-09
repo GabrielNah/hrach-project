@@ -8,6 +8,7 @@ import Settings from "../../Admin/Pages/Settings.vue";
 import EditProduct from "../../Admin/Pages/Products/EditProduct.vue";
 import SliderMaker from "../../Admin/Pages/Slider/SliderMaker.vue";
 import Banners from "../../Admin/Pages/Banners.vue";
+import Inquiries from "../../Admin/Pages/Inquiries.vue";
 
 export const ADMIN_LOGIN_ROUTE='admin.login';
 export const ADMIN_DASHBOARD_ROUTE='admin.dashboard';
@@ -18,6 +19,7 @@ export const ADMIN_SETTING_ROUTE='admin.settings';
 export const ADMIN_PRODUCT_EDIT='admin.products.edit';
 export const ADMIN_SLIDER_EDIT = 'admin.slider.edit';
 export const ADMIN_BANNERS_EDIT = 'admin.banners.edit';
+export const ADMIN_INQUIRES = 'admin.inquiries';
 
 export default ()=>([
     {
@@ -68,6 +70,11 @@ export default ()=>([
                 path:'banners',
                 name:ADMIN_BANNERS_EDIT,
                 component: Banners
+            },
+            {
+                path:'inquiries',
+                name:ADMIN_INQUIRES,
+                component: Inquiries
             },
         ]
     }

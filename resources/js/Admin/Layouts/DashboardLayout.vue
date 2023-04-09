@@ -50,11 +50,23 @@
                 </router-link>
             </li>
             <li>
+                <router-link :to="{name:ADMIN_INQUIRES}" active-class="active">
+                    <span v-if="InquiryExists" class="inquiry_count">
+                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                    </svg>
+                    <span class="nav-text">
+                           Inquiries
+                    </span>
+                </router-link>
+            </li>
+            <li>
                 <router-link :to="{name:ADMIN_SETTING_ROUTE}" active-class="active">
                     <i class="fa fa-cogs fa-2x"></i>
                     <span class="nav-text">
                             Settings
-                        </span>
+                    </span>
                 </router-link>
             </li>
             <li class="has-subnav">
@@ -106,13 +118,13 @@
 <script>
 
 
-import {inject, onMounted, ref} from "vue";
+import {computed, inject, onMounted, ref} from "vue";
 import {
     ADMIN_LOGIN_ROUTE,
     ADMIN_CATEGORIES_ROUTE,
     ADMIN_PRODUCT_LIST,
     ADMIN_SETTING_ROUTE,
-    ADMIN_SLIDER_EDIT, ADMIN_BANNERS_EDIT, ADMIN_DASHBOARD_ROUTE
+    ADMIN_SLIDER_EDIT, ADMIN_BANNERS_EDIT, ADMIN_DASHBOARD_ROUTE, ADMIN_INQUIRES
 } from "../../router/Admin/adminRoutes";
 import {redirectToRouteByName} from "../../Services/GlobalHelpers";
 import Loader from "../../SharedComponents/Loader.vue";
@@ -126,6 +138,9 @@ export default {
         const setLoaded = () => {
             loaded.value = true
         }
+
+        const InquiryExists=computed(()=>store.getters.inquiries)
+
         onMounted(() => {
             if (!store.getters.admin?.value) {
                 store.actions.setAdmin(null)
@@ -142,7 +157,10 @@ export default {
             ADMIN_SETTING_ROUTE,
             ADMIN_SLIDER_EDIT,
             ADMIN_BANNERS_EDIT,
-            ADMIN_DASHBOARD_ROUTE
+            ADMIN_DASHBOARD_ROUTE,
+            ADMIN_INQUIRES,
+            InquiryExists,
+
         }
     }
 }
@@ -154,16 +172,24 @@ export default {
 @import url(https://fonts.googleapis.com/css?family=Titillium+Web:300);
 
 svg{
-    position: relative;
-    display: table-cell;
     width: 60px;
-    height: 36px;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 20px;
+    display: block;
+    height: 26px;
 }
 .active{
     background-color: #2d3748;
+}
+.inquiry_count{
+    position: absolute;
+    border-radius: 50%;
+    background-color: #00b517;
+    color: #050a1b;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 12px;
+    top: 0;
 }
 .active span {
     font-weight: bold;

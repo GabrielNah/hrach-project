@@ -8,197 +8,219 @@
                 <!-- sidebar -->
                 <div class="col-lg-3">
                     <!-- Toggle button -->
-                    <button
-                        class="btn btn-outline-secondary mb-3 w-100 d-lg-none"
-                        type="button"
-                        data-mdb-toggle="collapse"
-                        data-mdb-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation"
-                    >
-                        <span>Show filter</span>
-                    </button>
-                    <!-- Collapsible wrapper -->
-                    <div class="collapse card d-lg-block mb-5" id="navbarSupportedContent">
-                        <div class="accordion" id="accordionPanelsStayOpenExample">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingOne">
-                                    <button
-                                        class="accordion-button text-dark bg-light"
-                                        type="button"
-                                        data-mdb-toggle="collapse"
-                                        data-mdb-target="#panelsStayOpen-collapseOne"
-                                        aria-expanded="true"
-                                        aria-controls="panelsStayOpen-collapseOne"
-                                    >
-                                        Related items
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
-                                    <div class="accordion-body">
-                                        <ul class="list-unstyled">
-                                            <li><a href="#" class="text-dark">Electronics </a></li>
-                                            <li><a href="#" class="text-dark">Home items </a></li>
-                                            <li><a href="#" class="text-dark">Books, Magazines </a></li>
-                                            <li><a href="#" class="text-dark">Men's clothing </a></li>
-                                            <li><a href="#" class="text-dark">Interiors items </a></li>
-                                            <li><a href="#" class="text-dark">Underwears </a></li>
-                                            <li><a href="#" class="text-dark">Shoes for men </a></li>
-                                            <li><a href="#" class="text-dark">Accessories </a></li>
-                                        </ul>
+                    <form >
+                        <button
+                            class="btn btn-outline-secondary mb-3 w-100 d-lg-none"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation"
+                        >
+                            <span>Show filter</span>
+                        </button>
+                        <!-- Collapsible wrapper -->
+                        <div class="collapse card d-lg-block mb-5" id="navbarSupportedContent">
+                            <div class="accordion" id="accordionPanelsStayOpenExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button
+                                            class="accordion-button text-dark bg-light"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#panelsStayOpen-collapseOne"
+                                            aria-controls="panelsStayOpen-collapseOne"
+                                        >
+                                            Categories
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse " aria-labelledby="headingOne">
+                                        <div class="accordion-body">
+                                            <ul class="list-unstyled">
+                                                <li v-for="category in searchHelpers.categories"
+                                                    :key="category.id"
+                                                >
+                                                    <div class="form-check">
+                                                        <label class="form-check-label" >{{  category.name }}
+                                                            <input class="form-check-input" type="checkbox"
+                                                                   name="categories[]"
+                                                                   :value="category.id"  />
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingTwo">
-                                    <button
-                                        class="accordion-button text-dark bg-light"
-                                        type="button"
-                                        data-mdb-toggle="collapse"
-                                        data-mdb-target="#panelsStayOpen-collapseTwo"
-                                        aria-expanded="true"
-                                        aria-controls="panelsStayOpen-collapseTwo"
-                                    >
-                                        Brands
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
-                                    <div class="accordion-body">
-                                        <div>
-                                            <!-- Checked checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked1" checked />
-                                                <label class="form-check-label" for="flexCheckChecked1">Mercedes</label>
-                                                <span class="badge badge-secondary float-end">120</span>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button
+                                            class="accordion-button text-dark bg-light"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#panelsStayOpen-collapseTwo"
+                                            aria-controls="panelsStayOpen-collapseTwo"
+                                        >
+                                            Tags
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse " aria-labelledby="headingTwo">
+                                        <div class="accordion-body">
+                                            <ul class="list-unstyled">
+
+                                                <li v-for="tag in searchHelpers.tags"
+                                                    :key="tag.id">
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            {{ tag.name }}
+                                                            <input class="form-check-input" type="checkbox" :value="tag.id" name="tags[]" />
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" >
+                                        <button
+                                            class="accordion-button text-dark bg-light"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#panelsStayOpen-collapseThree"
+                                            aria-expanded="false"
+                                            aria-controls="panelsStayOpen-collapseThree"
+                                        >
+                                            Price
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse " aria-labelledby="headingThree">
+                                        <div class="accordion-body">
+                                            <div class="range">
+                                                <input type="range" class="form-range" id="customRange1" />
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" >
-                                    <button
-                                        class="accordion-button text-dark bg-light"
-                                        type="button"
-                                        data-mdb-toggle="collapse"
-                                        data-mdb-target="#panelsStayOpen-collapseThree"
-                                        aria-expanded="false"
-                                        aria-controls="panelsStayOpen-collapseThree"
-                                    >
-                                        Price
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
-                                    <div class="accordion-body">
-                                        <div class="range">
-                                            <input type="range" class="form-range" id="customRange1" />
-                                        </div>
-                                        <div class="row mb-3">
-                                            <div class="col-6">
-                                                <p class="mb-0">
-                                                    Min
-                                                </p>
-                                                <div class="form-outline">
-                                                    <input type="number"  class="form-control" />
-                                                    <label class="form-label" >$0</label>
+                                            <div class="row mb-3">
+                                                <div class="col-6">
+                                                    <p class="mb-0">
+                                                        Min
+                                                    </p>
+                                                    <div class="form-outline">
+                                                        <input type="number"  class="form-control" />
+                                                        <label class="form-label" >$0</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <p class="mb-0">
+                                                        Max
+                                                    </p>
+                                                    <div class="form-outline">
+                                                        <input type="number"  class="form-control" />
+                                                        <label class="form-label" >$1,0000</label>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-6">
-                                                <p class="mb-0">
-                                                    Max
-                                                </p>
-                                                <div class="form-outline">
-                                                    <input type="number"  class="form-control" />
-                                                    <label class="form-label" >$1,0000</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" >
+                                        <button
+                                            class="accordion-button text-dark bg-light"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#panelsStayOpen-collapseFour"
+                                            aria-expanded="false"
+                                            aria-controls="panelsStayOpen-collapseFour"
+                                        >
+                                            Colors
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse " aria-labelledby="headingThree">
+                                        <div class="accordion-body">
+                                            <div class="w-100 p-2 d-flex gap-2 flex-wrap">
+                                                <div class="checkbox-container" v-for="color in searchHelpers.colors" :key="color.id">
+                                                    <label :style="{backgroundColor:color.value}">
+                                                        <input type="checkbox" @change="changeStyles"
+                                                               name="colors[]"
+                                                               :value="color.id"
+                                                        />
+                                                    </label>
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="button" class="btn btn-white w-100 border border-secondary">apply</button>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" >
-                                    <button
-                                        class="accordion-button text-dark bg-light"
-                                        type="button"
-                                        data-mdb-toggle="collapse"
-                                        data-mdb-target="#panelsStayOpen-collapseFour"
-                                        aria-expanded="false"
-                                        aria-controls="panelsStayOpen-collapseFour"
-                                    >
-                                        Size
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingThree">
-                                    <div class="accordion-body">
-                                        <input type="checkbox" class="btn-check border justify-content-center" id="btn-check1" checked autocomplete="off" />
-                                        <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check1">XS</label>
-                                        <input type="checkbox" class="btn-check border justify-content-center" id="btn-check2" checked autocomplete="off" />
-                                        <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check2">SM</label>
-                                        <input type="checkbox" class="btn-check border justify-content-center" id="btn-check3" checked autocomplete="off" />
-                                        <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check3">LG</label>
-                                        <input type="checkbox" class="btn-check border justify-content-center" id="btn-check4" checked autocomplete="off" />
-                                        <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check4">XXL</label>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" >
+                                        <button
+                                            class="accordion-button text-dark bg-light"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#panelsStayOpen-collapseSize"
+                                            aria-expanded="false"
+                                            aria-controls="panelsStayOpen-collapseSize"
+                                        >
+                                            Sizes
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseSize" class="accordion-collapse collapse " aria-labelledby="headingThree">
+                                        <div class="accordion-body">
+                                            <div class="w-100 p-2 d-flex gap-2 flex-wrap">
+
+                                                    <label class="custom-checkbox" v-for="size in searchHelpers.sizes" :key="size.id">
+                                                    <input type="checkbox"  @change="changeStyles"
+                                                           name="sizes[]"
+                                                           :value="size.id"
+                                                    />
+
+                                                        {{ size.size }}
+                                                    </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingThree">
-                                    <button
-                                        class="accordion-button text-dark bg-light"
-                                        type="button"
-                                        data-mdb-toggle="collapse"
-                                        data-mdb-target="#panelsStayOpen-collapseFive"
-                                        aria-expanded="false"
-                                        aria-controls="panelsStayOpen-collapseFive"
-                                    >
-                                        Ratings
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse show" aria-labelledby="headingThree">
-                                    <div class="accordion-body">
-                                        <!-- Default checkbox -->
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value=""
-                                                   checked />
-                                            <label class="form-check-label" >
-                                                <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i>
-                                                <i class="fas fa-star text-warning"></i>
-                                            </label>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingThree">
+                                        <button
+                                            class="accordion-button text-dark bg-light"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#panelsStayOpen-collapseFive"
+                                            aria-expanded="false"
+                                            aria-controls="panelsStayOpen-collapseFive"
+                                        >
+                                            Ratings
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse " aria-labelledby="headingThree">
+                                        <div class="accordion-body">
+                                            <!-- Default checkbox -->
+                                            <div class="form-check" v-for="star in 5">
+                                                <label class="form-check-label" >
+                                                <input class="form-check-input" type="checkbox" :value="star" name="rating[]"/>
+                                                    <svg v-for="i in 5" fill="none" height="15" viewBox="0 0 16 15" width="16"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path :fill="i <= star ?'#FF9017':'#D5CDC5'" clip-rule="evenodd" d="M8 12.0553L12.944 15L11.632 9.45L16 5.71579L10.248 5.23421L8 0L5.752 5.23421L0 5.71579L4.368 9.45L3.056 15L8 12.0553Z"
+                                                              fill-rule="evenodd"/>
+                                                    </svg>
+                                                </label>
+                                            </div>
                                         </div>
-                                        <!-- Default checkbox -->
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value=""
-                                                  checked />
-                                            <label class="form-check-label">
-                                                <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i>
-                                                <i class="fas fa-star text-secondary"></i>
-                                            </label>
-                                        </div>
-                                        <!-- Default checkbox -->
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value=""
-                                                    checked />
-                                            <label class="form-check-label" >
-                                                <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-secondary"></i>
-                                                <i class="fas fa-star text-secondary"></i>
-                                            </label>
-                                        </div>
-                                        <!-- Default checkbox -->
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked />
-                                            <label class="form-check-label" for="flexCheckDefault">
-                                                <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-secondary"></i><i class="fas fa-star text-secondary"></i>
-                                                <i class="fas fa-star text-secondary"></i>
-                                            </label>
-                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <div class="d-flex w-100 justify-content-center align-items-center">
+                                        <button class="btn btn-primary">
+                                            Apply
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+                    </form>
+
                 </div>
                 <!-- sidebar -->
                 <!-- content -->
@@ -284,8 +306,6 @@ export default {
 import {computed, inject, onMounted, reactive, watch, watchEffect} from "vue";
 import  {executeSearch} from "../Camposables/useSearchExacuter";
 import {useRoute} from "vue-router";
-import {all} from "axios";
-
 
 const {search,searchByCategories} = inject('searchHelper')
 const route = useRoute()
@@ -298,6 +318,31 @@ const paginator=reactive({
     prev_page_url:'',
     next_page_url:'',
 })
+const changeStyles=(e)=>{
+    const checkbox=e.target;
+
+    if (checkbox.checked){
+        checkbox.parentNode.classList.add('checked_color_size')
+        return;
+    }
+    checkbox.parentNode.classList.remove('checked_color_size')
+}
+const searchHelpers=reactive({
+    tags:[],
+    colors:[],
+    categories:[],
+    sizes:[],
+})
+
+const getSearchHelpers=()=>{
+    axios.get('/api/product/searchHelpers')
+    .then(({data})=>{
+       searchHelpers.categories=data.categories
+       searchHelpers.tags=data.tags
+       searchHelpers.colors=data.colors
+       searchHelpers.sizes=data.sizes
+    })
+}
 const category=computed(()=>route.params.category)
 const setPaginatorData=({products})=>{
     const keys=Object.keys(paginator)
@@ -337,6 +382,7 @@ onMounted(()=>{
     if (!search.value){
         searchByCategories(category.value || 'all')
     }
+    getSearchHelpers()
 })
 
 </script>
@@ -350,4 +396,59 @@ onMounted(()=>{
 .icon-hover:hover i {
     color: #3b71ca !important;
 }
+
+.checked_color_size{
+    box-shadow: 1px 5px 15px -2px rgba(20,17,17,0.75);
+    -webkit-box-shadow: 1px 5px 15px -2px rgba(20,17,17,0.75);
+    -moz-box-shadow: 1px 5px 15px -2px rgba(20,17,17,0.75);
+    border: 3px solid rgb(23,190,136);
+}
+.checkbox-container {
+    position: relative;
+    width: 30px;
+    height: 30px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 2;
+}
+.checkbox-container label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    box-sizing: border-box;
+    z-index:3;
+    cursor: pointer;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.custom-checkbox{
+    position: relative;
+    display: block;
+    min-width: 50px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    padding: 8px;
+    text-align: center;
+    line-height: 1;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 3;
+}
+
+
+
+
 </style>

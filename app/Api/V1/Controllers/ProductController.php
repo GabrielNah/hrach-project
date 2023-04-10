@@ -5,7 +5,11 @@ namespace App\Api\V1\Controllers;
 use App\Api\V1\Requests\SearchProductsRequest;
 use App\Api\V1\Resources\ProductResource;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Color;
 use App\Models\Product;
+use App\Models\Size;
+use App\Models\Tag;
 use App\Services\Enums\SEARCH_TYPES;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -99,6 +103,16 @@ class ProductController extends Controller
             })
             ->paginate(2);
         return $this->successResponse(compact('products'));
+    }
+
+    public function giveSearchHelpers():JsonResponse
+    {
+        $tags=Tag::query()->get();
+        $colors=Color::query()->where('type',Color::TYPE_GLOBAL)->get();
+        $sizes=Size::query()->where('type',Size::TYPE_GLOBAL)->get();
+        $categories=Category::query()->where('active','1')->get();
+        return $this->successResponse(compact('sizes','categories','colors','tags'));
+
     }
 
 }

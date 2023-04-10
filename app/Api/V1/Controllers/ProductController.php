@@ -2,10 +2,13 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Api\V1\Requests\SearchProductsRequest;
 use App\Api\V1\Resources\ProductResource;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Services\Enums\SEARCH_TYPES;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ProductController extends Controller
@@ -64,6 +67,38 @@ class ProductController extends Controller
             'likable'=>$likable
 
         ]);
+    }
+
+
+    public function search(SearchProductsRequest $request):JsonResponse
+    {
+        $SEARCH_TYPE=$request->input('type');
+        $products=Product::query()
+            ->with(['generalFile','priceForOne','tags'])
+            ->when(($SEARCH_TYPE === SEARCH_TYPES::CATEGORY->value &&
+                $request->input('category')!=='all') ,function (Builder $q) use ($request){
+                $q->whereHas('category',function ($q) use ($request){
+                    $q->where('name',$request->input('category'));
+                });
+            })
+            ->when($SEARCH_TYPE === SEARCH_TYPES::IDS->value,function (Builder $q) use ($request){
+                $q->whereIn('id',$request->input('ids'));
+            })
+            ->when($SEARCH_TYPE === SEARCH_TYPES::DEFAULT->value,function (Builder $q)use ($request){
+                $val=$request->input('value');
+                $q->where(function (Builder $q) use ($val){
+                      $q->where('name','LIKE',"%$val%")
+                        ->orWhere('title','LIKE',"%$val%")
+                        ->orWhere('description','LIKE',"%$val%");
+                })->orWhereHas('category',function ($q)use ($val){
+                    $q->where('name','LIKE',"$val");
+                })->orWhereHas('tags',function ($q)use ($val){
+                        $q->where('name','LIKE',"$val")
+                        ->orWhere('description','LIKE',"$val");
+                    });
+            })
+            ->paginate(2);
+        return $this->successResponse(compact('products'));
     }
 
 }

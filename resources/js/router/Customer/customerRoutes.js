@@ -14,7 +14,7 @@ export default ()=>([
         component:HomePage
     },
     {
-      path:'products/list',
+      path:'products/list/:category?',
       name: PRODUCT_LIST_PAGE,
       component:SearchedProducts
     },

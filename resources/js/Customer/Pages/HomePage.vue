@@ -13,10 +13,10 @@
                 <h3 class="title-section">Recommended items</h3>
             </header>
 
-            <recomended-items/>
+<!--            <recomended-items/>-->
         </section>
         <!-- =============== SECTION 1 END =============== -->
-        <banners-component/>
+        <banners-component />
 
         <!-- =============== SECTION 2 =============== -->
         <section class="padding-bottom">
@@ -24,7 +24,7 @@
             <header class="section-heading mb-4">
                 <h3 class="title-section">Daily deals</h3>
             </header>
-            <daily-deals/>
+<!--            <daily-deals/>-->
         </section>
         <!-- =============== SECTION 2 END =============== -->
 
@@ -37,12 +37,18 @@
 <script>
 import SliderComponent from "../../SharedComponents/SliderComponent.vue";
 import HeaderComponent from "../Layouts/Components/HeaderComponent.vue";
-import BannersComponent from "../../SharedComponents/BannersComponent.vue";
 import RecomendedItems from "./Components/RecomendedItems.vue";
 import DailyDeals from "./Components/Daily-deals.vue";
+import BannersComponent from "../../SharedComponents/BannersComponent.vue";
 export default {
-name: "HomePage",
-    components: {DailyDeals, RecomendedItems, BannersComponent, HeaderComponent, SliderComponent}
+    name: "HomePage",
+    components: {
+        DailyDeals,
+        RecomendedItems,
+        HeaderComponent,
+        BannersComponent,
+        SliderComponent
+    }
 }
 </script>
 

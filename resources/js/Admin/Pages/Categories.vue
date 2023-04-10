@@ -157,7 +157,7 @@ export default {
             if (!categories.value.length){
                 return [];
             }
-            return  categories.value.filter((ct)=>ct?.sub_categories?.length)
+            return  categories.value.filter((ct)=>!!(ct?.sub_categories))
         })
 
 

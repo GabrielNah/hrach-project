@@ -11,7 +11,9 @@
                         <img :src="'/'+slide.image" class="d-block w-100" alt="...">
                         <div class="carousel-caption  d-md-block">
                             <h5>{{ slide.title }}</h5>
-                            <p>{{ slide.link_text}}</p>
+                            <p class="pointer" @click="searchByIds(slide.value || [])">
+                                {{ slide.link_text}}
+                            </p>
                         </div>
                     </div>
             </template>
@@ -30,6 +32,7 @@
 
 <script>
 import {Carousel} from "bootstrap"
+import {inject} from "vue";
 export default {
     name: "SliderComponent",
     data:()=>({
@@ -42,6 +45,13 @@ export default {
             .then(({data})=>{
                 this.slides=data.sliders
             })
+        }
+    },
+    setup(){
+        const {searchByIds}=inject('searchHelper')
+
+        return{
+            searchByIds
         }
     },
     mounted() {
@@ -59,5 +69,7 @@ export default {
 </script>
 
 <style scoped>
-
+.pointer{
+    cursor: pointer;
+}
 </style>

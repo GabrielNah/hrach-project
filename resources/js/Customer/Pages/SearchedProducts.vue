@@ -72,42 +72,12 @@
                                                 <label class="form-check-label" for="flexCheckChecked1">Mercedes</label>
                                                 <span class="badge badge-secondary float-end">120</span>
                                             </div>
-                                            <!-- Checked checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked2" checked />
-                                                <label class="form-check-label" for="flexCheckChecked2">Toyota</label>
-                                                <span class="badge badge-secondary float-end">15</span>
-                                            </div>
-                                            <!-- Checked checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked3" checked />
-                                                <label class="form-check-label" for="flexCheckChecked3">Mitsubishi</label>
-                                                <span class="badge badge-secondary float-end">35</span>
-                                            </div>
-                                            <!-- Checked checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked4" checked />
-                                                <label class="form-check-label" for="flexCheckChecked4">Nissan</label>
-                                                <span class="badge badge-secondary float-end">89</span>
-                                            </div>
-                                            <!-- Default checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                                                <label class="form-check-label" for="flexCheckDefault">Honda</label>
-                                                <span class="badge badge-secondary float-end">30</span>
-                                            </div>
-                                            <!-- Default checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                                                <label class="form-check-label" for="flexCheckDefault">Suzuki</label>
-                                                <span class="badge badge-secondary float-end">30</span>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingThree">
+                                <h2 class="accordion-header" >
                                     <button
                                         class="accordion-button text-dark bg-light"
                                         type="button"
@@ -130,8 +100,8 @@
                                                     Min
                                                 </p>
                                                 <div class="form-outline">
-                                                    <input type="number" id="typeNumber" class="form-control" />
-                                                    <label class="form-label" for="typeNumber">$0</label>
+                                                    <input type="number"  class="form-control" />
+                                                    <label class="form-label" >$0</label>
                                                 </div>
                                             </div>
                                             <div class="col-6">
@@ -139,8 +109,8 @@
                                                     Max
                                                 </p>
                                                 <div class="form-outline">
-                                                    <input type="number" id="typeNumber" class="form-control" />
-                                                    <label class="form-label" for="typeNumber">$1,0000</label>
+                                                    <input type="number"  class="form-control" />
+                                                    <label class="form-label" >$1,0000</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -149,7 +119,7 @@
                                 </div>
                             </div>
                             <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingThree">
+                                <h2 class="accordion-header" >
                                     <button
                                         class="accordion-button text-dark bg-light"
                                         type="button"
@@ -191,24 +161,27 @@
                                     <div class="accordion-body">
                                         <!-- Default checkbox -->
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked />
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                            <input class="form-check-input" type="checkbox" value=""
+                                                   checked />
+                                            <label class="form-check-label" >
                                                 <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i>
                                                 <i class="fas fa-star text-warning"></i>
                                             </label>
                                         </div>
                                         <!-- Default checkbox -->
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked />
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                            <input class="form-check-input" type="checkbox" value=""
+                                                  checked />
+                                            <label class="form-check-label">
                                                 <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i>
                                                 <i class="fas fa-star text-secondary"></i>
                                             </label>
                                         </div>
                                         <!-- Default checkbox -->
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked />
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                            <input class="form-check-input" type="checkbox" value=""
+                                                    checked />
+                                            <label class="form-check-label" >
                                                 <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-secondary"></i>
                                                 <i class="fas fa-star text-secondary"></i>
                                             </label>
@@ -231,14 +204,8 @@
                 <!-- content -->
                 <div class="col-lg-9">
                     <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
-                        <strong class="d-block py-2">32 Items found </strong>
+                        <strong class="d-block py-2">{{ paginator.total }} Items found </strong>
                         <div class="ms-auto">
-                            <select class="form-select d-inline-block w-auto border pt-1">
-                                <option value="0">Best match</option>
-                                <option value="1">Recommended</option>
-                                <option value="2">High rated</option>
-                                <option value="3">Randomly</option>
-                            </select>
                             <div class="btn-group shadow-0 border">
                                 <a href="#" class="btn btn-light" title="List view">
                                     <i class="fa fa-bars fa-lg"></i>
@@ -251,124 +218,11 @@
                     </header>
 
                     <div class="row">
-                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex">
-                            <div class="card w-100 my-2 shadow-2-strong">
-                                <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/10.webp" class="card-img-top" />
-                                <div class="card-body d-flex flex-column">
-                                    <div class="d-flex flex-row">
-                                        <h5 class="mb-1 me-1">$34,50</h5>
-                                        <span class="text-danger"><s>$49.99</s></span>
-                                    </div>
-                                    <p class="card-text">T-shirts with multiple colors, for men and lady</p>
-                                    <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                        <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-                                        <a href="#!" class="btn btn-light border icon-hover px-2 pt-2"><i class="fas fa-heart fa-lg text-secondary px-1"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex">
-                            <div class="card w-100 my-2 shadow-2-strong">
-                                <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/11.webp" class="card-img-top" />
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">$120.00</h5>
-                                    <p class="card-text">Winter Jacket for Men and Women, All sizes</p>
-                                    <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                        <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-                                        <a href="#!" class="btn btn-light border icon-hover px-2 pt-2"><i class="fas fa-heart fa-lg text-secondary px-1"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex">
-                            <div class="card w-100 my-2 shadow-2-strong">
-                                <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/12.webp" class="card-img-top" />
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">$120.00</h5>
-                                    <p class="card-text">T-shirts with multiple colors, for men and lady</p>
-                                    <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                        <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-                                        <a href="#!" class="btn btn-light border icon-hover px-2 pt-2"><i class="fas fa-heart fa-lg text-secondary px-1"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex">
-                            <div class="card w-100 my-2 shadow-2-strong">
-                                <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/13.webp" class="card-img-top" style="aspect-ratio: 1 / 1"/>
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">$120.00</h5>
-                                    <p class="card-text">Blazer Suit Dress Jacket for Men, Blue color</p>
-                                    <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                        <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-                                        <a href="#!" class="btn btn-light border icon-hover px-2 pt-2"><i class="fas fa-heart fa-lg text-secondary px-1"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex">
-                            <div class="card w-100 my-2 shadow-2-strong">
-                                <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/14.webp" class="card-img-top" style="aspect-ratio: 1 / 1" />
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">$510.00</h5>
-                                    <p class="card-text">Slim sleeve wallet Italian leather - multiple colors</p>
-                                    <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                        <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-                                        <a href="#!" class="btn btn-light border icon-hover px-2 pt-2"><i class="fas fa-heart fa-lg text-secondary px-1"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex">
-                            <div class="card w-100 my-2 shadow-2-strong">
-                                <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/10.webp" class="card-img-top" />
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">$79.99</h5>
-                                    <p class="card-text">T-shirts with multiple colors, for men and lady</p>
-                                    <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                        <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-                                        <a href="#!" class="btn btn-light border icon-hover px-2 pt-2"><i class="fas fa-heart fa-lg text-secondary px-1"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex">
-                            <div class="card w-100 my-2 shadow-2-strong">
-                                <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/11.webp" class="card-img-top" />
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">$120.00</h5>
-                                    <p class="card-text">Winter Jacket for Men and Women, All sizes</p>
-                                    <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                        <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-                                        <a href="#!" class="btn btn-light border icon-hover px-2 pt-2"><i class="fas fa-heart fa-lg text-secondary px-1"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex">
-                            <div class="card w-100 my-2 shadow-2-strong">
-                                <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/12.webp" class="card-img-top" />
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">$120.00</h5>
-                                    <p class="card-text">T-shirts with multiple colors, for men and lady</p>
-                                    <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                        <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-                                        <a href="#!" class="btn btn-light border icon-hover px-2 pt-2"><i class="fas fa-heart fa-lg text-secondary px-1"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex">
-                            <div class="card w-100 my-2 shadow-2-strong">
-                                <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/9.webp" class="card-img-top" />
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">$43.50</h5>
-                                    <p class="card-text">Summer New Men's Denim Jeans Shorts</p>
-                                    <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                        <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-                                        <a href="#!" class="btn btn-light border icon-hover px-2 pt-2"><i class="fas fa-heart fa-lg text-secondary px-1"></i></a>
-                                    </div>
-                                </div>
+                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex" v-for="product in paginator.products"
+                            :key="product.id"
+                        >
+                            <div class=" w-100 my-2 ">
+                                <product-cart :product="product"/>
                             </div>
                         </div>
                     </div>
@@ -378,20 +232,36 @@
                     <!-- Pagination -->
                     <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
                         <ul class="pagination">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" aria-label="Previous">
+                            <li class="page-item "
+                                :class="{'disabled':!paginator.prev_page_url}"
+                            >
+                                <span class="page-link"  aria-label="Previous"
+                                      :class="{'disabled':!paginator.prev_page_url}"
+                                      :aria-disabled="!paginator.prev_page_url"
+                                      @click="getPageData(paginator.prev_page_url)"
+                                >
                                     <span aria-hidden="true">&laquo;</span>
-                                </a>
+                                </span>
                             </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">4</a></li>
-                            <li class="page-item"><a class="page-link" href="#">5</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
+                            <template v-for="page in paginator.last_page">
+                                <li class="page-item "
+                                    :class="{'active':page===paginator.current_page}"
+                                    @click="getPageData(page)"
+                                >
+                                    <span class="page-link">{{ page }}</span>
+                                </li>
+                            </template>
+
+                            <li class="page-item"
+                                :class="{'disabled':!paginator.next_page_url}"
+                            >
+                                <span class="page-link"  aria-label="Next"
+                                      :class="{'disabled':!paginator.next_page_url}"
+                                      :aria-disabled="!paginator.next_page_url"
+                                      @click="getPageData(paginator.next_page_url)"
+                                >
                                     <span aria-hidden="true">&raquo;</span>
-                                </a>
+                                </span>
                             </li>
                         </ul>
                     </nav>
@@ -404,9 +274,71 @@
 </template>
 
 <script>
+import ProductCart from "./Components/Product-cart.vue";
 export default {
-    name: "SearchedProducts"
+    name: "SearchedProducts",
+    components:{ProductCart}
 }
+</script>
+<script setup>
+import {computed, inject, onMounted, reactive, watch, watchEffect} from "vue";
+import  {executeSearch} from "../Camposables/useSearchExacuter";
+import {useRoute} from "vue-router";
+import {all} from "axios";
+
+
+const {search,searchByCategories} = inject('searchHelper')
+const route = useRoute()
+const paginator=reactive({
+    current_page:0,
+    total:0,
+    products:[],
+    last_page:0,
+    per_page:0,
+    prev_page_url:'',
+    next_page_url:'',
+})
+const category=computed(()=>route.params.category)
+const setPaginatorData=({products})=>{
+    const keys=Object.keys(paginator)
+    keys.forEach((key)=>{
+        paginator[key]=products[key === 'products' ?'data':key] ?? null
+    })
+}
+
+const fulfillSearch=async (path='/api/product/search')=>{
+
+    let result =await executeSearch(search,path)
+    setPaginatorData(result.data)
+}
+const correctPathForSearch=(page)=>{
+    if (typeof page === "string"){
+        return page
+    }
+    return `/api/product/search?page=${page}`
+}
+
+const getPageData=(page)=>{
+    if (page===paginator.current_page) return;
+    fulfillSearch(correctPathForSearch(page))
+}
+
+
+watchEffect(async()=>{
+       if (search.value){
+            await fulfillSearch()
+       }
+})
+watch(()=>category.value,(val)=>{
+     searchByCategories(val)
+})
+
+onMounted(()=>{
+    if (!search.value){
+        searchByCategories(category.value || 'all')
+    }
+})
+
 </script>
 
 <style scoped>

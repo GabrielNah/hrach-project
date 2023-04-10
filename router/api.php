@@ -1,6 +1,11 @@
 <?php
 
+use App\Api\V1\Controllers\BannerController;
+use App\Api\V1\Controllers\CategoryController;
+use App\Api\V1\Controllers\CommentController;
+use App\Api\V1\Controllers\InquiryController;
 use App\Api\V1\Controllers\ProductController;
+use App\Api\V1\Controllers\SliderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,12 +27,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['prefix'=>'product'],function (){
     Route::get('/{product}',[ProductController::class,'show']);
-    Route::post('/search',[]);
+    Route::post('/search',[ProductController::class,'search']);
+});
+Route::prefix('category')->group(function (){
+    Route::get('/presentable',CategoryController::class);
 });
 Route::group(['prefix'=>'slider'],function (){
-    Route::get('',\App\Api\V1\Controllers\SliderController::class);
+    Route::get('',SliderController::class);
 });
-Route::get('/banners',\App\Api\V1\Controllers\BannerController::class);
+Route::get('/banners',BannerController::class);
 
-Route::post('/comment/{product}',\App\Api\V1\Controllers\CommentController::class);
-Route::post('/inquiry/{product}',\App\Api\V1\Controllers\InquiryController::class);
+Route::post('/comment/{product}',CommentController::class);
+Route::post('/inquiry/{product}',InquiryController::class);

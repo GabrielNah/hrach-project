@@ -3,11 +3,13 @@
         <header class="section-heading mb-4">
             <h3 class="title-section">{{ pageSettings.section_name }}</h3>
         </header>
-        <div class="row">
-            <template v-for="product in pageSettings.products" :id="product.id">
-                <div class="col-xl-3 col-lg-3 col-md-4 col-6 ">
-                    <product-cart :product="product"/>
-                </div>
+        <div class="row gap-3">
+            <template v-if="pageSettings.products.length">
+                <template v-for="product in pageSettings.products" :id="product.id">
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-6 ">
+                        <product-cart :product="product"/>
+                    </div>
+                </template>
             </template>
         </div>
         <div class="w-100 text-center button-34" v-if="pageSettings.next_page_url"
@@ -22,38 +24,47 @@
 
 <script>
 import ProductCart from "./Product-cart.vue";
-export default {
-    name: "RecomendedItems",
-    components: {ProductCart}
-}
-</script>
-<script setup>
-import {onMounted, reactive} from "vue";
-    const pageSettings=reactive({
-        section_name:'',
-        products:[],
-        next_page_url:''
-    })
-    const getNextPageData=()=>{
-        if (!pageSettings.next_page_url) return;
-        axios.get(pageSettings.next_page_url)
-            .then(({data})=>{
-                pageSettings.section_name=data.pageSettings.section_name;
-                pageSettings.products.push(...data.pageSettings.products.products)
-                pageSettings.next_page_url=data.pageSettings.products.next_page_url ? data.pageSettings.products.next_page_url + '&&main=true' : null ;
-            })
-    }
-    const getProducts=()=>{
-        axios.get('/api/product/front_page?main=true')
-        .then(({data})=>{
-            pageSettings.section_name=data.pageSettings.section_name;
-            pageSettings.products=data.pageSettings.products.products;
-            pageSettings.next_page_url=data.pageSettings.products.next_page_url ? data.pageSettings.products.next_page_url + '&&main=true' : null ;
-        })
-    }
+import { defineComponent, onMounted, reactive } from "vue";
+import axios from "axios";
 
-    onMounted(getProducts)
+export default defineComponent({
+    name: "RecomendedItems",
+    components: { ProductCart },
+    setup() {
+        const pageSettings = reactive({
+            section_name: "",
+            products: [],
+            next_page_url: "",
+        });
+        const getNextPageData = () => {
+            if (!pageSettings.next_page_url) return;
+            axios.get(pageSettings.next_page_url)
+                .then(({ data }) => {
+                    pageSettings.section_name = data.pageSettings.section_name;
+                    pageSettings.products.push(
+                        ...data.pageSettings.products.products
+                    );
+                    pageSettings.next_page_url = data.pageSettings.products.next_page_url
+                        ? data.pageSettings.products.next_page_url + "&&main=true"
+                        : null;
+                });
+        };
+        const getProducts = () => {
+            axios.get("/api/product/front_page?main=true")
+                .then(({ data }) => {
+                    pageSettings.section_name = data.pageSettings.section_name;
+                    pageSettings.products = data.pageSettings.products.products;
+                    pageSettings.next_page_url = data.pageSettings.products.next_page_url
+                        ? data.pageSettings.products.next_page_url + "&&main=true"
+                        : null;
+                });
+        };
+        onMounted(getProducts);
+        return { pageSettings, getNextPageData };
+    },
+});
 </script>
+
 
 <style scoped>
 .button-34 {

@@ -1,7 +1,6 @@
 import HomePage from "../../Customer/Pages/HomePage.vue";
 import ProductDetails from "../../Customer/Pages/Components/Product-Details.vue";
 import SearchedProducts from "../../Customer/Pages/SearchedProducts.vue";
-// import ProductDetails from "../../SharedComponents/Product/ProductDetails.vue";
 
 export const USER_LOGIN='user.login';
 export const USER_HOME_PAGE='user.home';

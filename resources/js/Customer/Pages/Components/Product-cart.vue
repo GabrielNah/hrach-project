@@ -1,7 +1,6 @@
 <template>
     <div class="card card-product-grid product-item w-100 h-100 d-flex flex-column" v-if="product">
-        <router-link  :to="{name:product_page}"
-            class="img-wrap w-100 p-1 flex-grow-1"
+        <router-link class="img-wrap w-100 p-1 flex-grow-1" :to="productRoute(product.id)"
         >
             <template v-if="product.general_file.type === 'video'">
                 <video :src="'/'+product.general_file.path" autoplay controls class="w-100 h-100"></video>
@@ -20,9 +19,7 @@
                 </svg>
             </div>
             <div>
-                <router-link
-                    :to="{name:product_page}"
-                    class="title"
+                <router-link class="title" :to="productRoute(product.id)"
                 >
                     {{ product.title }}
                 </router-link>
@@ -35,9 +32,8 @@
 </template>
 
 <script>
-import {PRODUCT_DETAIL_PAGE} from "../../../router/Customer/customerRoutes";
-
-export default {
+import {defineComponent} from "vue";
+export default defineComponent({
     name: "Product-cart",
     props:{
         product:{
@@ -45,10 +41,12 @@ export default {
             required:true
         }
     },
-    computed:{
-        product_page:()=>PRODUCT_DETAIL_PAGE
-    }
-}
+    methods:{
+        productRoute(id){
+            return {name:'product.detail',params:{id}}
+        }
+    },
+})
 </script>
 
 <style scoped>

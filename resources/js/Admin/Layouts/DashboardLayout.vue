@@ -70,12 +70,12 @@
                 </router-link>
             </li>
             <li class="has-subnav">
-                <a href="#">
+                <router-link :to="{name:ADMIN_HOME_PAGE_SETTINGS}" active-class="active">
                     <i class="fa fa-cogs fa-2x"></i>
                     <span class="nav-text">
-                            Survey Photos
-                        </span>
-                </a>
+                        Home page settings
+                    </span>
+                </router-link>
 
             </li>
             <li>
@@ -124,7 +124,7 @@ import {
     ADMIN_CATEGORIES_ROUTE,
     ADMIN_PRODUCT_LIST,
     ADMIN_SETTING_ROUTE,
-    ADMIN_SLIDER_EDIT, ADMIN_BANNERS_EDIT, ADMIN_DASHBOARD_ROUTE, ADMIN_INQUIRES
+    ADMIN_SLIDER_EDIT, ADMIN_BANNERS_EDIT, ADMIN_DASHBOARD_ROUTE, ADMIN_INQUIRES, ADMIN_HOME_PAGE_SETTINGS
 } from "../../router/Admin/adminRoutes";
 import {redirectToRouteByName} from "../../Services/GlobalHelpers";
 import Loader from "../../SharedComponents/Loader.vue";
@@ -151,7 +151,6 @@ export default {
         })
         return {
             loaded,
-            redirectToRouteByName,
             ADMIN_CATEGORIES_ROUTE,
             ADMIN_PRODUCT_LIST,
             ADMIN_SETTING_ROUTE,
@@ -159,6 +158,7 @@ export default {
             ADMIN_BANNERS_EDIT,
             ADMIN_DASHBOARD_ROUTE,
             ADMIN_INQUIRES,
+            ADMIN_HOME_PAGE_SETTINGS,
             InquiryExists,
 
         }

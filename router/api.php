@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['prefix'=>'product'],function (){
     Route::get('/searchHelpers',[ProductController::class,'giveSearchHelpers']);
+    Route::get('/front_page',[ProductController::class,'getFrontPageProducts']);
     Route::get('/{product}',[ProductController::class,'show']);
     Route::post('/search',[ProductController::class,'search']);
 });

@@ -7,11 +7,13 @@ use App\Api\V1\Resources\ProductResource;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\HomePageSettings;
 use App\Models\Product;
 use App\Models\Size;
 use App\Models\Tag;
 use App\Services\Enums\SEARCH_TYPES;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -112,6 +114,37 @@ class ProductController extends Controller
         $sizes=Size::query()->where('type',Size::TYPE_GLOBAL)->get();
         $categories=Category::query()->where('active','1')->get();
         return $this->successResponse(compact('sizes','categories','colors','tags'));
+
+    }
+
+
+    public function getFrontPageProducts():JsonResponse
+    {
+        $main=\request()->boolean('main');
+        $pageSettings=HomePageSettings::query()->where('main',$main)->first(['id','main','products','showable_count','section_name']);
+        if ($pageSettings){
+            $ids=json_decode($pageSettings->products,false);
+            $query=Product::query()
+                ->whereIn('id',$ids)
+                ->with(['priceForOne','generalFile']);
+
+                if ($main){
+                        $products=$query->paginate($pageSettings->showable_count);
+                    }
+                if (!$main){
+                    $products=$query->get();
+                }
+            if ($main){
+                $products=[
+                    'products'=>$products->items(),
+                    'next_page_url'=>$products->nextPageUrl()
+                ];
+            }
+            $pageSettings->products=$products;
+            return $this->successResponse(compact('pageSettings'));
+        }
+
+        return $this->errorResponse(['e'=>'Setting not found']);
 
     }
 

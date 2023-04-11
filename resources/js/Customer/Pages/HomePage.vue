@@ -8,24 +8,15 @@
     <div class="container">
 
         <!-- =============== SECTION 1 =============== -->
-        <section class="padding-bottom">
-            <header class="section-heading mb-4">
-                <h3 class="title-section">Recommended items</h3>
-            </header>
 
-<!--            <recomended-items/>-->
-        </section>
+
+         <recomended-items/>
+
         <!-- =============== SECTION 1 END =============== -->
         <banners-component />
 
         <!-- =============== SECTION 2 =============== -->
-        <section class="padding-bottom">
-
-            <header class="section-heading mb-4">
-                <h3 class="title-section">Daily deals</h3>
-            </header>
-<!--            <daily-deals/>-->
-        </section>
+        <daily-deals/>
         <!-- =============== SECTION 2 END =============== -->
 
 

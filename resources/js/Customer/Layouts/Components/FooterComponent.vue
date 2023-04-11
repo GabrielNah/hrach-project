@@ -2,7 +2,7 @@
     <footer class="section-footer bg-secondary text-white">
         <div class="container">
             <section class="footer-top  padding-y-lg">
-                <div class="row">
+                <div class="d-flex w-100 justify-content-between">
                     <aside class="col-md-4 col-12">
                         <article class="mr-md-4">
                             <h5 class="title">Contact us</h5>
@@ -15,31 +15,11 @@
                             </ul>
                         </article>
                     </aside>
-                    <aside class="col-md col-6">
-                        <h5 class="title">Information</h5>
-                        <ul class="list-unstyled">
-                            <li> <a href="#">About us</a></li>
-                            <li> <a href="#">Career</a></li>
-                            <li> <a href="#">Find a store</a></li>
-                            <li> <a href="#">Rules and terms</a></li>
-                            <li> <a href="#">Sitemap</a></li>
-                        </ul>
-                    </aside>
-                    <aside class="col-md col-6">
-                        <h5 class="title">My Account</h5>
-                        <ul class="list-unstyled">
-                            <li> <a href="#">Contact us</a></li>
-                            <li> <a href="#">Money refund</a></li>
-                            <li> <a href="#">Order status</a></li>
-                            <li> <a href="#">Shipping info</a></li>
-                            <li> <a href="#">Open dispute</a></li>
-                        </ul>
-                    </aside>
                     <aside class="col-md-4 col-12">
                         <h5 class="title">Newsletter</h5>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer in feugiat lorem. </p>
 
-                        <form class="form-inline mb-3">
+                        <form class="form-inline mb-3 d-flex w-100">
                             <input type="text" placeholder="Email" class="border-0 w-auto form-control" name="">
                             <button class="btn ml-2 btn-warning"> Subscribe</button>
                         </form>
@@ -56,11 +36,6 @@
                 </div> <!-- row.// -->
             </section>	<!-- footer-top.// -->
 
-            <section class="footer-bottom text-center">
-                <p class="text-white">Privacy Policy - Terms of Use - User Information Legal Enquiry Guide</p>
-                <p class="text-muted"> &copy 2019 Company name, All rights reserved </p>
-                <br>
-            </section>
         </div><!-- //container -->
     </footer>
 </template>
@@ -72,5 +47,8 @@ export default {
 </script>
 
 <style scoped>
-
+footer{
+    background: #12225B !important;
+    box-shadow: 0px 0px 3px;
+}
 </style>

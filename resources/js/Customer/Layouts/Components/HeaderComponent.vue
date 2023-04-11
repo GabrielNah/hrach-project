@@ -134,4 +134,27 @@ import {useRoute} from "vue-router";
 .header_link{
     white-space: nowrap;
 }
+header{
+    background: #12225B;
+    box-shadow: 0px 0px 3px;
+}
+.nav-item a,.dropdown-item a{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 22px;
+
+    color: #FFFFFF;
+}
+.dropdown-menu{
+    background: #12225B;
+    box-shadow: 0px 0px 3px;
+}
+.dropdown-item:hover{
+    color: #050a1b;
+}
+.search-header{
+    border: none;
+}
 </style>

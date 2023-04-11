@@ -1,6 +1,8 @@
 <template>
-    <div class="card card-product-grid product-item w-100 h-100 d-flex flex-column">
-        <a href="#" class="img-wrap w-100 p-1 flex-grow-1">
+    <div class="card card-product-grid product-item w-100 h-100 d-flex flex-column" v-if="product">
+        <router-link  :to="{name:product_page}"
+            class="img-wrap w-100 p-1 flex-grow-1"
+        >
             <template v-if="product.general_file.type === 'video'">
                 <video :src="'/'+product.general_file.path" autoplay controls class="w-100 h-100"></video>
             </template>
@@ -8,7 +10,7 @@
                 <img :src="'/'+product.general_file.path" class="w-100 h-100">
             </template>
 
-        </a>
+        </router-link>
         <figcaption class="info-wrap">
             <div class="d-flex gap-1">
                 <svg v-for="i in 5" fill="none" height="15" viewBox="0 0 16 15" width="16"
@@ -18,7 +20,12 @@
                 </svg>
             </div>
             <div>
-                <a href="#" class="title">{{ product.title }}</a>
+                <router-link
+                    :to="{name:product_page}"
+                    class="title"
+                >
+                    {{ product.title }}
+                </router-link>
             </div>
             <div class="price h5 mt-2 d-flex justify-content-between">
                 <span>{{ product.price_for_one.price }}$</span>
@@ -28,6 +35,8 @@
 </template>
 
 <script>
+import {PRODUCT_DETAIL_PAGE} from "../../../router/Customer/customerRoutes";
+
 export default {
     name: "Product-cart",
     props:{
@@ -35,6 +44,9 @@ export default {
             type:Object,
             required:true
         }
+    },
+    computed:{
+        product_page:()=>PRODUCT_DETAIL_PAGE
     }
 }
 </script>

@@ -63,6 +63,8 @@ Route::group(['prefix'=>'admin'],function (){
                 Route::get('',[CurrencyRateController::class,'index']);
                 Route::post('',[CurrencyRateController::class,'store']);
             });
+
+            Route::apiResource('home',\App\Http\Controllers\Admin\HomePageSettingsController::class);
         });
 
 

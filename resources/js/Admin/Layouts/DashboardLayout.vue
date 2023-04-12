@@ -2,10 +2,22 @@
     <div class="area"></div>
     <nav class="main-menu position-fixed d-flex align-items-center">
         <ul class="mt-lg-5 d-flex flex-column justify-content-center align-content-center gap-1">
+            <li >
+                <router-link :to="{name:ADMIN_DASHBOARD_ROUTE}"
+                             :class="{'active':$route.name === ADMIN_DASHBOARD_ROUTE}"
+                >
+                    <i class="fa fa-home fa-2x"></i>
+                    <span class="nav-text">
+                            Home
+                    </span>
+                </router-link>
+            </li>
             <li>
                 <router-link :to="{name:ADMIN_CATEGORIES_ROUTE}" active-class="active">
-                    <i class="fa fa-home fa-2x"></i>
-                    <span  class="nav-text text-decoration-none" >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="36" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                    </svg>
+                    <span  class="nav-text " >
                            Categories
                     </span>
                 </router-link>
@@ -22,28 +34,49 @@
             </li>
             <li>
                 <router-link :to="{name:ADMIN_SLIDER_EDIT}" active-class="active">
-                    <i class="fa fa-cogs fa-2x"></i>
-                    <span class="nav-text">
+                    <i class="fa fa-camera-retro fa-2x"></i>
+                        <span class="nav-text">
                             Slider
                         </span>
                 </router-link>
             </li>
-            <li class="has-subnav">
-                <a href="#">
-                    <i class="fa fa-camera-retro fa-2x"></i>
-                    <span class="nav-text">
-                            Survey Photos
-                        </span>
-                </a>
+            <li>
+                <router-link :to="{name:ADMIN_BANNERS_EDIT}" active-class="active">
 
+                <i class="fa fa-film fa-2x"></i>
+                    <span class="nav-text">
+                          Banners
+                        </span>
+                </router-link>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa fa-film fa-2x"></i>
+                <router-link :to="{name:ADMIN_INQUIRES}" active-class="active">
+                    <span v-if="InquiryExists" class="inquiry_count">
+                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                    </svg>
                     <span class="nav-text">
-                            Surveying Tutorials
-                        </span>
-                </a>
+                           Inquiries
+                    </span>
+                </router-link>
+            </li>
+            <li>
+                <router-link :to="{name:ADMIN_SETTING_ROUTE}" active-class="active">
+                    <i class="fa fa-cogs fa-2x"></i>
+                    <span class="nav-text">
+                            Settings
+                    </span>
+                </router-link>
+            </li>
+            <li class="has-subnav">
+                <router-link :to="{name:ADMIN_HOME_PAGE_SETTINGS}" active-class="active">
+                    <i class="fa fa-cogs fa-2x"></i>
+                    <span class="nav-text">
+                        Home page settings
+                    </span>
+                </router-link>
+
             </li>
             <li>
                 <a href="#">
@@ -54,20 +87,12 @@
                 </a>
             </li>
             <li>
-                <router-link :to="{name:ADMIN_SETTING_ROUTE}" active-class="active">
-                    <i class="fa fa-cogs fa-2x"></i>
-                    <span class="nav-text">
-                            Settings
-                        </span>
-                </router-link>
-            </li>
-            <li>
-                <a href="#">
+                <router-link :to="{name:ADMIN_CONTACT_INFO}" active-class="active">
                     <i class="fa fa-map-marker fa-2x"></i>
                     <span class="nav-text">
-                            Member Map
+                           Contact information
                     </span>
-                </a>
+                </router-link>
             </li>
             <li>
                 <a href="#">
@@ -93,13 +118,18 @@
 <script>
 
 
-import {inject, onMounted, ref} from "vue";
+import {computed, inject, onMounted, ref} from "vue";
 import {
     ADMIN_LOGIN_ROUTE,
     ADMIN_CATEGORIES_ROUTE,
     ADMIN_PRODUCT_LIST,
     ADMIN_SETTING_ROUTE,
-    ADMIN_SLIDER_EDIT
+    ADMIN_SLIDER_EDIT,
+    ADMIN_BANNERS_EDIT,
+    ADMIN_DASHBOARD_ROUTE,
+    ADMIN_INQUIRES,
+    ADMIN_HOME_PAGE_SETTINGS,
+    ADMIN_CONTACT_INFO
 } from "../../router/Admin/adminRoutes";
 import {redirectToRouteByName} from "../../Services/GlobalHelpers";
 import Loader from "../../SharedComponents/Loader.vue";
@@ -113,6 +143,9 @@ export default {
         const setLoaded = () => {
             loaded.value = true
         }
+
+        const InquiryExists=computed(()=>store.getters.inquiries)
+
         onMounted(() => {
             if (!store.getters.admin?.value) {
                 store.actions.setAdmin(null)
@@ -123,11 +156,17 @@ export default {
         })
         return {
             loaded,
-            redirectToRouteByName,
             ADMIN_CATEGORIES_ROUTE,
             ADMIN_PRODUCT_LIST,
             ADMIN_SETTING_ROUTE,
-            ADMIN_SLIDER_EDIT
+            ADMIN_SLIDER_EDIT,
+            ADMIN_BANNERS_EDIT,
+            ADMIN_DASHBOARD_ROUTE,
+            ADMIN_INQUIRES,
+            ADMIN_HOME_PAGE_SETTINGS,
+            ADMIN_CONTACT_INFO,
+            InquiryExists,
+
         }
     }
 }
@@ -137,8 +176,26 @@ export default {
 
 @import url(//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
 @import url(https://fonts.googleapis.com/css?family=Titillium+Web:300);
+
+svg{
+    width: 60px;
+    display: block;
+    height: 26px;
+}
 .active{
     background-color: #2d3748;
+}
+.inquiry_count{
+    position: absolute;
+    border-radius: 50%;
+    background-color: #00b517;
+    color: #050a1b;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 12px;
+    top: 0;
 }
 .active span {
     font-weight: bold;

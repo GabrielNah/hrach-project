@@ -33,6 +33,7 @@ class StoreProductRequest extends FormRequest
             'title'=>'required|string',
             'description'=>'required|string',
             'is_active'=>[Rule::in(['on','off'])],
+            'in_stock'=>[Rule::in(['yes','no'])],
             'rating'=>'required|numeric|min:1|max:5',
             'tags'=>'array|nullable',
             'tags.*'=>'integer|exists:tags,id',
@@ -152,10 +153,11 @@ class StoreProductRequest extends FormRequest
         $category_id=$this->input('category');
         $rating=$this->input('rating');
         $active=$this->input('is_active')==='on'?'1':'0';
+        $in_stock=$this->input('in_stock')==='yes';
         $title=$this->input('title');
 
         $this->merge([
-            'product_data'=>compact('name','description','title','category_id','active','rating')
+            'product_data'=>compact('name','description','title','category_id','active','rating','in_stock')
         ]);
     }
 

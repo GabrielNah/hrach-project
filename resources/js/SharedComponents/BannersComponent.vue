@@ -1,25 +1,57 @@
 <template>
     <section class="padding-bottom">
         <div class="d-flex flex-row justify-content-around align-items-center flex-wrap w-100 ">
-            <div class="col-5 mb-3" v-for="i in 3">
-                <div class="card card-banner-lg bg-dark">
-                    <img src="images/banners/slide3.webp" class="card-img opacity">
-                    <div class="card-img-overlay text-white">
-                        <h2 class="card-title">Big Deal on Clothes</h2>
-                        <p class="card-text" style="max-width: 80%">This is a wider card with text below and Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo ab quae nihil praesentium impedit libero possimus id vero</p>
-                        <a href="#" class="btn btn-light">Discover</a>
+            <template v-if="banners.length">
+                <div class="col-5 mb-3 position-relative" v-for="banner in banners"
+                     :key="banner.id"
+                >
+                     <slot  :banner="banner" />
+                    <div class="card card-banner-lg bg-dark">
+                        <img :src="'/'+banner.image" class="card-img opacity">
+                        <div class="card-img-overlay text-white">
+                            <h2 class="card-title">
+                                {{ banner.title }}
+                            </h2>
+                            <p class="card-text" style="max-width: 80%">
+                                {{ banner.description }}
+                            </p>
+                            <button  class="btn btn-light"
+                                     @click="search.searchByIds(banner.value || [])"
+                             >
+                                {{ banner.link_text }}
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </template>
         </div>
     </section>
 </template>
 
 <script>
+import {inject, onMounted, ref} from "vue";
+
 export default {
-    name: "BannersComponent"
+    name: "BannersComponent",
+    setup(){
+        const banners=ref([])
+        const search=inject('searchHelper')
+        const getBanners=()=>{
+            axios.get('/banners')
+                .then(({data})=>{
+                    banners.value=data.banners
+                })
+        }
+        onMounted(getBanners)
+
+        return {
+            banners,
+            search
+        }
+    }
 }
 </script>
+
 
 <style scoped>
 .product-item{

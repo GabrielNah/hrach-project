@@ -33,6 +33,7 @@ import { useAdminStore} from "../Store";
 import {computed,  provide, ref, watchEffect} from "vue";
 import {useRoute} from "vue-router";
 import Loader from "../../SharedComponents/Loader.vue";
+import useProductSeachHelper from "../../Customer/Camposables/useProductSeachHelper";
 
 export default {
     name: "AdminLayout",
@@ -40,6 +41,8 @@ export default {
     setup(){
         const store=useAdminStore()
         provide('store',store)
+        const search=useProductSeachHelper
+        provide('searchHelper',search)
         const route=useRoute();
         const routeName = computed(()=>route.name)
         const Mounted=ref(false)

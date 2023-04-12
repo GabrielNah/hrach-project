@@ -10,6 +10,11 @@ class Price extends Model
     const TABLE='prices';
     protected $table=self::TABLE;
     protected $guarded=[];
+
+    protected $casts=[
+      'negotiable'=>'boolean'
+    ];
+
     const RUB='RUB';
     const USD='USD';
     const EUR='EUR';

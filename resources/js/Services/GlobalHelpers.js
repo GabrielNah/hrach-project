@@ -14,6 +14,10 @@ export function extractValidationErrors(e) {
     }
 
 }
-export function redirectToRouteByName(name){
-    router.push({name}).catch(e=>console.log(e))
+export function redirectToRouteByName(name,params={}){
+    const namesAreSame=router.currentRoute.value.name === name;
+    if (namesAreSame && _.isEqual(params,router.currentRoute.value.params)){
+        return;
+    }
+    router.push({name,params}).catch(e=>console.log(e))
 }

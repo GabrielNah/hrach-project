@@ -62,26 +62,36 @@
                                             <thead>
                                             <tr role="row">
                                                 <th aria-controls="datatable" aria-label="Image: activate to sort column descending" aria-sort="ascending"
-                                                    class="sorting_asc" colspan="1" rowspan="1" style="width: 73px;"
+                                                    class="sorting_asc w-10"  colspan="1" rowspan="1" style="width: 73px;"
                                                     tabindex="0">Image
                                                 </th>
-                                                <th aria-controls="datatable" aria-label="Product Name: activate to sort column ascending" class="sorting" colspan="1"
-                                                    rowspan="1" style="width: 356px;"
+                                                <th aria-controls="datatable"
+                                                    aria-label="Product Name: activate to sort column ascending"
+                                                    class="sorting " colspan="1"
+                                                    rowspan="1"
                                                     tabindex="0">Name Description
                                                 </th>
-                                                <th aria-controls="datatable" aria-label="Added Date: activate to sort column ascending" class="sorting" colspan="1"
-                                                    rowspan="1" style="width: 120px;"
+                                                <th aria-controls="datatable"
+                                                    aria-label="Added Date: activate to sort column ascending"
+                                                    class="sorting w-10" colspan="1"
+                                                    rowspan="1"
                                                     tabindex="0">Title
                                                 </th>
-                                                <th aria-controls="datatable" aria-label="Amount: activate to sort column ascending" class="sorting" colspan="1"
-                                                    rowspan="1" style="width: 87px;"
+                                                <th aria-controls="datatable"
+                                                    aria-label="Amount: activate to sort column ascending"
+                                                    class="sorting w-10" colspan="1"
+                                                    rowspan="1"
                                                     tabindex="0">Category
                                                 </th>
-                                                <th aria-controls="datatable" aria-label="No. of Units: activate to sort column ascending" class="sorting" colspan="1"
-                                                    rowspan="1" style="width: 122px;"
+                                                <th aria-controls="datatable"
+                                                    aria-label="No. of Units: activate to sort column ascending"
+                                                    class="sorting w-10" colspan="1"
+                                                    rowspan="1"
                                                     tabindex="0">Price
                                                 </th>
-                                                <th aria-controls="datatable" aria-label="Stock: activate to sort column ascending" class="sorting" colspan="1"
+                                                <th aria-controls="datatable"
+                                                    aria-label="Stock: activate to sort column ascending"
+                                                    class="sorting w-10" colspan="1"
                                                     rowspan="1" style="width: 68px;"
                                                     tabindex="0">Created at
                                                 </th>
@@ -94,8 +104,8 @@
                                             <tbody>
 
 
-                                               <tr class="odd" role="row" v-for="product in products" :key="product.id">
-                                                    <td class="product-list-img sorting_1" tabindex="0">
+                                               <tr class="odd w-100" role="row" v-for="product in products" :key="product.id">
+                                                    <td class="product-list-img sorting_1 w-10" tabindex="0">
                                                        <template v-if="product.general_file">
                                                             <template v-if="product.general_file.type === 'image'">
                                                                 <img alt="tbl"
@@ -108,25 +118,25 @@
                                                             </template>
                                                        </template>
                                                     </td>
-                                                    <td>
+                                                    <td  >
                                                         <h6 class="mt-0 mb-1">{{  product.name }}</h6>
                                                         <p class="m-0 font-size-14">
                                                             {{ product.description }}
                                                         </p>
                                                     </td>
-                                                    <td>
+                                                    <td class="w-10">
                                                         {{ product.title }}
                                                     </td>
-                                                    <td>
+                                                    <td class="w-10">
                                                         {{ product.category.name }}
                                                     </td>
-                                                    <td>
+                                                    <td class="w-10">
                                                         {{ product?.price_for_one?.price ?? '' }} USD
                                                     </td>
-                                                    <td>
+                                                    <td class="w-10">
                                                         {{ new Date(product.created_at).toLocaleDateString()}}
                                                     </td>
-                                                    <td>
+                                                    <td class="w-10">
                                                         <ul class="list-inline m-0">
                                                             <li class="list-inline-item">
                                                                 <router-link :to="{
@@ -160,7 +170,7 @@
                                              role="status">Showing from {{ from }} to  {{ to }}  of {{ total }} entries
                                         </div>
                                     </div>
-                                    <div class="col-sm-12 col-md-7">
+                                    <div class="col-sm-12 col-md-7" v-if="last_page > 1">
                                         <div id="datatable_paginate" class="dataTables_paginate paging_simple_numbers">
                                             <ul class="pagination">
                                                 <li id="datatable_previous"
@@ -172,17 +182,18 @@
                                                         Previous
                                                     </a>
                                                 </li>
-
-                                                <li class="paginate_button page-item "
-                                                    v-for="page in last_page" :class="{'active':page === current_page}"
-                                                    :key="page"
-                                                >
-                                                    <a class="page-link"
-                                                        @click="getPagesData(generateUrlFromPage(page))"
+                                                <template   v-for="page in last_page"  :key="page">
+                                                    <li class="paginate_button page-item "
+                                                        v-if="showablePages.includes(page)"
+                                                        :class="{'active':page === current_page}"
                                                     >
-                                                        {{ page }}
-                                                    </a>
-                                                </li>
+                                                        <a class="page-link"
+                                                           @click="getPagesData(generateUrlFromPage(page))"
+                                                        >
+                                                            {{ page }}
+                                                        </a>
+                                                    </li>
+                                                </template>
                                                 <li id="datatable_next" class="paginate_button page-item next"
                                                     :class="{'disabled':!next_page_url}"
 
@@ -225,7 +236,7 @@
 
 <script>
 import {ADMIN_PRODUCT_ADD, ADMIN_PRODUCT_EDIT} from "../../../router/Admin/adminRoutes";
-import {onMounted, reactive, ref, toRefs} from "vue";
+import {computed, onMounted, reactive, ref, toRefs} from "vue";
 import HTTP from "../../Axios/axiosCongif";
 import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
 import {errorNotification, infoNotification, successNotification} from "../../../Services/NotificationService";
@@ -247,6 +258,14 @@ export default {
                 to:0,
                 from:0,
                 total:0
+            })
+
+            const showablePages=computed(()=>{
+                let firstPage=1;
+                const prevPage=paginator.current_page-1;
+                const nextPage=paginator.current_page+1;
+                const nextPage1=paginator.current_page+2;
+                return [firstPage,prevPage,paginator.current_page,nextPage,nextPage1,paginator.last_page];
             })
             const setProductUnderRemoval = (product)=>{
                 productUnderRemoval.value = product
@@ -340,7 +359,8 @@ export default {
                 ADMIN_PRODUCT_EDIT,
                 productUnderRemoval,
                 setProductUnderRemoval,
-                removeProduct
+                removeProduct,
+                showablePages
             }
     }
 }
@@ -364,5 +384,15 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+td,td p, td h6 {
+    overflow: hidden; /* hides the overflow content */
+    white-space: nowrap; /* prevents the text from wrapping */
+    text-overflow: ellipsis;
+    max-width: 25vw;
+}
+.w-10{
+    width: 10%;
 }
 </style>

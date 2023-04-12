@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Api\V1\Resources\PriceResource;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Product\Price\EditPriceRequest;
+use App\Http\Requests\Admin\Product\Price\StorePriceRequest;
 use App\Http\Requests\Admin\Product\UpsertPriceRequest;
 use App\Models\Price;
 use App\Models\Product;
@@ -22,16 +24,32 @@ class ProductPriceController extends Controller
         ]);
     }
 
-    public function upsert(UpsertPriceRequest $request,Product $product): JsonResponse
+    public function store(StorePriceRequest $request,Product $product): JsonResponse
     {
         try {
-            $product->prices()->delete();
+            $price=$product->prices()->create($request->validated()['price']);
 
-            foreach ($request->validated()['prices'] as $price){
-               $product->prices()->create($price);
-            }
             return $this->successResponse([
-                'prices' => PriceResource::collection($product->prices()->get())
+                'price' => PriceResource::collection([$price])
+            ]);
+
+        }catch (\Throwable $exception){
+            return $this->errorResponse(['e'=>$exception->getMessage()]);
+        }
+    }
+
+    public function edit(EditPriceRequest $request,Product $product,Price $price):JsonResponse
+    {
+        try {
+            $requestedData=$request->validated()['price'];
+            $price->negotiable=$requestedData['negotiable'];
+            $price->min_count=$requestedData['min_count'];
+            $price->max_count=$requestedData['max_count'];
+            $price->price=$requestedData['price'];
+            $price->discount=$requestedData['discount'];
+            $price->save();
+            return $this->successResponse([
+                'price' => PriceResource::collection([$price])
             ]);
 
         }catch (\Throwable $exception){

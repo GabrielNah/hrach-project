@@ -11,11 +11,18 @@ class ProductResource extends JsonResource
         return [
             'id'  => $this->resource->id,
             'additional'   =>json_decode($this->resource->additional->additional,true),
-            'general_file' =>ProductFileResource::make($this->resource->generalFile),
-            'non_general_files' =>ProductFileResource::collection($this->resource->nonGeneralFiles),
+            'general_file' =>$this->whenLoaded(
+                'generalFile',
+                ProductFileResource::make($this->resource->generalFile),
+            ),
+            'non_general_files' =>$this->whenLoaded(
+                'nonGeneralFiles',
+                ProductFileResource::collection($this->resource->nonGeneralFiles)
+            ),
             'prices' => PriceResource::collection($this->resource->prices),
             'rating' => (int) $this->resource->rating,
             'active' => $this->resource->active,
+            'in_stock' => $this->resource->in_stock,
             'description' => $this->resource->description,
             'name' => $this->resource->name,
             'title' => $this->resource->title,

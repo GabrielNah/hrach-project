@@ -1,6 +1,11 @@
 <?php
 
+use App\Api\V1\Controllers\BannerController;
+use App\Api\V1\Controllers\CategoryController;
+use App\Api\V1\Controllers\CommentController;
+use App\Api\V1\Controllers\InquiryController;
 use App\Api\V1\Controllers\ProductController;
+use App\Api\V1\Controllers\SliderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,5 +26,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::group(['prefix'=>'product'],function (){
+    Route::get('/searchHelpers',[ProductController::class,'giveSearchHelpers']);
+    Route::get('/front_page',[ProductController::class,'getFrontPageProducts']);
     Route::get('/{product}',[ProductController::class,'show']);
+    Route::post('/search',[ProductController::class,'search']);
 });
+Route::prefix('category')->group(function (){
+    Route::get('/presentable',CategoryController::class);
+});
+Route::group(['prefix'=>'slider'],function (){
+    Route::get('',SliderController::class);
+});
+Route::get('/banners',BannerController::class);
+
+Route::post('/comment/{product}',CommentController::class);
+
+Route::group(['prefix'=>'inquiry'],function (){
+    Route::get('/hot_keys',[InquiryController::class,'getHotKeys']);
+    Route::post('/{product}',InquiryController::class);
+});
+

@@ -1,23 +1,91 @@
 <template>
-    <div class="row">
-        <template v-for="i in 12">
-            <div class="col-xl-3 col-lg-3 col-md-4 col-6 ">
-               <product-cart/>
-            </div>
-        </template>
+    <section class="padding-bottom">
+        <header class="section-heading mb-4">
+            <h3 class="title-section">{{ pageSettings.section_name }}</h3>
+        </header>
+        <div class="row gap-3">
+            <template v-if="pageSettings.products.length">
+                <template v-for="product in pageSettings.products" :id="product.id">
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-6 ">
+                        <product-cart :product="product"/>
+                    </div>
+                </template>
+            </template>
+        </div>
+        <div class="w-100 text-center button-34" v-if="pageSettings.next_page_url"
+            @click="getNextPageData"
+        >
+            Show more
+        </div>
 
+    </section>
 
-    </div>
 </template>
 
 <script>
 import ProductCart from "./Product-cart.vue";
-export default {
+import { defineComponent, onMounted, reactive } from "vue";
+
+export default defineComponent({
     name: "RecomendedItems",
-    components: {ProductCart}
-}
+    components: { ProductCart },
+    setup() {
+        const pageSettings = reactive({
+            section_name: "",
+            products: [],
+            next_page_url: "",
+        });
+        const getNextPageData = () => {
+            if (!pageSettings.next_page_url) return;
+            window.axios.get(pageSettings.next_page_url)
+                .then(({ data }) => {
+                    pageSettings.section_name = data.pageSettings.section_name;
+                    pageSettings.products.push(
+                        ...data.pageSettings.products.products
+                    );
+                    pageSettings.next_page_url = data.pageSettings.products.next_page_url
+                        ? data.pageSettings.products.next_page_url + "&&main=true"
+                        : null;
+                });
+        };
+        const getProducts = () => {
+            window.axios.get("/product/front_page?main=true")
+                .then(({ data }) => {
+                    pageSettings.section_name = data.pageSettings.section_name;
+                    pageSettings.products = data.pageSettings.products.products;
+                    pageSettings.next_page_url = data.pageSettings.products.next_page_url
+                        ? data.pageSettings.products.next_page_url + "&&main=true"
+                        : null;
+                });
+        };
+        onMounted(getProducts);
+        return { pageSettings, getNextPageData };
+    },
+});
 </script>
 
-<style scoped>
 
+<style scoped>
+.button-34 {
+    margin-top:15px;
+    background: #5E5DF0;
+    border-radius: 999px;
+    box-shadow: #5E5DF0 0 10px 20px -10px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: Inter,Helvetica,"Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Noto Color Emoji","Segoe UI Symbol","Android Emoji",EmojiSymbols,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans",sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    opacity: 1;
+    outline: 0 solid transparent;
+    padding: 8px 18px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: fit-content;
+    word-break: break-word;
+    border: 0;
+}
 </style>

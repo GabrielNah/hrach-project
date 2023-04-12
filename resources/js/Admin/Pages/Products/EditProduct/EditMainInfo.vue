@@ -46,6 +46,12 @@
                 <input class="form-check-input" type="checkbox" v-model="productInfo.active" role="switch" id="flexSwitchCheckChecked" checked>
                 <label class="form-check-label" for="flexSwitchCheckChecked">Is Active</label>
             </div>
+            <div class="form-check form-switch">
+                <label class="form-check-label" >
+                    Is in stock
+                    <input class="form-check-input" type="checkbox" v-model="productInfo.in_stock" role="switch">
+                </label>
+            </div>
             <div class="d-flex justify-content-center align-items-center mt-1">
                 <button class="btn btn-primary" type="submit">Save changes</button>
             </div>
@@ -74,7 +80,8 @@ import {extractValidationErrors} from "../../../../Services/GlobalHelpers";
      rating:0,
      description:'',
      category:0,
-     active:false
+     active:false,
+     in_stock:true
  })
  const route = useRoute()
  const productId = computed(()=>route.params.id)
@@ -88,6 +95,7 @@ import {extractValidationErrors} from "../../../../Services/GlobalHelpers";
         productInfo.description = data.product.description;
         productInfo.rating = data.product.rating;
         productInfo.active = data.product.active;
+        productInfo.in_stock = data.product.in_stock;
         productInfo.category = data.product.category.id;
      })
  }
@@ -100,6 +108,7 @@ import {extractValidationErrors} from "../../../../Services/GlobalHelpers";
          productInfo.description = data.product.description;
          productInfo.rating = data.product.rating;
          productInfo.active = data.product.active;
+         productInfo.in_stock = data.product.in_stock;
          productInfo.category = data.product.category.id;
          successNotification('Products main info modified successfully')
      })

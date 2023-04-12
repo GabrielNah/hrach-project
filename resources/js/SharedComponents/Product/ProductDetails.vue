@@ -16,7 +16,7 @@
                 <div class="files_wrapper">
                     <div class="main_image" v-if="files.selected">
                         <template v-if="files.selected.type==='video'">
-                            <video :src="'/'+files.selected.path"  controls autoplay muted></video>
+                            <video :src="'/'+files.selected.path"   autoplay  loop muted></video>
                         </template>
                         <template v-if="files.selected.type==='image'">
                             <img :src="'/'+files.selected.path" />
@@ -25,7 +25,8 @@
                     <div class="images" v-if="files.all.length">
                         <template v-for="file in files.all">
                             <template v-if="file.type==='video'">
-                                <video @click="setSelectedFile(file)" class="single_image"  controls muted autoplay :src="'/'+file.path" ></video>
+                                <video @click="setSelectedFile(file)" class="single_image"  autoplay  loop muted
+                                       :src="'/'+file.path" ></video>
                             </template>
                             <template v-if="file.type==='image'">
                                 <img @click="setSelectedFile(file)" class="single_image" :src="'/'+file.path" />
@@ -36,7 +37,13 @@
                 </div>
                 <div class="product_info">
                     <h3 class="product_name"> {{ product.name }}</h3>
-                    <p class="product_data_text">{{ product.title }}</p>
+                    <p class="product_data_text mb-0">{{ product.title }}</p>
+                    <div v-if="product.in_stock">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#FF9017" class="bi bi-check" viewBox="0 0 16 16">
+                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                        </svg>
+                        In stock
+                    </div>
                     <div class="product_rating">
                         <div class="rating d-flex flex-row">
                             <svg v-for="i in 5" fill="none" height="15" viewBox="0 0 16 15" width="16"
@@ -78,7 +85,15 @@
                                         <div class="quality">
                                           {{renderTextForPrices(price)}}
                                         </div>
-                                        <div class="price"><span class="">  {{ price.price }}  {{price.currency}} </span></div>
+                                        <div class="price">
+                                            <span class="">  {{ price.price }}  {{price.currency}} </span>
+                                        </div>
+                                        <div v-if="price.negotiable" class="d-flex">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#FF9017" class="bi bi-check" viewBox="0 0 16 16">
+                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                            </svg>
+                                            Negotiable
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -204,12 +219,12 @@
                     </div>
                 </section>
 
-                <slot name="product_yo_may_like"/>
+                <slot name="product_yo_may_like" :likables="likableProducts"/>
 
 
             </div>
 
-            <slot name="related_product"/>
+            <slot name="related_product" :relatedProducts="relatedProducts"/>
         </div>
     </main>
 </template>
@@ -227,6 +242,8 @@ export default {
         const route=useRoute();
         const product=ref(null)
         const selectedCurrency=ref('')
+        const likableProducts=ref([])
+        const relatedProducts=ref([])
         const setSelectedCurrency=(currency)=>{
             selectedCurrency.value=currency
         }
@@ -270,8 +287,10 @@ export default {
 
         onMounted(async ()=>{
             try {
-                let {data:{product:neededProduct}}  =  await axios.get('/api/product/'+route.params.id);
+                let {data:{product:neededProduct,likable,related}}  =  await axios.get('/product/'+route.params.id);
                 product.value = neededProduct
+                likableProducts.value=likable
+                relatedProducts.value=related
                 setSelectedCurrency(Object.keys(neededProduct.prices)[0])
                 setSelectedFile(neededProduct.general_file)
                 files.all=[neededProduct.general_file,...neededProduct.non_general_files]
@@ -291,7 +310,9 @@ export default {
             renderTextForPrices,
             info,
             selectColor,
-            selectSize
+            selectSize,
+            likableProducts,
+            relatedProducts
         }
     }
 }

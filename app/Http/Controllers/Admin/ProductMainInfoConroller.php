@@ -24,13 +24,13 @@ class ProductMainInfoConroller extends Controller
     public function edit(EditProductMainInfoRequest $request,Product $product):JsonResponse
     {
         $product = tap($product,function ($product) use ($request){
-            info($request->category);
             $product->name = $request->name;
             $product->title = $request->title;
             $product->description = $request->description;
             $product->rating = $request->rating;
             $product->category_id = $request->category;
             $product->active = $request->active ? '1' : '0';
+            $product->in_stock = $request->boolean('in_stock') ;
             $product->save();
         });
 

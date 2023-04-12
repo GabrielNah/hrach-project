@@ -1,14 +1,21 @@
 <template>
-    <div class="card card-product-grid product-item w-100 h-100 d-flex flex-column">
-        <a href="#" class="img-wrap w-100 p-1 flex-grow-1">
+    <div class="card card-product-grid product-item w-100 h-100 d-flex "
+         v-if="product"
+         :class=" horizontal ?'flex-row':'flex-column'"
+    >
+        <router-link class="img-wrap p-1 "
+                     :to="productRoute(product.id)"
+                     :class="horizontal ? 'w-50' :'w-100'"
+        >
             <template v-if="product.general_file.type === 'video'">
-                <video :src="'/'+product.general_file.path" autoplay controls class="w-100 h-100"></video>
+                <video :src="'/'+product.general_file.path" autoplay loop muted
+                       class="w-100 h-100"></video>
             </template>
             <template v-if="product.general_file.type === 'image'">
                 <img :src="'/'+product.general_file.path" class="w-100 h-100">
             </template>
 
-        </a>
+        </router-link>
         <figcaption class="info-wrap">
             <div class="d-flex gap-1">
                 <svg v-for="i in 5" fill="none" height="15" viewBox="0 0 16 15" width="16"
@@ -18,7 +25,13 @@
                 </svg>
             </div>
             <div>
-                <a href="#" class="title">{{ product.title }}</a>
+                <router-link class="title" :to="productRoute(product.id)"
+                >
+                    {{ product.title }}
+                </router-link>
+            </div>
+            <div class="price h5 mt-2 d-flex justify-content-between" v-if="horizontal">
+                <span>{{ product.description }}</span>
             </div>
             <div class="price h5 mt-2 d-flex justify-content-between">
                 <span>{{ product.price_for_one.price }}$</span>
@@ -28,15 +41,26 @@
 </template>
 
 <script>
-export default {
+import {defineComponent} from "vue";
+export default defineComponent({
     name: "Product-cart",
     props:{
         product:{
             type:Object,
             required:true
+        },
+        horizontal:{
+            type:Boolean,
+            required: false,
+            default:()=>false
         }
-    }
-}
+    },
+    methods:{
+        productRoute(id){
+            return {name:'product.detail',params:{id}}
+        }
+    },
+})
 </script>
 
 <style scoped>

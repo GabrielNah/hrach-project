@@ -4,64 +4,62 @@
             <nav class="navbar navbar-main navbar-expand pl-0">
                 <ul class="navbar-nav flex-wrap">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
-                    </li>
-                    <hr>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"> Demo pages </a>
-                        <div class="dropdown-menu dropdown-large">
-                            <nav class="row">
-                                <div class="col-6">
-                                    <a href="page-index-1.html">Home page 1</a>
-                                    <a href="page-index-2.html">Home page 2</a>
-                                    <a href="page-category.html">All category</a>
-                                    <a href="page-listing-large.html">Listing list</a>
-                                    <a href="page-listing-grid.html">Listing grid</a>
-                                    <a href="page-shopping-cart.html">Shopping cart</a>
-                                    <a href="page-detail-product.html">Product detail</a>
-                                    <a href="page-content.html">Page content</a>
-                                    <a href="page-user-login.html">Page login</a>
-                                    <a href="page-user-register.html">Page register</a>
-                                </div>
-                                <div class="col-6">
-                                    <a href="page-profile-main.html">Profile main</a>
-                                    <a href="page-profile-orders.html">Profile orders</a>
-                                    <a href="page-profile-seller.html">Profile seller</a>
-                                    <a href="page-profile-wishlist.html">Profile wishlist</a>
-                                    <a href="page-profile-setting.html">Profile setting</a>
-                                    <a href="page-profile-address.html">Profile address</a>
-                                    <a href="page-components.html" target="_blank">More components</a>
-                                </div>
-                            </nav> <!--  row end .// -->
-                        </div> <!--  dropdown-menu dropdown-large end.// -->
+                        <router-link class="nav-link header-link" :to="{name:USER_HOME_PAGE}">
+                            Home
+                        </router-link>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Electronics</a>
+                        <hr>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Fashion</a>
+                    <li class="nav-item" v-if="$route.name!==PRODUCT_LIST_PAGE">
+                        <router-link class="nav-link header-link" :to="{name:PRODUCT_LIST_PAGE,params:{category:'all'}}">
+                            View all categories
+                        </router-link>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Beauty</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Motors</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Sports</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Gardening</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Deals</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Under $10</a>
-                    </li>
+
+                    <template v-for="category in categories" :key="category.id">
+                        <li class="nav-item"
+                            :class="{'dropdown':category?.sub_categories?.length}"
+                        >
+                            <router-link class="nav-link  header-link"
+                                         :class="{'dropdown-toggle':category?.sub_categories?.length}"
+                                         :data-bs-toggle="category?.sub_categories?.length ? 'dropdown' : ''"
+                                         :to="{name: PRODUCT_LIST_PAGE, params: {category: category.name}}"
+                            >
+                                {{ category.name }}
+                            </router-link>
+                            <ul class="dropdown-menu "
+                                 v-if="category.sub_categories?.length">
+                                <li>
+                                    <router-link
+                                        class=" dropdown-item"
+                                        :to="{name:PRODUCT_LIST_PAGE,params:{category:category.name}}">
+                                        {{ category.name }}
+                                    </router-link>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+
+                                <template v-for="subCategory in category.sub_categories"
+                                          :key="subCategory.id"
+                                >
+                                    <li>
+                                        <router-link
+                                            class=" dropdown-item"
+                                            :to="{name:PRODUCT_LIST_PAGE,params:{category:subCategory.name}}">
+                                            {{ subCategory.name }}
+                                        </router-link>
+                                    </li>
+                                </template>
+                            </ul>
+                        </li>
+                    </template>
+
                 </ul>
-            </nav> <!-- navbar-main  .// -->
-            <section class="header-main border-bottom">
+            </nav>
+
+            <section class="header-main ">
                 <div class="row row-sm">
                     <div class="col-6 col-sm col-md col-lg  flex-grow-0">
                         <a href="http://bootstrap-ecommerce.com" class="brand-wrap">
@@ -69,44 +67,28 @@
                         </a> <!-- brand-wrap.// -->
                     </div>
                     <div class="col-6 col-sm col-md col-lg flex-md-grow-0">
-
-                        <!-- mobile-only -->
-                        <div class="d-md-none float-right">
-                            <a href="#" class="btn btn-light"> <i class="fa fa-bell"></i> </a>
-                            <a href="#" class="btn btn-light"> <i class="fa fa-user"></i> </a>
-                            <a href="#" class="btn btn-light"> <i class="fa fa-shopping-cart"></i> 2 </a>
-                        </div>
-                        <!-- mobile-only //end  -->
-
-                        <div class="category-wrap  dropdown ">
-                            <button type="button" class="btn btn-light dropdown-toggle" id="dropdownShopByMenuButton" data-bs-toggle="dropdown" aria-expanded="false">   Shop by
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownShopByMenuButton">
-                                <a class="dropdown-item" href="#">Machinery / Mechanical Parts / Tools </a>
-                                <a class="dropdown-item" href="#">Consumer Electronics / Home Appliances </a>
-                                <a class="dropdown-item" href="#">Auto / Transportation</a>
-                                <a class="dropdown-item" href="#">Apparel / Textiles / Timepieces </a>
-                                <a class="dropdown-item" href="#">Home & Garden / Construction / Lights </a>
-                                <a class="dropdown-item" href="#">Beauty & Personal Care / Health </a>
-                            </div>
-                        </div>  <!-- category-wrap.// -->
+<!-- category-wrap.// -->
                     </div> <!-- col.// -->
                     <div class="col-lg-6 col-xl col-md-5 col-sm-12 flex-grow-1">
-                        <form action="#" class="search-header">
+                        <form @submit.prevent="search.defaultSearch(searchVal)"
+                              class="search-header" id="product_search_form"
+                        >
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search">
+                                <input type="text" class="form-control" placeholder="Search"
+                                       v-model="searchVal"
+                                >
                             </div>
                         </form> <!-- search-wrap .end// -->
                     </div> <!-- col.// -->
                     <div class="col col-lg col-md flex-grow-0">
-                        <button class="btn btn-block btn-primary" type="submit"> Search </button>
+                        <button class="btn btn-block btn-primary"
+                                form="product_search_form"
+                                type="submit">
+                            Search
+                        </button>
                     </div>
                 </div> <!-- row.// -->
             </section> <!-- header-main .// -->
-
-
-
-
         </div> <!-- container.// -->
     </header>
 </template>
@@ -116,7 +98,63 @@ export default {
     name: "HeaderComponent"
 }
 </script>
+<script setup>
+import {inject, onMounted, ref, watch} from "vue";
+import {USER_HOME_PAGE} from "../../../router/Customer/customerRoutes";
+import {PRODUCT_LIST_PAGE} from "../../../router/Customer/customerRoutes";
+import {Dropdown} from "bootstrap"
+import {useRoute} from "vue-router";
+
+    const categories=ref([])
+    const searchVal=ref('')
+    const search=inject('searchHelper');
+
+    const route=useRoute()
+
+    watch(()=>route.path,(val)=>{
+        const dropdownEl = document.querySelector('.dropdown-menu.show')
+        if (dropdownEl) {
+            const bsDropdown = new Dropdown(dropdownEl)
+            bsDropdown.hide()
+        }
+    })
+
+
+    const getCategories=()=>{
+        axios.get('/category/presentable')
+        .then(({data})=>{
+            categories.value=data.categories
+        }).catch(e=>console.log(e))
+    }
+
+    onMounted(getCategories)
+</script>
 
 <style scoped>
+.header_link{
+    white-space: nowrap;
+}
+header{
+    background: #12225B;
+    box-shadow: 0px 0px 3px;
+}
+.nav-item a,.dropdown-item a{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 22px;
 
+    color: #FFFFFF;
+}
+.dropdown-menu{
+    background: #12225B;
+    box-shadow: 0px 0px 3px;
+}
+.dropdown-item:hover{
+    color: #050a1b;
+}
+.search-header{
+    border: none;
+}
 </style>

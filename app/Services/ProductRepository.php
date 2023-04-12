@@ -7,9 +7,9 @@ use App\Models\File;
 use App\Models\Product;
 use App\Models\Size;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -32,7 +32,7 @@ class ProductRepository
                 $colors=$productData['colors'] ?? [];
                 if (\request()->hasFile('individual_colors')){
                     foreach (\request()->file('individual_colors') as $index=> $file){
-                        $path = '/public/Product' . $product->id.'/Colors';
+                        $path = '/public/products/Product' . $product->id.'/Colors';
                         $filePath = $file->store($path);
                         $color= Color::query()->create([
                             'type' => Color::TYPE_INDIVIDUAL,
@@ -47,7 +47,8 @@ class ProductRepository
             }
             if (count($productData['sizes'] ?? []) || count($productData['individual_size_name'] ?? [])) {
                 $sizes=$productData['sizes'] ?? [];
-                if ($productData['individual_size_name']){
+                if (array_key_exists('individual_size_name',$productData)
+                    && count($productData['individual_size_name'] ?? [])){
                     foreach ($productData['individual_size_name'] as $individual_size){
                         $size=Size::query()->create([
                             'size'=>$individual_size,
@@ -88,7 +89,7 @@ class ProductRepository
         if (!in_array($fileType, File::FILE_TYPES)) {
             throw new \RuntimeException('Files type does not match requirements');
         }
-        $path = '/public/Product' . $product->id;
+        $path = '/public/products/Product' . $product->id;
         $filePath = $file->store($path);
         return $product->files()->create([
             'type' => $fileType,
@@ -111,7 +112,7 @@ class ProductRepository
                                         });
                     })
                     ->with(['generalFile','priceForOne','category'])
-                    ->paginate($request->query('count')??2);
+                    ->paginate($request->query('count')??20);
     }
 
 
@@ -193,7 +194,16 @@ class ProductRepository
                     $q->where('discount',$request->input('operator'),$request->input('value'));
                 });
             })
-            ->paginate(2);
+            ->paginate(15);
 
+    }
+
+    public function getExactProducts(array $ids):Collection
+    {
+        return Product::query()
+            ->with('priceForOne','generalFile','tags')
+            ->whereIn('id',$ids)
+            ->get()
+            ->collect();
     }
 }

@@ -2,10 +2,8 @@
    <div class="container">
        <template v-if="loaded">
                <section class="mt-2 p-2 d-flex flex-column justify-content-center align-items-start">
-
-
-                       <div class="d-flex flex-row justify-content-between align-items-center w-100">
-                           <h5 class="text-center text-capitalize">Categories diagram</h5>
+                   <div class="d-flex flex-row justify-content-between align-items-center w-100">
+                           <h5 class="text-center text-capitalize text-white">Categories diagram</h5>
                            <button class="btn btn-dark"
                                    @click="getCategoriesWithSubCategories">Reload Categories diagram</button>
                        </div>
@@ -42,11 +40,11 @@
                            <div class="w-50  d-flex justify-content-center align-items-center" v-if="editableItem">
                                <form @submit.prevent="saveChanges" id="categoryForm" class="w-100 margin-left d-flex flex-column justify-content-center bordered p-2 border-gray" style="margin-left: 40px" >
                                    <div class="form-group row ">
-                                       <h3 class="text-center">Category data</h3>
+                                       <h3 class="text-center text-white">Category data</h3>
                                    </div>
                                    <hr/>
                                    <div class="form-group row ">
-                                       <label for="staticEmail" class="col-sm-2 col-form-label">Name</label>
+                                       <label for="staticEmail" class="col-sm-2 col-form-label text-white">Name</label>
                                        <div class="col-sm-10">
                                            <input type="text" placeholder="Category name" name="name"
                                                   class="form-control w-75" id="staticEmail"
@@ -57,7 +55,7 @@
                                    <div class="form-group row mt-2 ">
                                        <div class="d-flex justify-content-between">
                                            <label  class="col-sm-2 col-form-label " style="width: 20%">
-                                               <p class="p-0 m-0" style="word-break: keep-all">Subcategory of</p>
+                                               <p class="p-0 m-0 text-white" style="word-break: keep-all">Subcategory of</p>
                                            </label>
                                            <select name="parent" :disabled="!editableItem?.parent" class="form-select  mr-2" style="width: 70%"  aria-label="Default select example">
                                                <option value="0">Choose SubCategory</option>
@@ -72,7 +70,7 @@
                                    <hr/>
                                    <div class="form-check form-group form-switch row mt-2 " style="padding-left: 0">
                                        <label class="col-sm-2 form-check-label d-flex pl-0 flex-row w-100" >
-                                           <p>Category is active</p>
+                                           <p class="text-white">Category is active</p>
                                          <input class="form-check-input" :checked="editableItem?.active" style="margin-left: 40px" name="active" value="1" type="checkbox"  >
                                        </label>
                                    </div>
@@ -94,27 +92,73 @@
                    Add Category
                </button>
            </div>
+
+           <div class="container mt-2">
+               <h3 class="w-100 text-center text-white">Categories to show in header</h3>
+               <multiselect :unique-key="'id'"
+                            :showable-key="'name'"
+                            :initial-values="categoriesInHeader"
+                            :values="categoriesWithSubCategory"
+                            @selected="setCategoriesToShow"
+               />
+               <div class="w-100 d-flex justify-content-center mt-2">
+                   <button type="button" class="btn-success btn w-25"
+                    @click="makeShowable"
+                   >
+                       Save
+                   </button>
+               </div>
+           </div>
        </template>
        <loader v-else/>
    </div>
 </template>
 
 <script>
-import {nextTick, onMounted, ref} from "vue";
+import {computed, nextTick, onMounted, ref} from "vue";
 import HTTP from "../Axios/axiosCongif";
 import useLoader from "../../GlobalComposables/useLoader";
 import Loader from "../../SharedComponents/Loader.vue";
 import {errorNotification, successNotification} from "../../Services/NotificationService";
 import {extractValidationErrors} from "../../Services/GlobalHelpers";
+import Multiselect from "../../SharedComponents/ReusableComponents/Multiselect.vue";
 
 export default {
     name: "Categories",
     components:{
+        Multiselect,
         Loader,
     },
     setup(){
         const categories=ref([]);
         const editableItem=ref(null);
+
+        const categoriesToShow=ref([])
+        const setCategoriesToShow=(cts)=>categoriesToShow.value=cts
+        const makeShowable=()=>{
+            const ids=categoriesToShow.value.map(ct=>ct.id)
+            HTTP.put('/category/showable',{ids})
+            .then(async ({data})=>{
+                if (data.success){
+                    successNotification('Categories are made presentable')
+                    await getCategoriesWithSubCategories()
+                }
+            })
+            .catch(e=>errorNotification(extractValidationErrors(e)))
+        }
+        const categoriesInHeader=computed(()=>{
+            if (!categories.value.length){
+                return [];
+            }
+            return  categories.value.filter((ct)=>ct.in_header)
+        })
+
+        const categoriesWithSubCategory=computed(()=>{
+            if (!categories.value.length){
+                return [];
+            }
+            return  categories.value.filter((ct)=>!!(ct?.sub_categories))
+        })
 
 
         const setCategories = (versions) => {
@@ -187,7 +231,11 @@ export default {
             dropEditing,
             startEditing,
             saveChanges,
-            deleteCategory
+            deleteCategory,
+            categoriesInHeader,
+            categoriesWithSubCategory,
+            setCategoriesToShow,
+            makeShowable
         }
 
     },

@@ -1,7 +1,8 @@
 import {reactive, ref} from "vue";
 import HTTP from "../Axios/axiosCongif";
 import useLoader from "../../GlobalComposables/useLoader";
-import {successNotification} from "../../Services/NotificationService";
+import {errorNotification, successNotification} from "../../Services/NotificationService";
+import {extractValidationErrors} from "../../Services/GlobalHelpers";
 
 export default function () {
     const loader=useLoader()
@@ -47,9 +48,8 @@ export default function () {
             }
             successNotification('Tag created successfully')
             after()
-
         }catch (e) {
-
+            errorNotification(extractValidationErrors(e))
         }
     }
     const resetModalData=()=>{
@@ -67,7 +67,7 @@ export default function () {
                 successNotification('Tag removed successfully')
             }
         }catch (e) {
-            console.log(e)
+            errorNotification(extractValidationErrors(e))
         }
     }
 
@@ -92,7 +92,7 @@ export default function () {
                 then()
             }
         }catch (e) {
-            console.log(e)
+            errorNotification(extractValidationErrors(e))
         }
     }
 

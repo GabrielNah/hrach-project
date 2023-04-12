@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\ContactInfoController;
 use App\Http\Controllers\Admin\CurrencyRateController;
+use App\Http\Controllers\Admin\InquiryHotKeyController;
 use App\Http\Controllers\Admin\ProductAdditionalController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductFileController;
@@ -36,6 +39,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::group(['prefix'=>'category'],function (){
             Route::get('',[CategoryController::class,'index']);
             Route::post('store/{category?}',[CategoryController::class,'store']);
+            Route::put('showable',[CategoryController::class,'makeCategoriesShowable']);
             Route::delete('/{category}',[CategoryController::class,'delete']);
         });
 
@@ -62,6 +66,8 @@ Route::group(['prefix'=>'admin'],function (){
                 Route::get('',[CurrencyRateController::class,'index']);
                 Route::post('',[CurrencyRateController::class,'store']);
             });
+
+            Route::apiResource('home',\App\Http\Controllers\Admin\HomePageSettingsController::class);
         });
 
 
@@ -70,6 +76,7 @@ Route::group(['prefix'=>'admin'],function (){
             Route::get('all',[ProductController::class,'index']);
             Route::post('/store',[ProductController::class,'store']);
             Route::post('/search',[ProductController::class,'search']);
+            Route::post('/exact',[ProductController::class,'getExactProducts']);
             Route::get('/edit/{product}',[ProductController::class,'show']);
             Route::delete('/{product}',[ProductController::class,'destroy']);
 
@@ -83,7 +90,8 @@ Route::group(['prefix'=>'admin'],function (){
 
             Route::scopeBindings()->prefix('prices')->group(function (){
                Route::get('{product}',[ProductPriceController::class,'index']);
-               Route::post('{product}',[ProductPriceController::class,'upsert']);
+               Route::post('/store/{product}',[ProductPriceController::class,'store']);
+               Route::put('/{product}/edit/{price}',[ProductPriceController::class,'edit']);
                Route::delete('{product}/{price}',[ProductPriceController::class,'destroy']);
             });
             Route::group(['prefix'=>'additional'],function (){
@@ -121,6 +129,23 @@ Route::group(['prefix'=>'admin'],function (){
         Route::prefix('slider')->group(function (){
             Route::get('index',[SliderController::class,'index']);
             Route::get('initial',[SliderController::class,'getInitialDataForSearchHelp']);
+            Route::post('store',[SliderController::class,'store']);
+            Route::put('/{slider}/edit',[SliderController::class,'edit']);
+            Route::delete('/{slider}',[SliderController::class,'destroy']);
+        });
+
+        Route::apiResource('banners',BannerController::class);
+
+        Route::group(['prefix'=>'hot_keys'],function (){
+            Route::get('',[InquiryHotKeyController::class,'index']);
+            Route::post('/store',[InquiryHotKeyController::class,'store']);
+            Route::put('/edit/{id}',[InquiryHotKeyController::class,'edit']);
+            Route::delete('/{id}',[InquiryHotKeyController::class,'destroy']);
+        });
+
+        Route::group(['prefix'=>'contactInfo'],function (){
+            Route::get('/',[ContactInfoController::class,'get']);
+            Route::post('/store',[ContactInfoController::class,'store']);
         });
     });
 

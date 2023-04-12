@@ -167,7 +167,6 @@
                 </div>
                 <div class="btn-group mt-2">
                     <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="reset" class="btn btn-secondary" style="margin-left: 10px" >Drop changes</button>
                 </div>
             </form>
         </modal>
@@ -243,7 +242,6 @@ export default {
                     successNotification('Color removed successfully')
                 }
             }catch (e) {
-                console.log(e)
                 errorNotification(extractValidationErrors(e))
             }
         }
@@ -271,7 +269,6 @@ export default {
                     successNotification('Color updated successfully')
                 }
             }catch (e) {
-                console.log(e)
                 errorNotification(extractValidationErrors(e))
             }
         }
@@ -307,7 +304,6 @@ export default {
                     successNotification('Size added successfully')
                 }
             }catch (e) {
-                console.log(e)
                 errorNotification(extractValidationErrors(e))
             }
         }
@@ -325,7 +321,6 @@ export default {
                     successNotification('Size updated successfully')
                 }
             }catch (e) {
-                console.log(e)
                 errorNotification(extractValidationErrors(e))
             }
         }
@@ -343,7 +338,6 @@ export default {
                     successNotification('Size removed successfully')
                 }
             }catch (e) {
-                console.log(e)
                 errorNotification(extractValidationErrors(e))
             }
         }

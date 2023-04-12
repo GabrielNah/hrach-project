@@ -354,7 +354,7 @@ export default {
 import {computed, inject, onMounted, reactive, ref, watch, watchEffect} from "vue";
 import {SEARCH_TYPE_FILTER} from "../Camposables/useProductSeachHelper";
 import  {executeSearch} from "../Camposables/useSearchExacuter";
-import {useRoute} from "vue-router";
+import {onBeforeRouteLeave, useRoute} from "vue-router";
 import {errorNotification} from "../../Services/NotificationService";
 import {extractValidationErrors} from "../../Services/GlobalHelpers";
 
@@ -486,6 +486,11 @@ onMounted(()=>{
         searchByCategories(category.value || 'all')
     }
     getSearchHelpers()
+})
+
+onBeforeRouteLeave((to,from,next)=>{
+    search.value=''
+    next()
 })
 
 </script>

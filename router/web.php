@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\ContactInfoController;
 use App\Http\Controllers\Admin\CurrencyRateController;
 use App\Http\Controllers\Admin\InquiryHotKeyController;
 use App\Http\Controllers\Admin\ProductAdditionalController;
@@ -140,6 +141,11 @@ Route::group(['prefix'=>'admin'],function (){
             Route::post('/store',[InquiryHotKeyController::class,'store']);
             Route::put('/edit/{id}',[InquiryHotKeyController::class,'edit']);
             Route::delete('/{id}',[InquiryHotKeyController::class,'destroy']);
+        });
+
+        Route::group(['prefix'=>'contactInfo'],function (){
+            Route::get('/',[ContactInfoController::class,'get']);
+            Route::post('/store',[ContactInfoController::class,'store']);
         });
     });
 

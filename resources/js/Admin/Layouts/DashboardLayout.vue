@@ -87,12 +87,12 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <router-link :to="{name:ADMIN_CONTACT_INFO}" active-class="active">
                     <i class="fa fa-map-marker fa-2x"></i>
                     <span class="nav-text">
-                            Member Map
+                           Contact information
                     </span>
-                </a>
+                </router-link>
             </li>
             <li>
                 <a href="#">
@@ -124,7 +124,12 @@ import {
     ADMIN_CATEGORIES_ROUTE,
     ADMIN_PRODUCT_LIST,
     ADMIN_SETTING_ROUTE,
-    ADMIN_SLIDER_EDIT, ADMIN_BANNERS_EDIT, ADMIN_DASHBOARD_ROUTE, ADMIN_INQUIRES, ADMIN_HOME_PAGE_SETTINGS
+    ADMIN_SLIDER_EDIT,
+    ADMIN_BANNERS_EDIT,
+    ADMIN_DASHBOARD_ROUTE,
+    ADMIN_INQUIRES,
+    ADMIN_HOME_PAGE_SETTINGS,
+    ADMIN_CONTACT_INFO
 } from "../../router/Admin/adminRoutes";
 import {redirectToRouteByName} from "../../Services/GlobalHelpers";
 import Loader from "../../SharedComponents/Loader.vue";
@@ -159,6 +164,7 @@ export default {
             ADMIN_DASHBOARD_ROUTE,
             ADMIN_INQUIRES,
             ADMIN_HOME_PAGE_SETTINGS,
+            ADMIN_CONTACT_INFO,
             InquiryExists,
 
         }

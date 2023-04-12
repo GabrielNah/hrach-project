@@ -255,7 +255,9 @@
                     <hr />
 
                     <!-- Pagination -->
-                    <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3"
+                        v-if="paginator.last_page > 1"
+                    >
                         <ul class="pagination">
                             <li class="page-item "
                                 :class="{'disabled':!paginator.prev_page_url}"
@@ -268,14 +270,17 @@
                                     <span aria-hidden="true">&laquo;</span>
                                 </span>
                             </li>
-                            <template v-for="page in paginator.last_page">
-                                <li class="page-item "
-                                    :class="{'active':page===paginator.current_page}"
-                                    @click="getPageData(page)"
-                                >
-                                    <span class="page-link">{{ page }}</span>
-                                </li>
-                            </template>
+
+                                <template v-for="page in paginator.last_page">
+                                    <template v-if="showablePages.includes(page)">
+                                        <li class="page-item "
+                                            :class="{'active':page===paginator.current_page}"
+                                            @click="getPageData(page)"
+                                        >
+                                            <span class="page-link">{{ page }}</span>
+                                        </li>
+                                    </template>
+                                </template>
 
                             <li class="page-item"
                                 :class="{'disabled':!paginator.next_page_url}"
@@ -370,6 +375,14 @@ const paginator=reactive({
     per_page:0,
     prev_page_url:'',
     next_page_url:'',
+})
+
+const showablePages=computed(()=>{
+    let firstPage=1;
+    const prevPage=paginator.current_page-1;
+    const nextPage=paginator.current_page+1;
+    const nextPage1=paginator.current_page+2;
+    return [firstPage,prevPage,paginator.current_page,nextPage,nextPage1,paginator.last_page];
 })
 
 const applyFilter=(e)=>{

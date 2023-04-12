@@ -72,17 +72,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="w-100 justify-content-center">
+                    <div class="w-100 justify-content-center" v-if="paginator.last_page > 1">
                         <div class="d-flex gap-1 pages justify-content-center">
-                            <span class="single_page"
-                                  v-for="page in paginator.last_page"
-                                  :class="{
-                                      'active':page === paginator.current_page,
-                                      }"
-                                  @click="wrapWithinProcess(()=>paginatorActions.getPagesResults(page))"
+                            <template  v-for="page in paginator.last_page"
+                                       :key="page"
                             >
-                                {{ page }}
-                            </span>
+                                      <span class="single_page"
+                                           v-if="showablePages.includes(page)"
+                                            :class="{
+                                                'active':page === paginator.current_page,
+                                              }"
+                                            @click="wrapWithinProcess(()=>paginatorActions.getPagesResults(page))"
+                                      >
+                                        {{ page }}
+                                    </span>
+                            </template>
+
                         </div>
                     </div>
                 </template>
@@ -270,6 +275,14 @@ const paginator = reactive({
     current_page:0,
     next_page_url:'',
     prev_page_url:'',
+})
+
+const showablePages=computed(()=>{
+    let firstPage=1;
+    const prevPage=paginator.current_page-1;
+    const nextPage=paginator.current_page+1;
+    const nextPage1=paginator.current_page+2;
+    return [firstPage,prevPage,paginator.current_page,nextPage,nextPage1,paginator.last_page];
 })
 watch(()=>searchValue.searchBy,(val)=>{
     if (val!==DEFAULT_SEARCH){

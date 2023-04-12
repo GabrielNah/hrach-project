@@ -113,7 +113,7 @@ class ProductRepository
                                         });
                     })
                     ->with(['generalFile','priceForOne','category'])
-                    ->paginate($request->query('count')??2);
+                    ->paginate($request->query('count')??20);
     }
 
 

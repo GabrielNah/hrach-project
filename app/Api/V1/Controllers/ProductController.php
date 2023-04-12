@@ -13,8 +13,6 @@ use App\Models\Size;
 use App\Models\Tag;
 use App\Services\Enums\SEARCH_TYPES;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ProductController extends Controller
@@ -136,7 +134,7 @@ class ProductController extends Controller
                     });
                 });
             })
-            ->paginate(2);
+            ->paginate(20);
         return $this->successResponse(compact('products'));
     }
 

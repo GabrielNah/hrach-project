@@ -1,6 +1,11 @@
 <template>
-    <div class="card card-product-grid product-item w-100 h-100 d-flex flex-column" v-if="product">
-        <router-link class="img-wrap w-100 p-1 flex-grow-1" :to="productRoute(product.id)"
+    <div class="card card-product-grid product-item w-100 h-100 d-flex "
+         v-if="product"
+         :class=" horizontal ?'flex-row':'flex-column'"
+    >
+        <router-link class="img-wrap p-1 "
+                     :to="productRoute(product.id)"
+                     :class="horizontal ? 'w-50' :'w-100'"
         >
             <template v-if="product.general_file.type === 'video'">
                 <video :src="'/'+product.general_file.path" autoplay controls class="w-100 h-100"></video>
@@ -24,6 +29,9 @@
                     {{ product.title }}
                 </router-link>
             </div>
+            <div class="price h5 mt-2 d-flex justify-content-between" v-if="horizontal">
+                <span>{{ product.description }}</span>
+            </div>
             <div class="price h5 mt-2 d-flex justify-content-between">
                 <span>{{ product.price_for_one.price }}$</span>
             </div> <!-- price.// -->
@@ -39,6 +47,11 @@ export default defineComponent({
         product:{
             type:Object,
             required:true
+        },
+        horizontal:{
+            type:Boolean,
+            required: false,
+            default:()=>false
         }
     },
     methods:{

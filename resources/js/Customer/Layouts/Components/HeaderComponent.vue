@@ -59,7 +59,7 @@
                 </ul>
             </nav>
 
-            <section class="header-main border-bottom">
+            <section class="header-main ">
                 <div class="row row-sm">
                     <div class="col-6 col-sm col-md col-lg  flex-grow-0">
                         <a href="http://bootstrap-ecommerce.com" class="brand-wrap">

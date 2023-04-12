@@ -103,6 +103,39 @@ class ProductController extends Controller
                         ->orWhere('description','LIKE',"$val");
                     });
             })
+            ->when($SEARCH_TYPE === SEARCH_TYPES::FILTER->value,function (Builder $q)use ($request){
+                $val=$request->input('filter');
+                $tags= $val['tags'] ?? null;
+                $sizes= $val['sizes'] ?? null;
+                $colors= $val['colors'] ?? null;
+                $rating= $val['rating'] ?? null;
+                $categories= $val['categories'] ?? null;
+                $min_price=$val['price_min']??null;
+                $max_price=$val['price_max']??null;
+                $q->when($tags,function (Builder $q) use ($tags){
+                    $q->whereHas('tags',function ($query) use ($tags){
+                        $query->whereIn('tag_id',$tags);
+                    });
+                })->when($sizes,function (Builder $q) use ($sizes){
+                    $q->whereHas('sizes',function ($query) use ($sizes){
+                        $query->whereIn('size_id',$sizes);
+                    });
+                })->when($colors,function (Builder $q) use ($colors){
+                    $q->whereHas('colors',function ($query) use ($colors){
+                        $query->whereIn('color_id',$colors);
+                    });
+                })->when($categories,function (Builder $q) use ($categories){
+                    $q->whereHas('category',function ($query) use ($categories){
+                        $query->whereIn('id',$categories);
+                    });
+                })->when($rating,function (Builder $q) use ($rating){
+                    $q->whereIn('rating',$rating);
+                })->when($min_price && $max_price,function (Builder $q) use ($min_price,$max_price){
+                    $q->whereHas('priceForOne',function ($query) use ($min_price,$max_price){
+                        $query->whereBetween('price',[$min_price,$max_price]);
+                    });
+                });
+            })
             ->paginate(2);
         return $this->successResponse(compact('products'));
     }

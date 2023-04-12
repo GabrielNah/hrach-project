@@ -9,16 +9,14 @@ export async  function  executeSearch({type,value},path='/api/product/search') {
     const data = {
         type
     }
-    if (type === SEARCH_TYPE_FILTER){
-        for (const key in value) {
-            data[key]=value
-        }
-    }
     if (type === SEARCH_TYPE_BY_IDS){
         data.ids=value
     }
-    if (type === SEARCH_TYPE_DEFAULT){
+    if (type === SEARCH_TYPE_DEFAULT ){
         data.value=value
+    }
+    if (type === SEARCH_TYPE_FILTER ){
+        data.filter=value
     }
     if (type === SEARCH_TYPE_CATEGORY){
         data.category=value

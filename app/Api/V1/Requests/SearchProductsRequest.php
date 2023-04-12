@@ -23,6 +23,21 @@ class SearchProductsRequest extends FormRequest
             'value'=>['string',
                 Rule::requiredIf($this->get('type') === SEARCH_TYPES::DEFAULT->value)
             ],
+            'filter'=>[Rule::requiredIf($this->get('type') === SEARCH_TYPES::FILTER->value),
+            'array'],
+            'filter.categories'=>'array',
+            'filter.colors'=>'array',
+            'filter.tags'=>'array',
+            'filter.rating'=>'array',
+            'filter.sizes'=>'array',
+            'filter.categories.*'=>['integer','exists:categories,id'],
+            'filter.colors.*'=>['integer','exists:colors,id'],
+            'filter.tags.*'=>['integer','exists:tags,id'],
+            'filter.rating.*'=>['integer','min:1','max:5'],
+            'filter.sizes.*'=>['integer','exists:sizes,id'],
+            'filter.price_min'=>['integer','min:0'],
+            'filter.price_max'=>['integer','max:10001'],
+
         ];
     }
 }

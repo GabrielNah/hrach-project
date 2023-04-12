@@ -2,13 +2,13 @@
 
 
     <!-- sidebar + content -->
-    <section class="">
+    <section class="pt-3">
         <div class="container">
             <div class="row">
                 <!-- sidebar -->
                 <div class="col-lg-3">
                     <!-- Toggle button -->
-                    <form >
+                    <form  @submit.prevent="applyFilter">
                         <button
                             class="btn btn-outline-secondary mb-3 w-100 d-lg-none"
                             type="button"
@@ -96,29 +96,24 @@
                                         </button>
                                     </h2>
                                     <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse " aria-labelledby="headingThree">
-                                        <div class="accordion-body">
-                                            <div class="range">
-                                                <input type="range" class="form-range" id="customRange1" />
+                                        <div class="accordion-body price-rang-acordeon">
+                                            <div class="price-input">
+                                                <div class="field">
+                                                    <span>Min</span>
+                                                    <input type="number" class="input-min" value="2500" name="price_min">
+                                                </div>
+                                                <div class="separator">-</div>
+                                                <div class="field">
+                                                    <span>Max</span>
+                                                    <input type="number" class="input-max" value="7500" name="price_max">
+                                                </div>
                                             </div>
-                                            <div class="row mb-3">
-                                                <div class="col-6">
-                                                    <p class="mb-0">
-                                                        Min
-                                                    </p>
-                                                    <div class="form-outline">
-                                                        <input type="number"  class="form-control" />
-                                                        <label class="form-label" >$0</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <p class="mb-0">
-                                                        Max
-                                                    </p>
-                                                    <div class="form-outline">
-                                                        <input type="number"  class="form-control" />
-                                                        <label class="form-label" >$1,0000</label>
-                                                    </div>
-                                                </div>
+                                            <div class="slider">
+                                                <div class="progress"></div>
+                                            </div>
+                                            <div class="range-input">
+                                                <input type="range" class="range-min" min="0" max="10000" value="2500" step="100">
+                                                <input type="range" class="range-max" min="0" max="10000" value="7500" step="100">
                                             </div>
                                         </div>
                                     </div>
@@ -210,8 +205,8 @@
                                     </div>
                                 </div>
                                 <div class="accordion-item">
-                                    <div class="d-flex w-100 justify-content-center align-items-center">
-                                        <button class="btn btn-primary">
+                                    <div class="d-flex w-100 justify-content-center align-items-center p-2">
+                                        <button class="btn btn-primary p-1 text-center w-50">
                                             Apply
                                         </button>
                                     </div>
@@ -229,22 +224,30 @@
                         <strong class="d-block py-2">{{ paginator.total }} Items found </strong>
                         <div class="ms-auto">
                             <div class="btn-group shadow-0 border">
-                                <a href="#" class="btn btn-light" title="List view">
+                                <a href="#" class="btn btn-light" :class="{'active':position===COLUMN}"
+                                   title="List view" @click="setPosition(COLUMN)"
+                                >
                                     <i class="fa fa-bars fa-lg"></i>
                                 </a>
-                                <a href="#" class="btn btn-light active" title="Grid view">
+                                <a href="#" class="btn btn-light " :class="{'active':position===ROW}"
+                                    @click="setPosition(ROW)"
+                                   title="Grid view">
                                     <i class="fa fa-th fa-lg"></i>
                                 </a>
                             </div>
                         </div>
                     </header>
 
-                    <div class="row">
+                    <div class="row"  :class="{'flex-column':position===COLUMN}">
                         <div class="col-lg-4 col-md-6 col-sm-6 d-flex" v-for="product in paginator.products"
                             :key="product.id"
+                             :class="{'w-100':position===COLUMN}"
                         >
                             <div class=" w-100 my-2 ">
-                                <product-cart :product="product"/>
+                                <product-cart
+                                    :product="product"
+                                    :horizontal="position===COLUMN"
+                                />
                             </div>
                         </div>
                     </div>
@@ -299,16 +302,66 @@
 import ProductCart from "./Components/Product-cart.vue";
 export default {
     name: "SearchedProducts",
-    components:{ProductCart}
+    components:{ProductCart},
+    mounted() {
+        const rangeInput = document.querySelectorAll(".range-input input"),
+            priceInput = document.querySelectorAll(".price-input input"),
+            range = document.querySelector(".slider .progress");
+        let priceGap = 500;
+        priceInput.forEach(input =>{
+            input.addEventListener("input", e =>{
+                let minPrice = parseInt(priceInput[0].value),
+                    maxPrice = parseInt(priceInput[1].value);
+
+                if((maxPrice - minPrice >= priceGap) && maxPrice <= rangeInput[1].max){
+                    if(e.target.className === "input-min"){
+                        rangeInput[0].value = minPrice;
+                        range.style.left = ((minPrice / rangeInput[0].max) * 100) + "%";
+                    }else{
+                        rangeInput[1].value = maxPrice;
+                        range.style.right = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
+                    }
+                }
+            });
+        });
+        rangeInput.forEach(input =>{
+            input.addEventListener("input", e =>{
+                let minVal = parseInt(rangeInput[0].value),
+                    maxVal = parseInt(rangeInput[1].value);
+                if((maxVal - minVal) < priceGap){
+                    if(e.target.className === "range-min"){
+                        rangeInput[0].value = maxVal - priceGap
+                    }else{
+                        rangeInput[1].value = minVal + priceGap;
+                    }
+                }else{
+                    priceInput[0].value = minVal;
+                    priceInput[1].value = maxVal;
+                    range.style.left = ((minVal / rangeInput[0].max) * 100) + "%";
+                    range.style.right = 100 - (maxVal / rangeInput[1].max) * 100 + "%";
+                }
+            });
+        });
+    }
 }
 </script>
 <script setup>
-import {computed, inject, onMounted, reactive, watch, watchEffect} from "vue";
+import {computed, inject, onMounted, reactive, ref, watch, watchEffect} from "vue";
+import {SEARCH_TYPE_FILTER} from "../Camposables/useProductSeachHelper";
 import  {executeSearch} from "../Camposables/useSearchExacuter";
 import {useRoute} from "vue-router";
+import {errorNotification} from "../../Services/NotificationService";
+import {extractValidationErrors} from "../../Services/GlobalHelpers";
 
 const {search,searchByCategories} = inject('searchHelper')
 const route = useRoute()
+const ROW='row';
+const COLUMN='column';
+const position=ref(ROW)
+const setPosition=(pos)=>{
+    position.value=pos
+}
+
 const paginator=reactive({
     current_page:0,
     total:0,
@@ -318,6 +371,38 @@ const paginator=reactive({
     prev_page_url:'',
     next_page_url:'',
 })
+
+const applyFilter=(e)=>{
+
+    const data=new FormData(e.target)
+    const searchData={};
+    const existingKeys=[];
+    for (const [key, value] of data.entries()) {
+        if (key.includes('[]')){
+            if (existingKeys.includes(key)){
+                searchData[key].push(value)
+                continue;
+            }
+            existingKeys.push(key)
+            searchData[key]=[value];
+            continue;
+        }
+
+        searchData[key]=value
+    }
+
+    for (let key of Object.keys(searchData)) {
+        let newKey;
+        if (key.includes('[]')){
+            newKey=key.slice(0,-2)
+            searchData[newKey]=searchData[key]
+            delete searchData[key]
+        }
+
+    }
+    search.type=SEARCH_TYPE_FILTER
+    search.value=searchData
+}
 const changeStyles=(e)=>{
     const checkbox=e.target;
 
@@ -353,8 +438,13 @@ const setPaginatorData=({products})=>{
 
 const fulfillSearch=async (path='/api/product/search')=>{
 
-    let result =await executeSearch(search,path)
-    setPaginatorData(result.data)
+    try {
+        let result =await executeSearch(search,path)
+        setPaginatorData(result.data)
+    }catch (e) {
+        errorNotification(extractValidationErrors(e))
+    }
+
 }
 const correctPathForSearch=(page)=>{
     if (typeof page === "string"){
@@ -387,7 +477,7 @@ onMounted(()=>{
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .icon-hover:hover {
     border-color: #3b71ca !important;
     background-color: white !important;
@@ -396,7 +486,87 @@ onMounted(()=>{
 .icon-hover:hover i {
     color: #3b71ca !important;
 }
-
+.price-rang-acordeon{
+    .price-input{
+        width: 100%;
+        display: flex;
+        margin: 30px 0 35px;
+    }
+    .price-input .field{
+        display: flex;
+        width: 100%;
+        height: 45px;
+        align-items: center;
+    }
+    .field input{
+        width: 55%;
+        height: 85%;
+        outline: none;
+        font-size: 19px;
+        margin-left: 12px;
+        border-radius: 5px;
+        text-align: center;
+        border: 1px solid #999;
+        -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+    .price-input .separator{
+        width: 130px;
+        display: flex;
+        font-size: 19px;
+        align-items: center;
+        justify-content: center;
+    }
+    .slider{
+        height: 5px;
+        position: relative;
+        background: #ddd;
+        border-radius: 5px;
+    }
+    .slider .progress{
+        height: 100%;
+        left: 25%;
+        right: 25%;
+        position: absolute;
+        border-radius: 5px;
+        background: #17A2B8;
+    }
+    .range-input{
+        position: relative;
+    }
+    .range-input input{
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        top: -5px;
+        background: none;
+        pointer-events: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+    input[type="range"]::-webkit-slider-thumb{
+        height: 17px;
+        width: 17px;
+        border-radius: 50%;
+        background: #17A2B8;
+        pointer-events: auto;
+        -webkit-appearance: none;
+        box-shadow: 0 0 6px rgba(0,0,0,0.05);
+    }
+    input[type="range"]::-moz-range-thumb{
+        height: 17px;
+        width: 17px;
+        border: none;
+        border-radius: 50%;
+        background: #17A2B8;
+        pointer-events: auto;
+        -moz-appearance: none;
+        box-shadow: 0 0 6px rgba(0,0,0,0.05);
+    }
+}
 .checked_color_size{
     box-shadow: 1px 5px 15px -2px rgba(20,17,17,0.75);
     -webkit-box-shadow: 1px 5px 15px -2px rgba(20,17,17,0.75);

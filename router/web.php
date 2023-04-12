@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\CurrencyRateController;
+use App\Http\Controllers\Admin\InquiryHotKeyController;
 use App\Http\Controllers\Admin\ProductAdditionalController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductFileController;
@@ -131,7 +133,14 @@ Route::group(['prefix'=>'admin'],function (){
             Route::delete('/{slider}',[SliderController::class,'destroy']);
         });
 
-        Route::apiResource('banners',\App\Http\Controllers\Admin\BannerController::class);
+        Route::apiResource('banners',BannerController::class);
+
+        Route::group(['prefix'=>'hot_keys'],function (){
+            Route::get('',[InquiryHotKeyController::class,'index']);
+            Route::post('/store',[InquiryHotKeyController::class,'store']);
+            Route::put('/edit/{id}',[InquiryHotKeyController::class,'edit']);
+            Route::delete('/{id}',[InquiryHotKeyController::class,'destroy']);
+        });
     });
 
 });

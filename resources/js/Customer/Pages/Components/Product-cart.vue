@@ -8,7 +8,8 @@
                      :class="horizontal ? 'w-50' :'w-100'"
         >
             <template v-if="product.general_file.type === 'video'">
-                <video :src="'/'+product.general_file.path" autoplay controls class="w-100 h-100"></video>
+                <video :src="'/'+product.general_file.path" autoplay loop muted
+                       class="w-100 h-100"></video>
             </template>
             <template v-if="product.general_file.type === 'image'">
                 <img :src="'/'+product.general_file.path" class="w-100 h-100">

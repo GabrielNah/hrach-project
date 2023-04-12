@@ -40,4 +40,9 @@ Route::group(['prefix'=>'slider'],function (){
 Route::get('/banners',BannerController::class);
 
 Route::post('/comment/{product}',CommentController::class);
-Route::post('/inquiry/{product}',InquiryController::class);
+
+Route::group(['prefix'=>'inquiry'],function (){
+    Route::get('/hot_keys',[InquiryController::class,'getHotKeys']);
+    Route::post('/{product}',InquiryController::class);
+});
+

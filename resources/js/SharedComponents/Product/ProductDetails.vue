@@ -16,7 +16,7 @@
                 <div class="files_wrapper">
                     <div class="main_image" v-if="files.selected">
                         <template v-if="files.selected.type==='video'">
-                            <video :src="'/'+files.selected.path"  controls autoplay muted></video>
+                            <video :src="'/'+files.selected.path"   autoplay  loop muted></video>
                         </template>
                         <template v-if="files.selected.type==='image'">
                             <img :src="'/'+files.selected.path" />
@@ -25,7 +25,8 @@
                     <div class="images" v-if="files.all.length">
                         <template v-for="file in files.all">
                             <template v-if="file.type==='video'">
-                                <video @click="setSelectedFile(file)" class="single_image"  controls muted autoplay :src="'/'+file.path" ></video>
+                                <video @click="setSelectedFile(file)" class="single_image"  autoplay  loop muted
+                                       :src="'/'+file.path" ></video>
                             </template>
                             <template v-if="file.type==='image'">
                                 <img @click="setSelectedFile(file)" class="single_image" :src="'/'+file.path" />

@@ -8,7 +8,7 @@ import Settings from "../../Admin/Pages/Settings.vue";
 import EditProduct from "../../Admin/Pages/Products/EditProduct.vue";
 import SliderMaker from "../../Admin/Pages/Slider/SliderMaker.vue";
 import Banners from "../../Admin/Pages/Banners.vue";
-import Inquiries from "../../Admin/Pages/Inquiries.vue";
+import Inquiries from "../../Admin/Pages/Inquiry/Inquiries.vue";
 import HomePageSettings from "../../Admin/Pages/HomePageSettings.vue";
 
 export const ADMIN_LOGIN_ROUTE='admin.login';

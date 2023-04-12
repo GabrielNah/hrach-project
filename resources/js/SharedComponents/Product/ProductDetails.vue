@@ -36,7 +36,13 @@
                 </div>
                 <div class="product_info">
                     <h3 class="product_name"> {{ product.name }}</h3>
-                    <p class="product_data_text">{{ product.title }}</p>
+                    <p class="product_data_text mb-0">{{ product.title }}</p>
+                    <div v-if="product.in_stock">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#FF9017" class="bi bi-check" viewBox="0 0 16 16">
+                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                        </svg>
+                        In stock
+                    </div>
                     <div class="product_rating">
                         <div class="rating d-flex flex-row">
                             <svg v-for="i in 5" fill="none" height="15" viewBox="0 0 16 15" width="16"
@@ -78,7 +84,15 @@
                                         <div class="quality">
                                           {{renderTextForPrices(price)}}
                                         </div>
-                                        <div class="price"><span class="">  {{ price.price }}  {{price.currency}} </span></div>
+                                        <div class="price">
+                                            <span class="">  {{ price.price }}  {{price.currency}} </span>
+                                        </div>
+                                        <div v-if="price.negotiable" class="d-flex">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#FF9017" class="bi bi-check" viewBox="0 0 16 16">
+                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                            </svg>
+                                            Negotiable
+                                        </div>
                                     </div>
                                 </div>
                             </div>

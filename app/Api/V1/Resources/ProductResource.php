@@ -22,6 +22,7 @@ class ProductResource extends JsonResource
             'prices' => PriceResource::collection($this->resource->prices),
             'rating' => (int) $this->resource->rating,
             'active' => $this->resource->active,
+            'in_stock' => $this->resource->in_stock,
             'description' => $this->resource->description,
             'name' => $this->resource->name,
             'title' => $this->resource->title,

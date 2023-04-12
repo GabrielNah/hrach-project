@@ -17,7 +17,7 @@ class PriceResource extends JsonResource
             'min_count'=>$this->resource->min_count,
             'currency'=>Price::USD,
             'discount'=>$this->resource->discount,
-            'negotiable'=>$this->resource->negotiable,
+            'negotiable'=> (bool)$this->resource->negotiable,
             'price'=>$this->resource->price,
         ];
     }

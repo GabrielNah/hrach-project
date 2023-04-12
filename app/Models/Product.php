@@ -20,6 +20,11 @@ class Product extends Model
 
     protected $casts=[
         'active'=>'boolean',
+        'in_stock'=>'boolean',
+    ];
+
+    protected $attributes=[
+        'in_stock'=>false
     ];
 
     public function files():HasMany

@@ -16,6 +16,7 @@ class EditProductMainInfoRequest extends FormRequest
             'rating'=>'required|numeric|min:1|max:5',
             'description'=>'required|string',
             'active'=>['required','boolean'],
+            'in_stock'=>['required','boolean'],
             'category'=>['required','integer','exists:categories,id'],
         ];
     }

@@ -130,6 +130,11 @@
                                             <label class="form-check-label" for="flexSwitchCheckChecked">Product is active</label>
                                             <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" name="is_active">
                                         </div>
+                                        <div class="form-check form-group form-switch">
+                                            <label class="form-check-label">Product is is stock
+                                            <input class="form-check-input" type="checkbox" value="yes" name="in_stock">
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </form>

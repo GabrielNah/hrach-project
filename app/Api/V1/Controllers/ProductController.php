@@ -29,7 +29,7 @@ class ProductController extends Controller
             'nonGeneralFiles:id,product_id,path,type',
             'generalFile:id,product_id,path,type',
             'additional:id,product_id,additional',
-            'prices:id,product_id,min_count,max_count,price,discount',
+            'prices:id,product_id,min_count,max_count,price,discount,negotiable',
             'category.parentCategory',
             'sizes:id,size,type',
             'colors:id,type,name,value',

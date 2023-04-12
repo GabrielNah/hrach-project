@@ -272,7 +272,7 @@ export default {
 
         onMounted(async ()=>{
             try {
-                let {data:{product:neededProduct,likable,related}}  =  await axios.get('/api/product/'+route.params.id);
+                let {data:{product:neededProduct,likable,related}}  =  await axios.get('/product/'+route.params.id);
                 product.value = neededProduct
                 likableProducts.value=likable
                 relatedProducts.value=related

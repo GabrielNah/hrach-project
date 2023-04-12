@@ -25,7 +25,6 @@
 <script>
 import ProductCart from "./Product-cart.vue";
 import { defineComponent, onMounted, reactive } from "vue";
-import axios from "axios";
 
 export default defineComponent({
     name: "RecomendedItems",
@@ -38,7 +37,7 @@ export default defineComponent({
         });
         const getNextPageData = () => {
             if (!pageSettings.next_page_url) return;
-            axios.get(pageSettings.next_page_url)
+            window.axios.get(pageSettings.next_page_url)
                 .then(({ data }) => {
                     pageSettings.section_name = data.pageSettings.section_name;
                     pageSettings.products.push(
@@ -50,7 +49,7 @@ export default defineComponent({
                 });
         };
         const getProducts = () => {
-            axios.get("/api/product/front_page?main=true")
+            window.axios.get("/product/front_page?main=true")
                 .then(({ data }) => {
                     pageSettings.section_name = data.pageSettings.section_name;
                     pageSettings.products = data.pageSettings.products.products;

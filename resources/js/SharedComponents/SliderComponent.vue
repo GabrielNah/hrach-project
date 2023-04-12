@@ -41,7 +41,7 @@ export default {
     }),
     methods:{
         getSlides(){
-            axios.get('/api/slider')
+            axios.get('/slider')
             .then(({data})=>{
                 this.slides=data.sliders
             })

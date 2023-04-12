@@ -37,7 +37,7 @@ export default {
         const banners=ref([])
         const search=inject('searchHelper')
         const getBanners=()=>{
-            axios.get('/api/banners')
+            axios.get('/banners')
                 .then(({data})=>{
                     banners.value=data.banners
                 })

@@ -37,9 +37,7 @@ class ProductController extends Controller
                     $q->select(['id','product_id','writer','review','rating'])
                     ->where('active',true);
             }]);
-        $likable=[];
-        $related=[];
-        if (!auth('admin')->check()){
+
             $tags=collect($product->tags)->pluck('id')->values()->all();
             $category=$product->category->id;
             $likable=Product::query()
@@ -64,12 +62,10 @@ class ProductController extends Controller
                 })
                 ->take(20)
                 ->get();
-        }
         return  $this->successResponse([
             'product'=>ProductResource::make($product),
             'related'=>$related,
             'likable'=>$likable
-
         ]);
     }
 

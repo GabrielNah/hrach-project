@@ -24,12 +24,11 @@ export default {
 </script>
 <script setup>
 import {onMounted, ref} from "vue";
-    import axios from "axios";
 
     const sectionName=ref('')
     const products=ref([])
     const getItems=()=>{
-        axios.get('/api/product/front_page?main=false')
+        axios.get('/product/front_page?main=false')
         .then(({data})=>{
             sectionName.value=data.pageSettings.section_name
             products.value=data.pageSettings.products

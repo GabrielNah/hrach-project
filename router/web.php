@@ -87,7 +87,8 @@ Route::group(['prefix'=>'admin'],function (){
 
             Route::scopeBindings()->prefix('prices')->group(function (){
                Route::get('{product}',[ProductPriceController::class,'index']);
-               Route::post('{product}',[ProductPriceController::class,'upsert']);
+               Route::post('/store/{product}',[ProductPriceController::class,'store']);
+               Route::put('/{product}/edit/{price}',[ProductPriceController::class,'edit']);
                Route::delete('{product}/{price}',[ProductPriceController::class,'destroy']);
             });
             Route::group(['prefix'=>'additional'],function (){

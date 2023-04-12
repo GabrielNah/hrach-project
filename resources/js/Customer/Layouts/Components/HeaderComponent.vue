@@ -121,7 +121,7 @@ import {useRoute} from "vue-router";
 
 
     const getCategories=()=>{
-        axios.get('/api/category/presentable')
+        axios.get('/category/presentable')
         .then(({data})=>{
             categories.value=data.categories
         }).catch(e=>console.log(e))

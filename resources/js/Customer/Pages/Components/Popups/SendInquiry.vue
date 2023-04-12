@@ -124,7 +124,7 @@ const errors=reactive({
      inquiry.count--
  }
 const sendInquiry=()=>{
-     axios.post(`/api/inquiry/${props.product.id}`,{...inquiry})
+     axios.post(`/inquiry/${props.product.id}`,{...inquiry})
     .then(({data})=>{
         if (data.success){
             successNotification('Inquiry sent, we will contact you ASAP');

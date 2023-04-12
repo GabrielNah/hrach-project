@@ -87,7 +87,7 @@ watch(()=>comment.username,()=>{
 })
 
 const leaveComment = ()=>{
-   axios.post(`/api/comment/${productId.value}`,{...comment})
+   axios.post(`/comment/${productId.value}`,{...comment})
     .then(({data})=>{
         emit('close',data.comment)
     })

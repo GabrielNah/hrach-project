@@ -433,7 +433,7 @@ const searchHelpers=reactive({
 })
 
 const getSearchHelpers=()=>{
-    axios.get('/api/product/searchHelpers')
+    axios.get('/product/searchHelpers')
     .then(({data})=>{
        searchHelpers.categories=data.categories
        searchHelpers.tags=data.tags
@@ -449,7 +449,7 @@ const setPaginatorData=({products})=>{
     })
 }
 
-const fulfillSearch=async (path='/api/product/search')=>{
+const fulfillSearch=async (path='/product/search')=>{
 
     try {
         let result =await executeSearch(search,path)

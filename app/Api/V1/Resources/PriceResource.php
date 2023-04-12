@@ -17,6 +17,7 @@ class PriceResource extends JsonResource
             'min_count'=>$this->resource->min_count,
             'currency'=>Price::USD,
             'discount'=>$this->resource->discount,
+            'negotiable'=>$this->resource->negotiable,
             'price'=>$this->resource->price,
         ];
     }
@@ -33,6 +34,7 @@ class PriceResource extends JsonResource
                 $otherCurrencyPrice['min_count'] = $price['min_count'];
                 $otherCurrencyPrice['max_count'] = $price['max_count'];
                 $otherCurrencyPrice['discount'] = $price['discount'];
+                $otherCurrencyPrice['negotiable'] = $price['negotiable'];
                 $otherCurrencyPrice['currency']=$currencyRate->currency;
                 $otherCurrencyPrice['price']=(new PriceRateConvertor())->convertToCurrency($price['price'],$currencyRate->currency);
                 $otherCurrencies[]=$otherCurrencyPrice;

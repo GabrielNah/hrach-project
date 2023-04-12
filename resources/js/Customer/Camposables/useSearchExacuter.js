@@ -5,7 +5,7 @@ import {
     SEARCH_TYPE_FILTER
 } from "./useProductSeachHelper";
 
-export async  function  executeSearch({type,value},path='/api/product/search') {
+export async  function  executeSearch({type,value},path='/product/search') {
     const data = {
         type
     }

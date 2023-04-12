@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\Size;
 use App\Models\Slider;
 use App\Models\Tag;
+use App\Services\FileService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -86,7 +87,7 @@ class SliderController extends Controller
 
     private function storeFile(Slider $slider,$file ):void
     {
-        $path = '/public/Slider_' . $slider->id;
+        $path = '/public/sliders/Slider_' . $slider->id;
         $filePath = $file->store($path);
 
         $slider->update(['image'=>str_replace('public', 'storage', $filePath)]);

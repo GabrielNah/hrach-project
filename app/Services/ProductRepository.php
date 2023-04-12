@@ -32,7 +32,7 @@ class ProductRepository
                 $colors=$productData['colors'] ?? [];
                 if (\request()->hasFile('individual_colors')){
                     foreach (\request()->file('individual_colors') as $index=> $file){
-                        $path = '/public/Product' . $product->id.'/Colors';
+                        $path = '/public/products/Product' . $product->id.'/Colors';
                         $filePath = $file->store($path);
                         $color= Color::query()->create([
                             'type' => Color::TYPE_INDIVIDUAL,
@@ -89,7 +89,7 @@ class ProductRepository
         if (!in_array($fileType, File::FILE_TYPES)) {
             throw new \RuntimeException('Files type does not match requirements');
         }
-        $path = '/public/Product' . $product->id;
+        $path = '/public/products/Product' . $product->id;
         $filePath = $file->store($path);
         return $product->files()->create([
             'type' => $fileType,

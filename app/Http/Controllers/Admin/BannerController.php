@@ -36,7 +36,7 @@ class BannerController extends Controller
                   ->toJson() ,
                'image'=>'*'
            ]);
-           $path='public/Banner_'.$banner->id;
+           $path='public/banners/Banner_'.$banner->id;
             $storedPath = $this->fileService->storeFile($path,$request->file('image'));
            $banner->image = $storedPath;
            $banner->save();
@@ -64,7 +64,7 @@ class BannerController extends Controller
                     ->toJson() ,
             ]);
             if ($request->hasFile('image')){
-                $path='public/Banner_'.$banner->id;
+                $path='public/banners/Banner_'.$banner->id;
                 $storedPath = $this->fileService->storeFile($path,$request->file('image'));
                 $this->fileService->removeFile($banner->image);
                 $banner->image = $storedPath;

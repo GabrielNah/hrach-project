@@ -175,7 +175,7 @@ class ProductTagablesController extends Controller
                      'type'=>Color::TYPE_INDIVIDUAL
                  ]);
                 $file = $request->file('value');
-                $path = '/public/Product' . $product->id.'/Colors';
+                $path = '/public/products/Product' . $product->id.'/Colors';
                 $filePath = $file->store($path);
                 $color->value =  str_replace('public', 'storage', $filePath);
                 $color->name = $request->input('name');
@@ -186,7 +186,7 @@ class ProductTagablesController extends Controller
                 }
                 if ($request->hasFile('value')){
                     $file = $request->file('value');
-                    $path = '/public/Product' . $product->id.'/Colors';
+                    $path = '/public/products/Product' . $product->id.'/Colors';
                     $filePath = $file->store($path);
                     $file_path = str_replace('storage','/app/public',$color->value);
                     if (File::exists(storage_path($file_path))){

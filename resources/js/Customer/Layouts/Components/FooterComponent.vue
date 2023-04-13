@@ -36,9 +36,23 @@
                             {{ contactInfo.new_settler_info }}
                         </p>
 
-                        <form class="form-inline mb-3 d-flex w-100">
-                            <input type="text" placeholder="Email" class="border-0 w-auto form-control" name="">
-                            <button class="btn ml-2 btn-warning"> Subscribe</button>
+                        <form class="form-inline mb-3 d-flex w-100"
+                            @submit.prevent="subscribe"
+                        >
+                            <div  class="position-relative">
+                                <input type="text"
+                                       placeholder="Email"
+                                       v-model="subscriber"
+                                       class="border-0 w-auto form-control" name="">
+                                <small class="text-danger position-absolute "  v-if="subscriberError">
+                                    {{ subscriberError }}
+                                </small>
+                                <small class="text-success position-absolute "  v-if="successFullySubscribed">
+                                    You have subscribed to us
+                                </small>
+                            </div>
+
+                            <button class="btn ml-2 btn-warning" type="submit"> Subscribe</button>
                         </form>
                        <template v-if="socialMedia.length">
                            <p class="text-white-50 mb-2">Follow us on social media</p>
@@ -80,7 +94,24 @@ const getContactInfo=()=>{
     })
 }
 getContactInfo()
-
+const subscriber=ref('')
+const subscriberError=ref('')
+const successFullySubscribed=ref(false)
+const subscribe=()=>{
+    window.axios.post('/subscribe',{
+        subscriber:subscriber.value
+    }).then(({data})=>{
+        if(data.success){
+            subscriberError.value=''
+            successFullySubscribed.value=true
+        }
+    }).catch(e=>{
+        if (e?.response?.data?.errors){
+            successFullySubscribed.value=false
+            subscriberError.value=e?.response?.data?.errors?.['subscriber'][0]
+        }
+    })
+}
 onMounted(()=>{
     nextTick(()=>emit('loaded'))
 })

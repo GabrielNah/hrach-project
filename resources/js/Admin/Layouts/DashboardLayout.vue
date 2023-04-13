@@ -79,12 +79,12 @@
 
             </li>
             <li>
-                <a href="#">
+                <router-link :to="{name:ADMIN_SUBSCRIBERS}" active-class="active">
                     <i class="fa fa-book fa-2x"></i>
                     <span class="nav-text">
-                           Surveying Jobs
-                        </span>
-                </a>
+                           Subscribers
+                    </span>
+                </router-link>
             </li>
             <li>
                 <router-link :to="{name:ADMIN_CONTACT_INFO}" active-class="active">
@@ -129,7 +129,7 @@ import {
     ADMIN_DASHBOARD_ROUTE,
     ADMIN_INQUIRES,
     ADMIN_HOME_PAGE_SETTINGS,
-    ADMIN_CONTACT_INFO
+    ADMIN_CONTACT_INFO, ADMIN_SUBSCRIBERS
 } from "../../router/Admin/adminRoutes";
 import {redirectToRouteByName} from "../../Services/GlobalHelpers";
 import Loader from "../../SharedComponents/Loader.vue";
@@ -165,6 +165,7 @@ export default {
             ADMIN_INQUIRES,
             ADMIN_HOME_PAGE_SETTINGS,
             ADMIN_CONTACT_INFO,
+            ADMIN_SUBSCRIBERS,
             InquiryExists,
 
         }

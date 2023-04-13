@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ProductPriceController;
 use App\Http\Controllers\Admin\ProductTagablesController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\SubscriberController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -154,6 +155,8 @@ Route::group(['prefix'=>'admin'],function (){
             });
 
         });
+
+        Route::get('/subscribers',SubscriberController::class);
     });
 
 });

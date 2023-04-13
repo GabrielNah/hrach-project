@@ -7,6 +7,7 @@ use App\Api\V1\Controllers\ContactController;
 use App\Api\V1\Controllers\InquiryController;
 use App\Api\V1\Controllers\ProductController;
 use App\Api\V1\Controllers\SliderController;
+use App\Api\V1\Controllers\SubscriberController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -48,4 +49,5 @@ Route::group(['prefix'=>'inquiry'],function (){
 });
 
 Route::get('/contact',ContactController::class);
+Route::post('/subscribe',SubscriberController::class);
 

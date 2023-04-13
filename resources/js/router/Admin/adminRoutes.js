@@ -11,6 +11,7 @@ import Banners from "../../Admin/Pages/Banners.vue";
 import Inquiries from "../../Admin/Pages/Inquiry/Inquiries.vue";
 import HomePageSettings from "../../Admin/Pages/HomePageSettings.vue";
 import ContactInfo from "../../Admin/Pages/ContactInfo/ContactInfo.vue";
+import Subscribers from "../../Admin/Pages/Subscribers.vue";
 
 export const ADMIN_LOGIN_ROUTE='admin.login';
 export const ADMIN_DASHBOARD_ROUTE='admin.dashboard';
@@ -24,6 +25,7 @@ export const ADMIN_BANNERS_EDIT = 'admin.banners.edit';
 export const ADMIN_INQUIRES = 'admin.inquiries';
 export const ADMIN_HOME_PAGE_SETTINGS = 'admin.home.page.settings';
 export const ADMIN_CONTACT_INFO = 'admin.contact.info';
+export const ADMIN_SUBSCRIBERS = 'admin.subscribers';
 
 export default ()=>([
     {
@@ -89,6 +91,11 @@ export default ()=>([
                 path:'contact',
                 name:ADMIN_CONTACT_INFO,
                 component: ContactInfo
+            },
+            {
+                path:'subscribers',
+                name:ADMIN_SUBSCRIBERS,
+                component: Subscribers
             },
         ]
     }

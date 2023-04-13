@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ProductPriceController;
 use App\Http\Controllers\Admin\ProductTagablesController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\SubscriberController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -146,7 +147,16 @@ Route::group(['prefix'=>'admin'],function (){
         Route::group(['prefix'=>'contactInfo'],function (){
             Route::get('/',[ContactInfoController::class,'get']);
             Route::post('/store',[ContactInfoController::class,'store']);
+            Route::group(['prefix'=>'social'],function (){
+                Route::get('/',[ContactInfoController::class,'getSocialMedia']);
+                Route::post('/store',[ContactInfoController::class,'storeSocialMedia']);
+                Route::put('/edit/{id}',[ContactInfoController::class,'editSocialMedia']);
+                Route::delete('/{id}',[ContactInfoController::class,'destroy']);
+            });
+
         });
+
+        Route::get('/subscribers',SubscriberController::class);
     });
 
 });

@@ -29,11 +29,11 @@
 </template>
 
 <script>
-import {inject, onMounted, ref} from "vue";
+import {inject, nextTick, onMounted, ref, defineEmits, onUpdated} from "vue";
 
 export default {
     name: "BannersComponent",
-    setup(){
+    setup(props,ctx){
         const banners=ref([])
         const search=inject('searchHelper')
         const getBanners=()=>{
@@ -43,12 +43,13 @@ export default {
                 })
         }
         onMounted(getBanners)
+        onUpdated(()=>ctx.emit('loaded'))
 
         return {
             banners,
             search
         }
-    }
+    },
 }
 </script>
 

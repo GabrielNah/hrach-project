@@ -3,9 +3,11 @@
 use App\Api\V1\Controllers\BannerController;
 use App\Api\V1\Controllers\CategoryController;
 use App\Api\V1\Controllers\CommentController;
+use App\Api\V1\Controllers\ContactController;
 use App\Api\V1\Controllers\InquiryController;
 use App\Api\V1\Controllers\ProductController;
 use App\Api\V1\Controllers\SliderController;
+use App\Api\V1\Controllers\SubscriberController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,4 +47,7 @@ Route::group(['prefix'=>'inquiry'],function (){
     Route::get('/hot_keys',[InquiryController::class,'getHotKeys']);
     Route::post('/{product}',InquiryController::class);
 });
+
+Route::get('/contact',ContactController::class);
+Route::post('/subscribe',SubscriberController::class);
 

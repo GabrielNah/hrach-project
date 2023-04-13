@@ -2,7 +2,7 @@
 
     <section class="section-intro padding-y">
         <div class="container">
-            <slider-component/>
+            <slider-component @loaded="loadCount++"/>
         </div>
     </section>
     <div class="container">
@@ -10,13 +10,14 @@
         <!-- =============== SECTION 1 =============== -->
 
 
-         <recomended-items/>
+         <recomended-items @loaded="loadCount++"/>
 
         <!-- =============== SECTION 1 END =============== -->
-        <banners-component />
+        <banners-component @loaded="loadCount++"/>
 
         <!-- =============== SECTION 2 =============== -->
-        <daily-deals/>
+        <daily-deals @loaded="loadCount++"
+        />
         <!-- =============== SECTION 2 END =============== -->
 
 
@@ -33,12 +34,22 @@ import DailyDeals from "./Components/Daily-deals.vue";
 import BannersComponent from "../../SharedComponents/BannersComponent.vue";
 export default {
     name: "HomePage",
+    emits:['loaded'],
     components: {
         DailyDeals,
         RecomendedItems,
         HeaderComponent,
         BannersComponent,
         SliderComponent
+    },data:()=>({
+        loadCount:0
+    }),
+    watch:{
+        loadCount(val){
+            if (val===4){
+                this.$emit('loaded')
+            }
+        }
     }
 }
 </script>

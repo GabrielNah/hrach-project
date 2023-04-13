@@ -19,20 +19,21 @@
 import ProductCart from "./Product-cart.vue";
 export default {
     name: "Daily-deals",
-    components: {ProductCart}
+    components: {ProductCart},
 }
 </script>
 <script setup>
-import {onMounted, ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 
     const sectionName=ref('')
     const products=ref([])
+    const emit=defineEmits(['loaded'])
     const getItems=()=>{
         axios.get('/product/front_page?main=false')
         .then(({data})=>{
             sectionName.value=data.pageSettings.section_name
             products.value=data.pageSettings.products
-        })
+        }).finally(()=>nextTick(()=>emit('loaded')))
     }
 
     onMounted(getItems)

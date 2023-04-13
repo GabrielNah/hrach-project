@@ -351,7 +351,7 @@ export default {
 }
 </script>
 <script setup>
-import {computed, inject, onMounted, reactive, ref, watch, watchEffect} from "vue";
+import {computed, inject, nextTick, onBeforeMount, onMounted, reactive, ref, watch, watchEffect} from "vue";
 import {SEARCH_TYPE_FILTER} from "../Camposables/useProductSeachHelper";
 import  {executeSearch} from "../Camposables/useSearchExacuter";
 import {onBeforeRouteLeave, useRoute} from "vue-router";
@@ -363,6 +363,8 @@ const route = useRoute()
 const ROW='row';
 const COLUMN='column';
 const position=ref(ROW)
+
+const emit=defineEmits(['loaded'])
 const setPosition=(pos)=>{
     position.value=pos
 }
@@ -481,12 +483,13 @@ watch(()=>category.value,(val)=>{
      searchByCategories(val)
 })
 
-onMounted(()=>{
+onBeforeMount(()=>{
     if (!search.value){
         searchByCategories(category.value || 'all')
     }
     getSearchHelpers()
 })
+onMounted(()=>emit('loaded'))
 
 onBeforeRouteLeave((to,from,next)=>{
     search.value=''

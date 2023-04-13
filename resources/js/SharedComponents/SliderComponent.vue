@@ -44,7 +44,7 @@ export default {
             axios.get('/slider')
             .then(({data})=>{
                 this.slides=data.sliders
-            })
+            }).finally(()=>this.$nextTick(()=>this.$emit('loaded')))
         }
     },
     setup(){

@@ -110,6 +110,7 @@ import {useRoute} from "vue-router";
     const search=inject('searchHelper');
 
     const route=useRoute()
+    const emit=defineEmits(['loaded'])
 
     watch(()=>route.path,(val)=>{
         const dropdownEl = document.querySelector('.dropdown-menu.show')
@@ -125,6 +126,7 @@ import {useRoute} from "vue-router";
         .then(({data})=>{
             categories.value=data.categories
         }).catch(e=>console.log(e))
+        .finally(()=>emit('loaded'))
     }
 
     onMounted(getCategories)

@@ -94,12 +94,13 @@ export default {
 }
 </script>
 <script setup>
-import {computed, ref, watch} from "vue";
+import {computed, nextTick, onMounted, ref, watch} from "vue";
 import {PRODUCT_DETAIL_PAGE} from "../../../router/Customer/customerRoutes";
 import useComponentReloader from "../../../Admin/Composables/useComponentReloader";
 import {useRoute} from "vue-router";
     const {key,reloadComponent}=useComponentReloader()
     const productPage=ref(null)
+    const emit=defineEmits(['loaded'])
     const ACTION_LEAVE_COMMENT='leave.comment';
     const ACTION_SEND_INQUIRY='send.inquiry';
     const product = computed(()=>productPage.value.product)
@@ -119,6 +120,9 @@ import {useRoute} from "vue-router";
     const route=useRoute()
     const ProductId=computed(()=>route.params.id)
     watch(()=>ProductId.value,reloadComponent)
+    onMounted(()=>{
+        nextTick(()=>emit('loaded'))
+    })
 
 
 

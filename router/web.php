@@ -146,6 +146,13 @@ Route::group(['prefix'=>'admin'],function (){
         Route::group(['prefix'=>'contactInfo'],function (){
             Route::get('/',[ContactInfoController::class,'get']);
             Route::post('/store',[ContactInfoController::class,'store']);
+            Route::group(['prefix'=>'social'],function (){
+                Route::get('/',[ContactInfoController::class,'getSocialMedia']);
+                Route::post('/store',[ContactInfoController::class,'storeSocialMedia']);
+                Route::put('/edit/{id}',[ContactInfoController::class,'editSocialMedia']);
+                Route::delete('/{id}',[ContactInfoController::class,'destroy']);
+            });
+
         });
     });
 

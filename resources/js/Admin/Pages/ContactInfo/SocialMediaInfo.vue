@@ -1,6 +1,6 @@
 <template>
     <hr style="color: #6c757d">
-    <div class="mt-2 w-100 d-flex flex-column">
+    <div class="mt-2 w-100 d-flex flex-column pb-5">
 
         <div class="w-100 d-flex justify-content-between">
             <h5 class="text-white">Social media</h5>
@@ -20,8 +20,9 @@
             </template>
             <template v-else>
                 <div class="w-100 d-flex flex-column gap-2 mt-2">
-                    <form class="d-flex justify-content-between w-100" v-for="social in socialMedias"
+                    <form class="d-flex justify-content-between w-100" v-for="(social,index) in socialMedias"
                         :key="social.id"
+                        @submit.prevent="saveChanges($event,social,index)"
                     >
                         <label class="position-relative btn btn-secondary btn-sm align-self-start text-white">
                             Upload image
@@ -32,6 +33,7 @@
                             <input type="file"
                                    @change="onChange($event,social)"
                                    class="position-absolute d-none"
+                                   name="img"
                                    style="left: 0;right: 0;bottom: 0;top: 0"
                             >
                         </label>
@@ -39,6 +41,7 @@
                             <label class="text-white mr-1">Attach link:</label>
                             <input type="text"
                                    v-model="social.link"
+                                   name="link"
                                    placeholder="Lik of you social media account"
                             >
                         </div>
@@ -46,7 +49,7 @@
                            target="_blank"
                             style="width: 30px;height: 30px;padding: 0;overflow: hidden"
                         >
-                            <img class="w-100 h-100" :src="social.uploaded || social.img" alt="">
+                            <img class="w-100 h-100" :src="social.uploaded ? social.uploaded: '/'+ social.img" alt="">
                         </a>
 
                         <div class="d-flex gap-1">
@@ -59,6 +62,7 @@
                             <button
                                 style="margin-left: 5px" class="btn btn-danger btn-sm rounded-0" type="button"
                                 data-toggle="tooltip" data-placement="top" title="Delete"
+                                @click="removeSocial(social,index)"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
@@ -82,6 +86,9 @@
 </template>
 <script setup>
 import {ref} from "vue";
+import HTTP from "../../Axios/axiosCongif";
+import {errorNotification, successNotification} from "../../../Services/NotificationService";
+import {extractValidationErrors} from "../../../Services/GlobalHelpers";
 
 const socialMedias=ref([])
 
@@ -97,6 +104,12 @@ const socialMedias=ref([])
      const dropData=(social)=>{
             social.uploaded=''
      }
+     const getSocials=()=>{
+        HTTP.get('/contactInfo/social')
+         .then(({data})=>{
+             socialMedias.value=data.social
+         })
+     }
      const getFileUrl= (file)=>{
          return new Promise((resolve)=>{
              const fileReader=new FileReader()
@@ -109,6 +122,43 @@ const socialMedias=ref([])
      const onChange=async(e,social)=>{
          social.uploaded=await getFileUrl(e.target.files[0])
      }
+
+     const saveChanges=(e,social,index)=>{
+        const data=new FormData(e.target)
+        let method='post';
+        let url='/contactInfo/social/store'
+        let notification = 'Social media link info successfully';
+        if (!social?.added){
+            method='put'
+            url=`/contactInfo/social/edit/${social.id}`
+            notification='Social media info edited successfully '
+        }
+
+        HTTP[method](url,data)
+         .then(({data})=>{
+             if (data.success){
+                 socialMedias.value[index]=data.social
+                 successNotification(notification)
+             }
+         }).catch(e=>errorNotification(extractValidationErrors(e)))
+     }
+     const removeSocial=(social,index)=>{
+            if (social.added){
+                socialMedias.value.splice(index,1)
+                return;
+            }
+
+            HTTP.delete('/contactInfo/social/'+social.id)
+            .then((r)=>{
+                if (r.status === 204){
+                    socialMedias.value.splice(index,1)
+                    successNotification('Social media info removed successfully')
+                }
+            }).catch(e=>errorNotification(extractValidationErrors(e)))
+     }
+     getSocials()
+
+
 
 
 </script>

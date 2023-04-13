@@ -24,12 +24,12 @@
 
 <script>
 import ProductCart from "./Product-cart.vue";
-import { defineComponent, onMounted, reactive } from "vue";
+import {defineComponent, nextTick, onMounted, reactive,defineEmits} from "vue";
 
 export default defineComponent({
     name: "RecomendedItems",
     components: { ProductCart },
-    setup() {
+    setup(prop,{emit}) {
         const pageSettings = reactive({
             section_name: "",
             products: [],
@@ -56,7 +56,8 @@ export default defineComponent({
                     pageSettings.next_page_url = data.pageSettings.products.next_page_url
                         ? data.pageSettings.products.next_page_url + "&&main=true"
                         : null;
-                });
+                })
+            .finally(()=>nextTick(()=>emit('loaded')));
         };
         onMounted(getProducts);
         return { pageSettings, getNextPageData };

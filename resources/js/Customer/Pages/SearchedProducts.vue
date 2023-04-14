@@ -468,7 +468,7 @@ const fulfillSearch=async (path='/product/search')=>{
         setOngoingSearchState(true)
         let result =await executeSearch(search,path)
         setPaginatorData(result.data)
-        await nextTick(() => setOngoingSearchState(false))
+        nextTick(() =>{ setOngoingSearchState(false)})
     }catch (e) {
         errorNotification(extractValidationErrors(e))
     }

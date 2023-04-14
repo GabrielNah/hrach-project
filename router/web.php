@@ -35,6 +35,7 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::post('/logout',[AdminAuthController::class,'logout']);
         Route::get('/me',[AdminAuthController::class,'getAdmin']);
+        Route::post('/change',[AdminAuthController::class,'changeCredentials']);
 
 
         Route::group(['prefix'=>'category'],function (){

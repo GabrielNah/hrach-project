@@ -12,6 +12,7 @@ export const SEARCH_TYPE_CATEGORY='category'
         value:''
     })
 
+
     const redirectIfNecessary=()=>{
             redirectToRouteByName(PRODUCT_LIST_PAGE)
     }

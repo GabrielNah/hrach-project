@@ -100,19 +100,26 @@ class StoreProductRequest extends FormRequest
                     $price['min_count']=$this->get('counts_min')[$index];
                     $price['max_count']=$this->get('count_max')[$index];
                     return $price;
-                });
-                $prices->each(function ($price,$index) use ($fail){
+                })->sortBy(fn($pr)=>$pr['min_count'])->values()->all();
+
+                foreach ($prices as $index => $price){
                     $prev = $prices[$index - 1] ?? null;
                     $next = $prices[$index + 1] ?? null;
-
+                    $showableIndex=$index+1;
+                    if ($price['min_count'] >= $price['max_count']){
+                        $fail('Min count of price should be less then max count of price');
+                        return;
+                    }
                     if (isset($prev) && $prev['max_count'] >= $price['min_count']) {
-                        $fail('min_count', 'The minimum count of the current price overlaps with the maximum count of the previous price.');
+
+                        $fail('min_count', "The minimum count of the $showableIndex-th price overlaps with the maximum count of the previous price.");
                         return;
                     }
                     if (isset($next) && $price['max_count'] && $price['max_count'] >= $next['min_count']) {
-                        $fail('max_count', 'The maximum count of the current price overlaps with the minimum count of the next price.');
+                        $fail('max_count', "The maximum count of the $showableIndex-th price overlaps with the minimum count of the next price.");
+                        return ;
                     }
-                });
+                }
 
             }],
             'count_max'=>'array|required_with_all:prices,counts_min',

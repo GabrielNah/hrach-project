@@ -12,8 +12,6 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body id="app">
-    <div id="#modal">
 
-    </div>
     </body>
 </html>

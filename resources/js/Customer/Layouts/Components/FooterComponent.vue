@@ -2,7 +2,7 @@
     <footer class="section-footer bg-secondary text-white">
         <div class="container">
             <section class="footer-top  padding-y-lg">
-                <div class="d-flex w-100 justify-content-between">
+                <div class="d-flex w-100 justify-content-between flex-wrap">
                     <aside class="col-md-4 col-12">
                         <article class="mr-md-4">
                             <h5 class="title">Contact us</h5>

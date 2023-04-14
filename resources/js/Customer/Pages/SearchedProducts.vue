@@ -219,7 +219,7 @@
                 </div>
                 <!-- sidebar -->
                 <!-- content -->
-                <div class="col-lg-9">
+                <div class="col-lg-9" v-if="!ongoingSearch">
                     <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
                         <strong class="d-block py-2">{{ paginator.total }} Items found </strong>
                         <div class="ms-auto">
@@ -297,6 +297,11 @@
                     </nav>
                     <!-- Pagination -->
                 </div>
+                <template v-else>
+                    <div class="d-flex justify-content-center align-items-center " style="flex: 1">
+                        <mini-loader/>
+                    </div>
+                </template>
             </div>
         </div>
     </section>
@@ -305,9 +310,10 @@
 
 <script>
 import ProductCart from "./Components/Product-cart.vue";
+import MiniLoader from "@/SharedComponents/MiniLoader.vue";
 export default {
     name: "SearchedProducts",
-    components:{ProductCart},
+    components:{ProductCart,MiniLoader},
     mounted() {
         const rangeInput = document.querySelectorAll(".range-input input"),
             priceInput = document.querySelectorAll(".price-input input"),
@@ -355,15 +361,20 @@ import {computed, inject, nextTick, onBeforeMount, onMounted, reactive, ref, wat
 import {SEARCH_TYPE_FILTER} from "../Camposables/useProductSeachHelper";
 import  {executeSearch} from "../Camposables/useSearchExacuter";
 import {onBeforeRouteLeave, useRoute} from "vue-router";
-import {errorNotification} from "../../Services/NotificationService";
-import {extractValidationErrors} from "../../Services/GlobalHelpers";
+import {errorNotification} from "@/Services/NotificationService";
+import {extractValidationErrors} from "@/Services/GlobalHelpers";
+
 
 const {search,searchByCategories} = inject('searchHelper')
 const route = useRoute()
 const ROW='row';
 const COLUMN='column';
 const position=ref(ROW)
+const ongoingSearch=ref(false)
 
+const setOngoingSearchState = (state) => {
+  ongoingSearch.value=state
+}
 const emit=defineEmits(['loaded'])
 const setPosition=(pos)=>{
     position.value=pos
@@ -454,8 +465,10 @@ const setPaginatorData=({products})=>{
 const fulfillSearch=async (path='/product/search')=>{
 
     try {
+        setOngoingSearchState(true)
         let result =await executeSearch(search,path)
         setPaginatorData(result.data)
+        await nextTick(() => setOngoingSearchState(false))
     }catch (e) {
         errorNotification(extractValidationErrors(e))
     }

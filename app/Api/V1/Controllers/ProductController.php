@@ -153,7 +153,7 @@ class ProductController extends Controller
             $ids=json_decode($pageSettings->products,false);
             $query=Product::query()
                 ->whereIn('id',$ids)
-                ->with(['priceForOne','generalFile']);
+                ->with(['priceForOne','generalFile','tags']);
 
                 if ($main){
                         $products=$query->paginate($pageSettings->showable_count);

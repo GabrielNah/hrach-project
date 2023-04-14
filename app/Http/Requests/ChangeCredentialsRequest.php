@@ -10,11 +10,11 @@ class ChangeCredentialsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'string',
-            'email'=>'string|email',
-            'current_password'=>'string',
-            'new_password'=>'string|confirmed',
-            'new_password_confirmation'=>'string',
+            'name'=>'nullable|string',
+            'email'=>'nullable|string|email',
+            'current_password'=>'nullable|string',
+            'new_password'=>'nullable|string|confirmed',
+            'new_password_confirmation'=>'nullable|string',
         ];
     }
 }

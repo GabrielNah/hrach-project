@@ -53,17 +53,17 @@ class AdminAuthController extends Controller
     public function changeCredentials(ChangeCredentialsRequest $request):JsonResponse
     {
         $admin=Admin::query()->first();
-        if ($request->has('name')){
+        if ($request->input('name')){
             $admin->name=$request->input('name');
         }
-        if ($request->has('email')){
+        if ($request->input('email')  ){
             $admin->email=$request->input('email');
         }
-        if ($request->has('current_password')){
+        if ( $request->input('current_password')){
             if (!Hash::check($request->input('current_password'),$admin->password)){
                 throw  ValidationException::withMessages(['current_password'=>'Provided password is incorrect']);
             }
-            if ($request->has('new_password')){
+            if ($request->input('new_password')){
                 $admin->password=Hash::make($request->input('new_password'));
             }
         }

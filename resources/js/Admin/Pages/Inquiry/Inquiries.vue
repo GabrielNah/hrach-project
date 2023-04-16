@@ -104,14 +104,14 @@
 <script setup>
 import EditHotKeys from "./EditHotKeys.vue";
 import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
-import {computed, ref, watch} from "vue";
+import {computed, inject, ref, watch} from "vue";
 import HTTP from "../../Axios/axiosCongif";
 import MiniLoader from "../../../SharedComponents/MiniLoader.vue";
 import ProductCart from "../../../Customer/Pages/Components/Product-cart.vue";
 const EditHotKeysOpened=ref(false)
 const toggleEditHotKeysModal=(state)=>EditHotKeysOpened.value=state
 
-
+const {actions:{setInquiry}}=inject('store')
 const sortedInquiries=ref([])
 const nextPageUrl=ref('');
 const inquiries=computed({
@@ -168,7 +168,7 @@ const getInquiryDetails=(val)=>{
 
 }
 watch(()=>selectedInquiry.value,getInquiryDetails)
-
+setInquiry(false)
 getInquiries();
 </script>
 

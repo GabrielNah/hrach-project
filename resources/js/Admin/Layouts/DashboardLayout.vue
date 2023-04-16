@@ -120,7 +120,7 @@
 <script>
 
 
-import {computed, inject, onMounted, ref} from "vue";
+import {computed, inject, onBeforeMount, onMounted, ref} from "vue";
 import {
     ADMIN_LOGIN_ROUTE,
     ADMIN_CATEGORIES_ROUTE,
@@ -135,6 +135,7 @@ import {
 } from "../../router/Admin/adminRoutes";
 import {redirectToRouteByName} from "../../Services/GlobalHelpers";
 import Loader from "../../SharedComponents/Loader.vue";
+import HTTP from "../Axios/axiosCongif";
 
 export default {
     name: "DashboardLayout",
@@ -146,9 +147,17 @@ export default {
             loaded.value = true
         }
 
-        const InquiryExists=computed(()=>store.getters.inquiries)
-
-        onMounted(() => {
+        const InquiryExists=computed(()=>store.getters.inquiryExist.value)
+        const checkInquiryExists=()=>{
+            HTTP.get('/state/inquiry')
+            .then(({data})=>{
+                if (data?.unreadInquiryExists){
+                    store.actions.setInquiry(true)
+                }
+            })
+        }
+        checkInquiryExists()
+        onBeforeMount(() => {
             if (!store.getters.admin?.value) {
                 store.actions.setAdmin(null)
                 redirectToRouteByName(ADMIN_LOGIN_ROUTE);

@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ProductFileController;
 use App\Http\Controllers\Admin\ProductMainInfoConroller;
 use App\Http\Controllers\Admin\ProductPriceController;
 use App\Http\Controllers\Admin\ProductTagablesController;
+use App\Http\Controllers\Admin\ProjectStateController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\SubscriberController;
@@ -38,6 +39,10 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('/me',[AdminAuthController::class,'getAdmin']);
         Route::post('/change',[AdminAuthController::class,'changeCredentials']);
 
+        Route::group(['prefix'=>'state'],function (){
+            Route::get('/inquiry',[ProjectStateController::class,'unreadInquiryExists']);
+            Route::get('/all',[ProjectStateController::class,'projectState']);
+        });
 
         Route::group(['prefix'=>'category'],function (){
             Route::get('',[CategoryController::class,'index']);

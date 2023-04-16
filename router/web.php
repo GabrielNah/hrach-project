@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactInfoController;
 use App\Http\Controllers\Admin\CurrencyRateController;
+use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\InquiryHotKeyController;
 use App\Http\Controllers\Admin\ProductAdditionalController;
 use App\Http\Controllers\Admin\ProductController;
@@ -158,6 +159,11 @@ Route::group(['prefix'=>'admin'],function (){
         });
 
         Route::get('/subscribers',SubscriberController::class);
+
+        Route::group(['prefix'=>'inquiry'],function (){
+            Route::get('',[InquiryController::class,'index']);
+            Route::put('/{id}',[InquiryController::class,'read']);
+        });
     });
 
 });

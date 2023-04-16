@@ -65,7 +65,7 @@
                 <span
                   :class="{'text-decoration-line-through':product?.price_for_one?.discount}"
                 >
-                    {{ product.price_for_one.price }}$
+                    {{ product?.price_for_one?.price }}$
                 </span>
                 <span v-if="product?.price_for_one?.discount">
                     {{

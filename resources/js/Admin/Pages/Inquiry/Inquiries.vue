@@ -8,55 +8,85 @@
                 Edit Hot Keys
             </button>
         </div>
-        <div class="container mt-3">
+        <div class="container mt-3 pb-3">
             <div class="row">
-                <section class="discussions pt-2 overflow-auto">
-                    <div class="discussion message-active" v-for="i in 15">
-                        <div class="photo" style="background-image: url(https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80);">
-                            <div class="online"></div>
+                <section class="discussions pt-2 overflow-auto gap-1  position-relative"
+                    @scroll="handleScroll"
+                >
+                    <template v-if="inquiries.length">
+                        <div class="discussion position-relative" v-for="inquiry in inquiries"
+                             :key="inquiry.id"
+                             :style="{backgroundColor:selectedInquiry?.id === inquiry.id ? '#87a3ec':'#FAFAFA'}"
+                             @click="selectInquiry(inquiry)"
+                        >
+                            <div class="photo"
+                                 :style="{backgroundImage: 'url(/'+inquiry?.product?.general_file?.path+')'}">
+                            </div>
+                            <div class="desc-contact">
+                                <p class="name">{{ inquiry.username }}</p>
+                                <p class="message">{{ inquiry.inquiry }}</p>
+                            </div>
+                            <div class="timer">
+                                {{ new Date(inquiry.created_at).toLocaleString() }}
+                            </div>
+                            <div class="read_state" v-if="!inquiry.read"></div>
                         </div>
-                        <div class="desc-contact">
-                            <p class="name">Megan Leib</p>
-                            <p class="message">9 pm at the bar if possible 😳</p>
+                        <div class="d-flex justify-content-center align-items-center flex-grow-1 w-100"
+                             v-if="ongoingLoad"
+                        >
+                            <mini-loader/>
                         </div>
-                        <div class="timer">12 sec</div>
-                    </div>
+                    </template>
+                    <template v-else>
+                        <span class="w-100 text-center text-white">You have no inquiry</span>
+                    </template>
+
 
                 </section>
-                <section class="chat d-flex flex-column bg-gray">
-                    <div class="header-chat w-100">
-                        <p class="name text-dark">Megan Leib</p>
-                    </div>
-                    <div class="messages-chat" style="flex: 1">
-                        <div class="message">
-                            <div class="photo" style="background-image: url(https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80);">
-                                <div class="online"></div>
+                <section class="chat d-flex flex-column bg-gray" style="height: 700px">
+                    <template v-if="!selectedInquiry">
+                        <div class="w-100 flex-grow-1 d-flex justify-content-center align-items-center">
+                            <span class="border-4 text-info p-3  "
+                                  style="border-radius: 5px;background: gray">
+                                Select Inquiry to view details
+                            </span>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="header-chat w-100 d-flex flex-column align-items-start justify-content-center">
+                            <p class="name text-dark">Username: {{ selectedInquiry.username }}</p>
+                        </div>
+                        <div class="messages-chat" style="flex: 1;overflow: auto">
+                            <div class="d-flex flex-column">
+                                <h6>Product:</h6>
+                                <product-cart
+                                    :horizontal="true"
+                                    :product="inquiryDetails.product"
+                                />
                             </div>
-                            <p class="text"> Hi, how are you ? </p>
-                        </div>
-                        <div class="message text-only">
-                            <p class="text"> What are you doing tonight ? Want to go take a drink ?</p>
-                        </div>
-                        <p class="time"> 14h58</p>
-                        <div class="message text-only">
-                            <div class="response">
-                                <p class="text"> Hey Megan ! It's been a while 😃</p>
+                            <div class="d-flex flex-column mt-2">
+                                <h6>Inquiry details:</h6>
+                                <div class="card" >
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            email:  &nbsp;{{ inquiryDetails.email }}
+                                        </li>
+                                        <li class="list-group-item">
+                                            count:  &nbsp;{{ inquiryDetails.count}}
+                                        </li>
+<!--                                        <li class="list-group-item">Vestibulum at eros</li>-->
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                        <div class="message text-only">
-                            <div class="response">
-                                <p class="text"> When can we meet ?</p>
+                            <div class="message mt-2 d-flex flex-column m-0 align-items-start">
+                                <h6>Inquiry:</h6>
+                                <p class="text m-0" style="margin: 0">
+                                    {{ inquiryDetails.inquiry }}
+                                </p>
                             </div>
+                            <p class="time"> 15h09</p>
                         </div>
-                        <p class="response-time time"> 15h04</p>
-                        <div class="message">
-                            <div class="photo" style="background-image: url(https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80);">
-                                <div class="online"></div>
-                            </div>
-                            <p class="text"> 9 pm at the bar if possible 😳</p>
-                        </div>
-                        <p class="time"> 15h09</p>
-                    </div>
+                    </template>
                 </section>
             </div>
         </div>
@@ -72,22 +102,76 @@
     </teleport>
 </template>
 <script setup>
-import {ref} from "vue";
-
-const EditHotKeysOpened=ref(false)
-const toggleEditHotKeysModal=(state)=>EditHotKeysOpened.value=state
-</script>
-<script>
 import EditHotKeys from "./EditHotKeys.vue";
 import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
-export default {
-    name: "Inquiries",
-    components:{
-        Modal,
-        EditHotKeys
+import {computed, ref, watch} from "vue";
+import HTTP from "../../Axios/axiosCongif";
+import MiniLoader from "../../../SharedComponents/MiniLoader.vue";
+import ProductCart from "../../../Customer/Pages/Components/Product-cart.vue";
+const EditHotKeysOpened=ref(false)
+const toggleEditHotKeysModal=(state)=>EditHotKeysOpened.value=state
+
+
+const sortedInquiries=ref([])
+const nextPageUrl=ref('');
+const inquiries=computed({
+    get:()=>sortedInquiries.value,
+    set(value){
+
+        value.sort((a, b) => {
+            if (a.read === b.read) {
+                return a.id - b.id;
+            } else if (a.read) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+
+        sortedInquiries.value=value
+    }
+})
+const ongoingLoad=ref(false)
+const handleScroll=async (event) => {
+    if (!nextPageUrl.value)return;
+    if (event.target.scrollTop + event.target.clientHeight >= event.target.scrollHeight) {
+        ongoingLoad.value=true
+        await getInquiries(nextPageUrl.value)
+        ongoingLoad.value=false
     }
 }
+const getInquiries=(url='/inquiry')=>{
+    HTTP.get(url)
+    .then(({data})=>{
+        if (data.success){
+            inquiries.value=[...data.inquiries,...inquiries.value]
+            nextPageUrl.value=data.next_page_url
+        }
+    })
+}
+
+const selectedInquiry=ref(null)
+const selectInquiry=(inquiry)=>{
+    selectedInquiry.value=inquiry
+}
+const inquiryDetails=ref(null)
+const getInquiryDetails=(val)=>{
+    const Inquiry=inquiries.value.find((inq)=>inq.id === val.id)
+    if (!Inquiry)return
+    HTTP.put('/inquiry/'+val.id)
+        .then(({data})=>{
+            if (data.success){
+                Inquiry.read=true;
+                inquiryDetails.value=data.inquiry
+            }
+        })
+
+}
+watch(()=>selectedInquiry.value,getInquiryDetails)
+
+getInquiries();
 </script>
+
 
 <style scoped>
 
@@ -138,14 +222,13 @@ export default {
         width: 35%;
         height: 700px;
         box-shadow: 0px 8px 10px rgba(0,0,0,0.20);
-        background-color: #87a3ec;
         display: inline-block;
     }
 
     .discussions .discussion {
         width: 100%;
         height: 90px;
-        background-color: #FAFAFA;
+        margin-top: 5px;
         border-bottom: solid 1px #E0E0E0;
         display:flex;
         align-items: center;
@@ -205,8 +288,6 @@ export default {
         width: 45px;
         height: 45px;
         background: #E6E7ED;
-        -moz-border-radius: 50px;
-        -webkit-border-radius: 50px;
         background-position: center;
         background-size: cover;
         background-repeat: no-repeat;
@@ -244,13 +325,22 @@ export default {
         font-size: 9pt;
         color:#515151;
     }
-
+    .read_state{
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        position: absolute;
+        background: #0A66C2;
+        top: 5px;
+        right: 5px;
+        z-index: 6;
+    }
     .timer {
         margin-left: 15%;
         font-family:'Open Sans', sans-serif;
         font-size: 11px;
         padding: 3px 8px;
-        color: #BBB;
+        color: #0a0c0d;
         background-color: #FFF;
         border: 1px solid #E5E5E5;
         border-radius: 15px;
@@ -258,14 +348,15 @@ export default {
 
     .chat {
         width: calc(65% - 85px);
+        background: #E5E5E5;
     }
 
     .header-chat {
         background-color: #FFF;
-        height: 90px;
+        height: 50px;
         box-shadow: 0px 3px 2px rgba(0,0,0,0.100);
         display:flex;
-        align-items: center;
+        align-items: start;
     }
 
     .chat .header-chat .icon {
@@ -276,7 +367,6 @@ export default {
 
     .chat .header-chat .name {
         margin: 0 0 0 20px;
-        text-transform: uppercase;
         font-family:'Montserrat', sans-serif;
         font-size: 13pt;
         color:#515151;

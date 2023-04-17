@@ -1,8 +1,20 @@
 <template>
-    <div class="card card-product-grid product-item w-100 h-100 d-flex "
+    <div class="card card-product-grid product-item w-100 h-100 d-flex position-relative"
          v-if="product"
          :class=" horizontal ?'flex-row':'flex-column'"
     >
+        <div v-if="(product?.tags?.length && !horizontal)"
+            class="position-absolute tag-wrapper"
+        >
+            {{ product.tags[0].name }}
+        </div>
+        <div v-if="(product?.price_for_one?.discount && !horizontal)"
+            class="position-absolute discount-wrapper"
+        >
+            {{ product.price_for_one.discount }} % OFF
+        </div>
+
+
         <router-link class="img-wrap p-1 "
                      :to="productRoute(product.id)"
                      :class="horizontal ? 'w-50' :'w-100'"
@@ -24,17 +36,48 @@
                           fill-rule="evenodd"/>
                 </svg>
             </div>
-            <div>
+            <div class="product_title">
                 <router-link class="title" :to="productRoute(product.id)"
                 >
                     {{ product.title }}
                 </router-link>
             </div>
-            <div class="price h5 mt-2 d-flex justify-content-between" v-if="horizontal">
-                <span>{{ product.description }}</span>
-            </div>
-            <div class="price h5 mt-2 d-flex justify-content-between">
-                <span>{{ product.price_for_one.price }}$</span>
+            <template v-if="horizontal">
+                <div class="price h5 mt-2 d-flex justify-content-between" >
+                    <span style="max-width: 23ch;">{{ product.name }}</span>
+                </div>
+                <div class="price h5 mt-2 d-flex justify-content-between" >
+                    <span style="max-width: 120ch;">{{ product.description }}</span>
+                </div>
+                <template v-if="product?.tags?.length">
+                    <div class="d-flex gap-1">
+                        <div class="tag-wrapper" v-for="tag in product.tags"
+                             :key="tag.id"
+                        >
+                            {{ tag.name }}
+                        </div>
+                    </div>
+
+                </template>
+            </template>
+
+            <div class="price h5 mt-2 d-flex gap-2 align-items-center ">
+                <span
+                  :class="{'text-decoration-line-through':product?.price_for_one?.discount}"
+                >
+                    {{ product?.price_for_one?.price }}$
+                </span>
+                <span v-if="product?.price_for_one?.discount">
+                    {{
+                    calculateDiscountedPrice(
+                        product?.price_for_one?.price,
+                        product?.price_for_one?.discount
+                        )
+                    }}$
+                </span>
+                <span class="discount-wrapper" v-if="(product?.price_for_one?.discount) && horizontal">
+                    {{ product?.price_for_one?.discount }} % OFF
+                </span>
             </div> <!-- price.// -->
         </figcaption>
     </div>
@@ -42,6 +85,7 @@
 
 <script>
 import {defineComponent} from "vue";
+import calculateDiscountedPrice from "../../../Services/DiscountCalulator";
 export default defineComponent({
     name: "Product-cart",
     props:{
@@ -60,9 +104,59 @@ export default defineComponent({
             return {name:'product.detail',params:{id}}
         }
     },
+    setup(){
+        return {
+            calculateDiscountedPrice
+        }
+    }
 })
 </script>
 
 <style scoped>
+.tag-wrapper{
+    right: 12px;
+    top: 16px;
+    z-index: 10;
+    background: linear-gradient(266.67deg, #FC56FF 1.03%, #9543C8 74.14%);
+    border-radius: 20px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 4px 12px;
+    /* or 195% */
 
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    color: #FFFFFF;
+}
+
+    .discount-wrapper{
+
+
+        font-family: 'Inter';
+        z-index: 5;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 12px;
+        /* identical to box height, or 100% */
+
+        display: flex;
+        align-items: center;
+        text-align: center;
+
+        color: #FFFFFF;
+        flex-direction: row;
+        padding: 4px;
+
+        left: 10px;
+        top: 16px;
+
+        background: #FA3434;
+        border-radius: 5.55px;
+    }
 </style>

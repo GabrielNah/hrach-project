@@ -2,15 +2,15 @@ import {computed, reactive, readonly, ref} from "vue";
 
 const state=reactive({
     admin:null,
-    inquiries:0
+    inquiryExists:false
 })
 const getters={
     admin:computed(()=>state.admin),
-    inquiries:computed(()=>state.inquiries),
+    inquiryExist:computed(()=>state.inquiryExists),
 }
 const actions={
     setAdmin:(admin)=>state.admin=admin,
-    setInquiry:(inquiryCount)=>state.inquiries=inquiryCount
+    setInquiry:(exists)=>state.inquiryExists=exists
 }
 
 export const useAdminStore=()=>{

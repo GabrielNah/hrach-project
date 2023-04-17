@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactInfoController;
 use App\Http\Controllers\Admin\CurrencyRateController;
+use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\InquiryHotKeyController;
 use App\Http\Controllers\Admin\ProductAdditionalController;
 use App\Http\Controllers\Admin\ProductController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Admin\ProductFileController;
 use App\Http\Controllers\Admin\ProductMainInfoConroller;
 use App\Http\Controllers\Admin\ProductPriceController;
 use App\Http\Controllers\Admin\ProductTagablesController;
+use App\Http\Controllers\Admin\ProjectStateController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\SubscriberController;
@@ -35,6 +37,14 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::post('/logout',[AdminAuthController::class,'logout']);
         Route::get('/me',[AdminAuthController::class,'getAdmin']);
+        Route::post('/change',[AdminAuthController::class,'changeCredentials']);
+
+        Route::group(['prefix'=>'state'],function (){
+            Route::get('/inquiry',[ProjectStateController::class,'unreadInquiryExists']);
+            Route::get('/all',[ProjectStateController::class,'projectState']);
+            Route::get('/appearance',[ProjectStateController::class,'siteAppearance']);
+            Route::post('/edit/appearance/{id}',[ProjectStateController::class,'editAppearance']);
+        });
 
 
         Route::group(['prefix'=>'category'],function (){
@@ -157,6 +167,11 @@ Route::group(['prefix'=>'admin'],function (){
         });
 
         Route::get('/subscribers',SubscriberController::class);
+
+        Route::group(['prefix'=>'inquiry'],function (){
+            Route::get('',[InquiryController::class,'index']);
+            Route::put('/{id}',[InquiryController::class,'read']);
+        });
     });
 
 });

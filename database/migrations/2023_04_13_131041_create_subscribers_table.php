@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create(Subscriber::TABLE, function (Blueprint $table) {
             $table->id();
             $table->string('subscriber');
+            $table->timestamp('subscribed_at')->useCurrent();
         });
     }
 

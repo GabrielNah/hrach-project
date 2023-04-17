@@ -95,12 +95,14 @@
                 </router-link>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa fa-info fa-2x"></i>
+                <router-link :to="{name:ADMIN_PRIVACY}" active-class="active">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
+                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+                    </svg>
                     <span class="nav-text">
-                            Documentation
+                           Privacy
                     </span>
-                </a>
+                </router-link>
             </li>
         </ul>
     </nav>
@@ -118,7 +120,7 @@
 <script>
 
 
-import {computed, inject, onMounted, ref} from "vue";
+import {computed, inject, onBeforeMount, onMounted, ref} from "vue";
 import {
     ADMIN_LOGIN_ROUTE,
     ADMIN_CATEGORIES_ROUTE,
@@ -129,10 +131,11 @@ import {
     ADMIN_DASHBOARD_ROUTE,
     ADMIN_INQUIRES,
     ADMIN_HOME_PAGE_SETTINGS,
-    ADMIN_CONTACT_INFO, ADMIN_SUBSCRIBERS
+    ADMIN_CONTACT_INFO, ADMIN_SUBSCRIBERS, ADMIN_PRIVACY
 } from "../../router/Admin/adminRoutes";
 import {redirectToRouteByName} from "../../Services/GlobalHelpers";
 import Loader from "../../SharedComponents/Loader.vue";
+import HTTP from "../Axios/axiosCongif";
 
 export default {
     name: "DashboardLayout",
@@ -144,9 +147,17 @@ export default {
             loaded.value = true
         }
 
-        const InquiryExists=computed(()=>store.getters.inquiries)
-
-        onMounted(() => {
+        const InquiryExists=computed(()=>store.getters.inquiryExist.value)
+        const checkInquiryExists=()=>{
+            HTTP.get('/state/inquiry')
+            .then(({data})=>{
+                if (data?.unreadInquiryExists){
+                    store.actions.setInquiry(true)
+                }
+            })
+        }
+        checkInquiryExists()
+        onBeforeMount(() => {
             if (!store.getters.admin?.value) {
                 store.actions.setAdmin(null)
                 redirectToRouteByName(ADMIN_LOGIN_ROUTE);
@@ -166,6 +177,7 @@ export default {
             ADMIN_HOME_PAGE_SETTINGS,
             ADMIN_CONTACT_INFO,
             ADMIN_SUBSCRIBERS,
+            ADMIN_PRIVACY,
             InquiryExists,
 
         }

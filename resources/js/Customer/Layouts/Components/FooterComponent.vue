@@ -1,8 +1,10 @@
 <template>
-    <footer class="section-footer bg-secondary text-white">
+    <footer class="section-footer  text-white"
+        :style="properAppearance(appearance)"
+    >
         <div class="container">
             <section class="footer-top  padding-y-lg">
-                <div class="d-flex w-100 justify-content-between">
+                <div class="d-flex w-100 justify-content-between flex-wrap">
                     <aside class="col-md-4 col-12">
                         <article class="mr-md-4">
                             <h5 class="title">Contact us</h5>
@@ -118,14 +120,24 @@ onMounted(()=>{
 
 </script>
 <script>
+import handleAppearance from "../../../Mixins/handleAppearance";
+
 export default {
-    name: "FooterComponent"
+    name: "FooterComponent",
+    props:{
+        appearance:{
+            type:Object,
+            required:false,
+            default:()=>null
+        }
+    },mixins:[handleAppearance]
+
 }
 </script>
 
 <style scoped>
 footer{
-    background: #12225B !important;
+    background: #12225B ;
     box-shadow: 0px 0px 3px;
 }
 </style>

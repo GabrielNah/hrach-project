@@ -145,7 +145,7 @@ export default {
  import HTTP from "../../../Axios/axiosCongif";
  import {errorNotification, infoNotification, successNotification} from "../../../../Services/NotificationService";
  import {extractValidationErrors} from "../../../../Services/GlobalHelpers";
-
+ import calculateDiscountedPrice from "../../../../Services/DiscountCalulator";
  const route = useRoute()
  const productId= computed(()=>route.params.id)
  const prices= ref([])
@@ -209,7 +209,7 @@ export default {
      if (!price.price){
          return ''
      }
-     return +( (+price.price * ( 100 - +price.discount )/100) ).toFixed(2);
+     return  calculateDiscountedPrice(price.price,price.discount)
  }
  const saveChanges =async (price,index)=>{
      if (selectedCurrency.value !== 'USD'){

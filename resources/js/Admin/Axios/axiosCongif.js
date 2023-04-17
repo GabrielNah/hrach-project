@@ -26,7 +26,9 @@ const setCSRFToken = () => {
 }
 
 const onResponseError=(error) => {
-    if (error.config && error.response && error.response.status === 401 && error.config.url !== '/sanctum/csrf-cookie') {
+    if (error.config && error.response &&
+        (error.response.status === 401 || error.response.status===419) &&
+        error.config.url !== '/sanctum/csrf-cookie') {
         return setCSRFToken().then(() => {
             return axios.request(error.config);
         });

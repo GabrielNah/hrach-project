@@ -10,7 +10,16 @@ class Subscriber extends Model
     use HasFactory;
     const TABLE='subscribers';
     protected $table=self::TABLE;
+    public $timestamps=false;
 
     protected $guarded=[];
-    public $timestamps=false;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->subscribed_at = now();
+        });
+    }
 }

@@ -1,5 +1,7 @@
 <template>
-    <header class="section-header">
+    <header class="section-header"
+        :style="properAppearance(appearance)"
+    >
         <div class="container">
             <nav class="navbar navbar-main navbar-expand pl-0">
                 <ul class="navbar-nav flex-wrap">
@@ -94,8 +96,17 @@
 </template>
 
 <script>
+import HandleAppearance from "../../../Mixins/handleAppearance";
+
 export default {
-    name: "HeaderComponent"
+    name: "HeaderComponent",
+    props:{
+        appearance:{
+            type:Object,
+            required:false,
+            default:()=>null
+        }
+    },mixins:[HandleAppearance]
 }
 </script>
 <script setup>

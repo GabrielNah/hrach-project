@@ -12,6 +12,9 @@
                 </template>
             </template>
         </div>
+        <div class="d-flex justify-content-center align-items-center w-100 p-1" v-if="onGoingFetch">
+            <mini-loader/>
+        </div>
         <div class="w-100 text-center button-34" v-if="pageSettings.next_page_url"
             @click="getNextPageData"
         >
@@ -24,19 +27,23 @@
 
 <script>
 import ProductCart from "./Product-cart.vue";
-import {defineComponent, nextTick, onMounted, reactive,defineEmits} from "vue";
+import {defineComponent, nextTick, reactive, defineEmits, ref} from "vue";
+import MiniLoader from "@/SharedComponents/MiniLoader.vue";
 
 export default defineComponent({
     name: "RecomendedItems",
-    components: { ProductCart },
+    components: {MiniLoader, ProductCart },
     setup(prop,{emit}) {
         const pageSettings = reactive({
             section_name: "",
             products: [],
             next_page_url: "",
         });
+        const onGoingFetch=ref(false)
+        const setOngoingFetch=(state)=>{onGoingFetch.value=state}
         const getNextPageData = () => {
             if (!pageSettings.next_page_url) return;
+            setOngoingFetch(true)
             window.axios.get(pageSettings.next_page_url)
                 .then(({ data }) => {
                     pageSettings.section_name = data.pageSettings.section_name;
@@ -46,7 +53,8 @@ export default defineComponent({
                     pageSettings.next_page_url = data.pageSettings.products.next_page_url
                         ? data.pageSettings.products.next_page_url + "&&main=true"
                         : null;
-                });
+                })
+                .finally(()=>setOngoingFetch(false));
         };
         const getProducts = () => {
             window.axios.get("/product/front_page?main=true")
@@ -59,8 +67,8 @@ export default defineComponent({
                 })
             .finally(()=>nextTick(()=>emit('loaded')));
         };
-        onMounted(getProducts);
-        return { pageSettings, getNextPageData };
+        getProducts()
+        return { pageSettings, getNextPageData,onGoingFetch };
     },
 });
 </script>

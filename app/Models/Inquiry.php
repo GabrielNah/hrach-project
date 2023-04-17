@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Inquiry extends Model
 {
@@ -20,5 +21,10 @@ class Inquiry extends Model
     protected $attributes=[
       'read'=>false
     ];
+
+    public function product():HasOne
+    {
+        return $this->hasOne(Product::class,'id','product_id');
+    }
 
 }

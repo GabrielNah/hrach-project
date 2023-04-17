@@ -6,12 +6,14 @@
             <tr>
                 <th scope="col " class="text-white">#</th>
                 <th scope="col " class="text-white">Email</th>
+                <th scope="col " class="text-white">Subscribed at</th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="(subsriber,index) in subscribers" :key="subsriber.id">
                 <th scope="row " class="text-white">{{ index+1 }}</th>
                 <td class="text-white">{{ subsriber.subscriber }}</td>
+                <td class="text-white">{{ new Date(subsriber.subscribed_at).toLocaleDateString() }}</td>
             </tr>
             <div class="text-center fw-bold text-white" v-if="!subscribers.length">
                 You have no subscriber yet

@@ -55,6 +55,7 @@ export default {
                 store.actions.setAdmin(admin)
             }catch (e) {
                 store.actions.setAdmin(null)
+                redirectToRouteByName(ADMIN_LOGIN_ROUTE)
             }
             setMounted(true)
         }

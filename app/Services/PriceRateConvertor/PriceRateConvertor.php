@@ -6,9 +6,11 @@ use App\Models\CurrencyRate;
 
 class PriceRateConvertor
 {
-    public function convertToCurrency(int $price, string $currency):int
+    public function convertToCurrency(float $price, string $currency):int|float
     {
         $rate=CurrencyRate::query()->where('currency',$currency)->value('rate');
+        info($price);
+        info($rate);
         return $price * $rate;
     }
 }

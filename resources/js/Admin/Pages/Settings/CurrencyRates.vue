@@ -70,7 +70,7 @@ export default {
 </script>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {onBeforeMount, ref} from "vue";
  import HTTP from "../../Axios/axiosCongif";
 import {errorNotification, successNotification} from "../../../Services/NotificationService";
 import {extractValidationErrors} from "../../../Services/GlobalHelpers";
@@ -105,7 +105,7 @@ import {extractValidationErrors} from "../../../Services/GlobalHelpers";
      currencies.value.splice(index,1)
  }
 
- onMounted(getCurrencies)
+ onBeforeMount(getCurrencies)
 
 </script>
 

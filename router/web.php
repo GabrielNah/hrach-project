@@ -42,7 +42,10 @@ Route::group(['prefix'=>'admin'],function (){
         Route::group(['prefix'=>'state'],function (){
             Route::get('/inquiry',[ProjectStateController::class,'unreadInquiryExists']);
             Route::get('/all',[ProjectStateController::class,'projectState']);
+            Route::get('/appearance',[ProjectStateController::class,'siteAppearance']);
+            Route::post('/edit/appearance/{id}',[ProjectStateController::class,'editAppearance']);
         });
+
 
         Route::group(['prefix'=>'category'],function (){
             Route::get('',[CategoryController::class,'index']);

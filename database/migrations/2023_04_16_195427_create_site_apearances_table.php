@@ -1,10 +1,10 @@
 <?php
 
 use App\Models\SiteAppearance;
+use App\Services\Enums\SITE_APPEARANCE;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Services\Enums\SITE_APPEARANCE;
 use App\Services\Enums\DECORATION_TYPES;
 return new class extends Migration
 {

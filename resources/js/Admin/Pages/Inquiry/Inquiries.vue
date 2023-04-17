@@ -60,6 +60,7 @@
                             <div class="d-flex flex-column">
                                 <h6>Product:</h6>
                                 <product-cart
+                                    v-if="inquiryDetails?.product"
                                     :horizontal="true"
                                     :product="inquiryDetails.product"
                                 />

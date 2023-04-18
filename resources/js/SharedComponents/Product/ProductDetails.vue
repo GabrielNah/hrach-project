@@ -231,15 +231,18 @@
 
 <script>
 import ProductCart from "../../Customer/Pages/Components/Product-cart.vue";
-import {useRoute} from "vue-router";
-import {onMounted, reactive, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import { onBeforeMount, reactive, ref} from "vue";
 import useProductModifier from "../../GlobalComposables/useProductModifier";
 
 export default {
     name: "ProductDetails",
-    components: {ProductCart},
+    components: {
+        ProductCart,
+    },
     setup(props,ctx){
         const route=useRoute();
+        const router=useRouter()
         const product=ref(null)
         const selectedCurrency=ref('')
         const likableProducts=ref([])
@@ -285,7 +288,7 @@ export default {
         const productModifier=useProductModifier()
         ctx.expose({product,productModifier})
 
-        onMounted(async ()=>{
+        onBeforeMount(async ()=>{
             try {
                 let {data:{product:neededProduct,likable,related}}  =  await axios.get('/product/'+route.params.id);
                 product.value = neededProduct
@@ -295,7 +298,9 @@ export default {
                 setSelectedFile(neededProduct.general_file)
                 files.all=[neededProduct.general_file,...neededProduct.non_general_files]
             }catch (e) {
-
+               if (e?.response?.status === 404){
+                   await router.replace({name: 'not-found'})
+               }
             }
 
         })

@@ -19,7 +19,7 @@
             </div>
         </template>
         <template v-slot:product_yo_may_like="{likables}">
-            <section class="prods_you_may_like">
+            <section class="prods_you_may_like" v-if="likables?.length">
 
                 <h6>Products you may like</h6>
 
@@ -44,7 +44,7 @@
             </section>
         </template>
         <template v-slot:related_product="{relatedProducts}">
-            <div class="related_products">
+            <div class="related_products" v-if="relatedProducts?.length">
                 <h6>Related products</h6>
                 <div class="d-flex w-100 related_products_wrapper">
                     <template v-for="prod in relatedProducts" :key="prod.id">

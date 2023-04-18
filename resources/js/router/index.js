@@ -23,6 +23,11 @@ const router= createRouter({
                 addAdminsScriptAndStyles();
                 return true;
             },
+        },
+        {
+            path:'/:pathMatch(.*)*',
+            name:'not-found',
+            component:()=>import('../SharedComponents/NotFound.vue')
         }
     ]
 })

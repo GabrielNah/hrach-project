@@ -103,7 +103,7 @@ export default ()=>([
                 path:'privacy',
                 name:ADMIN_PRIVACY,
                 component: PrivacySettings
-            },
+            }
         ]
     }
 ])

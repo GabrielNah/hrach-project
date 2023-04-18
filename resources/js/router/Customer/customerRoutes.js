@@ -17,8 +17,8 @@ export default ()=>([
       component:SearchedProducts
     },
     {
-        path:'product/:id',
-        name:PRODUCT_DETAIL_PAGE,
-        component:ProductDetails
+        path: 'product/:id',
+        name: PRODUCT_DETAIL_PAGE,
+        component: ProductDetails
     },
 ])

@@ -4,7 +4,7 @@
     >
         <div class="container">
             <section class="footer-top  padding-y-lg">
-                <div class="d-flex w-100 justify-content-between flex-wrap">
+                <div class="d-flex w-100 justify-content-between flex-wrap ftr">
                     <aside class="col-md-4 col-12">
                         <article class="mr-md-4">
                             <h5 class="title">Contact us</h5>
@@ -139,5 +139,22 @@ export default {
 footer{
     background: #12225B ;
     box-shadow: 0px 0px 3px;
+}
+@media (max-width: 770px) {
+    .ftr{
+        padding-left: 10px;
+    }
+}
+@media (max-width: 874px ) and (min-width: 770px){
+    .form-inline{
+        flex-direction: column;
+    }
+    .form-inline input{
+        width: 100% !important;
+    }
+    .form-inline button{
+        width: 50%;
+        align-self: center;
+    }
 }
 </style>

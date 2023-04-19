@@ -224,16 +224,16 @@
                         <strong class="d-block py-2">{{ paginator.total }} Items found </strong>
                         <div class="ms-auto">
                             <div class="btn-group shadow-0 border">
-                                <a href="#" class="btn btn-light" :class="{'active':position===COLUMN}"
+                                <span class="btn btn-light" :class="{'active':position===COLUMN}"
                                    title="List view" @click="setPosition(COLUMN)"
                                 >
                                     <i class="fa fa-bars fa-lg"></i>
-                                </a>
-                                <a href="#" class="btn btn-light " :class="{'active':position===ROW}"
+                                </span>
+                                <span class="btn btn-light " :class="{'active':position===ROW}"
                                     @click="setPosition(ROW)"
                                    title="Grid view">
                                     <i class="fa fa-th fa-lg"></i>
-                                </a>
+                                </span>
                             </div>
                         </div>
                     </header>

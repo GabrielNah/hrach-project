@@ -16,6 +16,7 @@
 
 
         <router-link class="img-wrap p-1 "
+                     :style="{height:horizontal ? '90%' : '65%'}"
                      :to="productRoute(product.id)"
                      :class="horizontal ? 'w-50' :'w-100'"
         >
@@ -113,6 +114,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.card{
+    transition: 0.2s ease-out all;
+}
 .tag-wrapper{
     right: 12px;
     top: 16px;
@@ -158,5 +162,13 @@ export default defineComponent({
 
         background: #FA3434;
         border-radius: 5.55px;
+    }
+
+    .card:hover,:focus{
+        transition: 0.2s ease-out all;
+        transform: scale(1.08);
+        box-shadow: 5px 7px 15px -1px rgba(0,0,0,0.75);
+        -webkit-box-shadow: 5px 7px 15px -1px rgba(0,0,0,0.75);
+        -moz-box-shadow: 5px 7px 15px -1px rgba(0,0,0,0.75);
     }
 </style>

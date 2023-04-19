@@ -6,7 +6,7 @@
         <div class="row gap-3">
             <template v-if="pageSettings.products.length">
                 <template v-for="product in pageSettings.products" :id="product.id">
-                    <div class="col-xl-3 col-lg-3 col-md-4 col-6 ">
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-6 product-card">
                         <product-cart :product="product"/>
                     </div>
                 </template>
@@ -96,5 +96,10 @@ export default defineComponent({
     width: fit-content;
     word-break: break-word;
     border: 0;
+}
+
+.product-card{
+    width: 20vw;
+    height: 350px;
 }
 </style>

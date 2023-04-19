@@ -1,14 +1,17 @@
 <template>
     <div class="container">
         <div class="w-100 d-flex flex-column p-1">
-            <slider-component :key="key">
-                <template #default="{slider}">
-                    <div class="btn btn-success btn-sm rounded-0" @click="editProduct(slider)"
-                         type="button" data-toggle="tooltip" data-placement="top" title="Edit">
-                        <i class="fa fa-edit"></i>
-                    </div>
-                </template>
-            </slider-component>
+            <div style="height: 60vh">
+
+                <slider-component :key="key">
+                    <template #default="{slider}">
+                        <div class="btn btn-success btn-sm rounded-0" @click="editProduct(slider)"
+                             type="button" data-toggle="tooltip" data-placement="top" title="Edit">
+                            <i class="fa fa-edit"></i>
+                        </div>
+                    </template>
+                </slider-component>
+            </div>
             <section class="d-flex flex-column w-100 p-1 m-0">
                 <form @submit.prevent="wrapWithinProcess(actionsWithSlides.saveChanges)">
                     <div class="form-group">

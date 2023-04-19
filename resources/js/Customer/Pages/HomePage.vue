@@ -1,7 +1,7 @@
 <template>
 
     <section class="section-intro padding-y">
-        <div class="container">
+        <div class="container" style="height: 60vh">
             <slider-component @loaded="loadCount++"/>
         </div>
     </section>
@@ -55,5 +55,10 @@ export default {
 </script>
 
 <style scoped>
-
+@media (max-width: 770px) {
+    .section-intro .container{
+        padding: 0!important;
+        width: 100%;
+    }
+}
 </style>

@@ -1,14 +1,14 @@
 <template>
     <div id="carouselExampleCaptions" v-show="slides.length"
-         class="carousel slide" data-bs-interval="3000"
+         class="carousel slide h-100" data-bs-interval="3000"
          data-bs-ride="carousel">
-        <div class="carousel-inner" id="slider-component">
+        <div class="carousel-inner h-100" id="slider-component">
             <template v-for="(slide,index) in slides" :key="slide.id">
-                    <div class="carousel-item "  :class="{'active':index===0}">
+                    <div class="carousel-item h-100"  :class="{'active':index===0}">
                         <div class="position-absolute" style="top: 10px;right: 10px;z-index: 2000">
                             <slot :slider="slides[activeIndex]"/>
                         </div>
-                        <img :src="'/'+slide.image" class="d-block w-100" alt="...">
+                        <img :src="'/'+slide.image" class="d-block w-100 h-100" alt="...">
                         <div class="carousel-caption  d-md-block">
                             <h5>{{ slide.title }}</h5>
                             <p class="pointer" @click="searchByIds(slide.value || [])">
@@ -71,5 +71,9 @@ export default {
 <style scoped>
 .pointer{
     cursor: pointer;
+}
+img{
+    object-fit: cover;
+    object-position: center;
 }
 </style>

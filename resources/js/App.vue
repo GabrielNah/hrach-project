@@ -11,6 +11,11 @@ export default {
 </script>
 
 <style lang="scss">
+.container{
+    @media (max-width: 770px) {
+        max-width: 100%;
+    }
+}
 .my-notification {
     /*...*/
 

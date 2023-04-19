@@ -1,16 +1,30 @@
 <template>
     <main class="main_content" v-if="product">
         <div class="container">
-            <nav class="navbar">
-                <span class="navbar_text">Home</span>
+            <nav class="navbar " style="width: fit-content">
+                <span class="navbar_text">
+                    <router-link to="/">Home</router-link>
+                </span>
                 <span class="navbar_text arrow"> \ </span>
-                <span class="navbar_text"> All categories </span>
+                <span class="navbar_text">
+                    <router-link to="/products/list/all">
+                        All categories
+                    </router-link>
+                </span>
                 <template v-if="product.category.parentCategory">
                     <span class="navbar_text arrow"> \ </span>
-                    <span class="navbar_text"> {{ product.category.parentCategory.name }}</span>
+                    <span class="navbar_text">
+                        <router-link :to="'/products/list/'+product.category.parentCategory.name">
+                              {{ product.category.parentCategory.name }}
+                        </router-link>
+                      </span>
                 </template>
                 <span class="navbar_text arrow"> \ </span>
-                <span class="navbar_text"> {{  product.category.name  }} </span>
+                <span class="navbar_text">
+                    <router-link :to="'/products/list/'+product.category.name">
+                        {{  product.category.name  }}
+                    </router-link>
+                </span>
             </nav>
             <section class="products_main_info">
                 <div class="files_wrapper">

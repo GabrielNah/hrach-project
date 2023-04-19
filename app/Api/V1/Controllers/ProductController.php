@@ -78,7 +78,10 @@ class ProductController extends Controller
             ->when(($SEARCH_TYPE === SEARCH_TYPES::CATEGORY->value &&
                 $request->input('category')!=='all') ,function (Builder $q) use ($request){
                 $q->whereHas('category',function ($q) use ($request){
-                    $q->where('name',$request->input('category'));
+                    $q->where('name',$request->input('category'))
+                        ->orWhereHas('parentCategory',function ($q) use ($request){
+                                $q->where('name',$request->input('category'));
+                        });
                 });
             })
             ->when($SEARCH_TYPE === SEARCH_TYPES::IDS->value,function (Builder $q) use ($request){

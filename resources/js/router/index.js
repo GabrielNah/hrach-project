@@ -1,14 +1,12 @@
 import {createRouter, createWebHistory} from "vue-router/dist/vue-router";
 import adminRoutes from "./Admin/adminRoutes";
 import customerRoutes from "./Customer/customerRoutes";
-import AdminLayout from "../Admin/Layouts/AdminLayout.vue";
-import MainLayout from "../Customer/Layouts/MainLayout.vue";
 const router= createRouter({
     history:createWebHistory(),
     routes:[
         {
             path:'',
-            component:MainLayout,
+            component:()=>import("../Customer/Layouts/MainLayout.vue"),
             beforeEnter(){
                 addCustomersScriptsAndStyles();
                 return true;
@@ -17,7 +15,7 @@ const router= createRouter({
         },
         {
             path:'/admin',
-            component:AdminLayout,
+            component:()=>import("../Admin/Layouts/AdminLayout.vue"),
             children:adminRoutes(),
             beforeEnter(){
                 addAdminsScriptAndStyles();

@@ -84,13 +84,16 @@
 </template>
 
 <script>
-import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
 import ProductDetails from "../../../SharedComponents/Product/ProductDetails.vue";
-import LeaveComment from "./Popups/LeaveComment.vue";
-import SendInquiry from "./Popups/SendInquiry.vue";
+import {defineAsyncComponent} from "vue";
 export default {
     name: "Product-Details",
-    components: {ProductDetails,LeaveComment,Modal,SendInquiry}
+    components: {
+        ProductDetails,
+        LeaveComment:defineAsyncComponent(()=>import("./Popups/LeaveComment.vue")),
+        Modal:defineAsyncComponent(()=>import("../../../SharedComponents/ReusableComponents/Modal.vue")),
+        SendInquiry:defineAsyncComponent(()=>import("./Popups/SendInquiry.vue"))
+    }
 }
 </script>
 <script setup>

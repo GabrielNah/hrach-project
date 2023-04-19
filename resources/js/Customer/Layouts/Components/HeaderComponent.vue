@@ -36,8 +36,8 @@
                     </div>
                 </div> <!-- row.// -->
             </section>
-            <nav class="navbar navbar-main navbar-expand pl-0 w-100 routes"
-            :style="properAppearance(appearance)"
+            <nav class="navbar navbar-main navbar-expand pl-0  routes"
+                 :style="properAppearance(appearance)"
                  :class="sideBareOpened?'routes_shown':''"
             >
                 <div class="close_sidebar">
@@ -226,8 +226,8 @@ header{
     .routes{
         position: fixed;
         top: 0;
-        left: -100%;
-        width: 100vw;
+        left: -40vw;
+        width: 40vw;
         height: 100vh;
         background-color: #fff;
         transition: transform 0.3s ease-out;
@@ -239,7 +239,7 @@ header{
     }
 
     .routes_shown{
-        transform: translateX(100%);
+        transform: translateX(40vw);
         z-index: 100;
     }
     .routes_shown ul {

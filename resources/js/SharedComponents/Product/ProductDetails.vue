@@ -108,6 +108,9 @@
                                             </svg>
                                             Negotiable
                                         </div>
+                                        <span v-if="price?.discount" class="price_discount">
+                                            {{ price.discount }} %
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -383,9 +386,6 @@ body{
 .cursor:hover{
     color: blue;
 }
-.main_content {
-    background-color: #F8F9FA;
-}
 
 .navbar {
     display: flex;
@@ -423,6 +423,7 @@ body{
     border-radius: 6px;
     height: fit-content;
 
+
     .send_inquiry_button {
         /* Auto layout */
 
@@ -446,7 +447,20 @@ body{
         border-radius: 6px;
     }
 }
-
+.price_discount{
+    background:rgb(207, 38, 38);;
+    color: whitesmoke;
+    padding: 5px 10px;
+    border-radius: 3px;
+}
+.navbar_text{
+    a{
+        color: #F2F3F7;
+    }
+    a:hover{
+        color: #F2F3F7 !important;
+    }
+}
 .products_main_info {
     display: flex;
     flex-direction: row;

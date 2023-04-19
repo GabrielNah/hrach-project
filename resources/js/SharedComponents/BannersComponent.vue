@@ -139,8 +139,8 @@ export default {
     -moz-box-shadow: -2px 9px 16px 5px rgba(83,56,56,0.75);
 }
 .banner:hover{
-    height: 40vh;
-    width: 42vw;
+    transform: scale(1.3);
+    z-index:45 ;
     transition: all 0.2s ease-out;
 }
 @media (max-width: 992px) and (min-width: 850px){
@@ -148,19 +148,11 @@ export default {
         height: 34vh;
         width: 34vw;
     }
-    .banner:hover{
-        height: 36vh;
-        width: 36vw;
-    }
 }
 @media (max-width: 850px) and (min-width: 555px){
     .banner{
         height: 40vh;
         width: 40vw;
-    }
-    .banner:hover{
-        height: 43vh;
-        width: 43vw;
     }
 }
 @media (max-width: 555px) {
@@ -169,10 +161,6 @@ export default {
         height: 25vh;
         width: 80vw;
         margin: 0 5px;
-    }
-    .banner:hover{
-        height: 27vh;
-        width: 82vw;
     }
     .holder{
         flex-wrap: nowrap !important;

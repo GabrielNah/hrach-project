@@ -5,7 +5,7 @@
             <h3 class="title-section">{{  sectionName  }}</h3>
         </header>
         <div class="w-100 d-flex overflow-auto gap-3 hidden_scrollbar p-2">
-            <div class="col-xl-2 col-lg-3 col-md-4 col-6" v-for="product in products"
+            <div class="col-xl-2 col-lg-3 col-md-4 col-6 product-item" v-for="product in products"
                 :key="product.id"
             >
                 <product-cart :product="product"/>
@@ -46,5 +46,15 @@ import {nextTick, onMounted, ref} from "vue";
 }
 .hidden_scrollbar::-webkit-scrollbar {
     display: none;
+}
+.product-item{
+    width: 25vw;
+    height: 270px;
+}
+@media (max-width: 600px) {
+    .product-item{
+        width: 40vw;
+        height: 270px;
+    }
 }
 </style>

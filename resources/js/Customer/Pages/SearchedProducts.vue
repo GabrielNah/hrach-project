@@ -10,7 +10,7 @@
                     <!-- Toggle button -->
                     <form  @submit.prevent="applyFilter">
                         <button
-                            class="btn btn-outline-secondary mb-3 w-100 d-lg-none"
+                            class="btn  mb-3 w-100 d-lg-none button-34"
                             type="button"
                             data-bs-toggle="collapse"
                             data-bs-target="#navbarSupportedContent"
@@ -206,7 +206,7 @@
                                 </div>
                                 <div class="accordion-item">
                                     <div class="d-flex w-100 justify-content-center align-items-center p-2">
-                                        <button class="btn btn-primary p-1 text-center w-50">
+                                        <button class="btn btn-primary p-1 text-center w-50 button-34">
                                             Apply
                                         </button>
                                     </div>
@@ -239,9 +239,9 @@
                     </header>
 
                     <div class="row"  :class="{'flex-column':position===COLUMN}">
-                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex" v-for="product in paginator.products"
+                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex prdct-item" v-for="product in paginator.products"
                             :key="product.id"
-                             :class="{'w-100':position===COLUMN}"
+                             :class="{'prdct-item-horizontal':position===COLUMN}"
                         >
                             <div class=" w-100 my-2 ">
                                 <product-cart
@@ -653,6 +653,40 @@ onBeforeRouteLeave((to,from,next)=>{
 }
 
 
-
-
+.prdct-item{
+    width: 25%;
+    height: 250px;
+    @media (max-width: 600px) and (max-width: 450px) {
+        width: 32%;
+    }
+    @media (max-width: 450px) {
+        width: 47%;
+    }
+}
+.prdct-item-horizontal{
+    width: 100%;
+    height: 250px;
+}
+.button-34 {
+    background: #5E5DF0;
+    box-shadow: #5E5DF0 0 10px 20px -10px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: Inter,Helvetica,"Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Noto Color Emoji","Segoe UI Symbol","Android Emoji",EmojiSymbols,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans",sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    opacity: 1;
+    outline: 0 solid transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: fit-content;
+    word-break: break-word;
+    border: 0;
+}
+.btn:hover{
+    background: #5E5DF0;
+}
 </style>

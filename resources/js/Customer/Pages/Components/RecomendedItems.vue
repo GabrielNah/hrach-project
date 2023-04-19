@@ -3,7 +3,7 @@
         <header class="section-heading mb-4">
             <h3 class="title-section">{{ pageSettings.section_name }}</h3>
         </header>
-        <div class="row gap-3">
+        <div class="row gap-3 justify-content-between w-100">
             <template v-if="pageSettings.products.length">
                 <template v-for="product in pageSettings.products" :id="product.id">
                     <div class="col-xl-3 col-lg-3 col-md-4 col-6 product-card">
@@ -99,7 +99,23 @@ export default defineComponent({
 }
 
 .product-card{
-    width: 20vw;
+    width: 23%;
     height: 350px;
+}
+@media (max-width: 1200px) and (min-width: 992px){
+    .product-card{
+        width: 30%;
+    }
+}
+@media (max-width: 992px) and (min-width: 650px){
+    .product-card{
+        width: 31%;
+    }
+}
+@media (max-width: 650px) {
+    .product-card{
+        width: 47%;
+        height: 250px;
+    }
 }
 </style>

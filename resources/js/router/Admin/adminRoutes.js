@@ -33,7 +33,8 @@ export default ()=>([
     {
         path:'',
         name:ADMIN_LOGIN_ROUTE,
-        component:AdminLogin
+        component:AdminLogin,
+        meta:{title:'Login'}
     },
     {
         path:'dashboard',
@@ -42,67 +43,81 @@ export default ()=>([
             {
                 path:'',
                 name:ADMIN_DASHBOARD_ROUTE,
-                component:AdminDashboard
+                component:AdminDashboard,
+                meta:{title:'Admin dashboard'}
             },
             {
                 path:'categories',
                 name:ADMIN_CATEGORIES_ROUTE,
-                component:Categories
+                component:Categories,
+                meta:{title:'Categories'}
             },
             {
                 path:'products',
                 name:ADMIN_PRODUCT_LIST,
-                component:ProductList
+                component:ProductList,
+                meta:{title:'List of products'}
             },
             {
                 path:'products/add',
                 name:ADMIN_PRODUCT_ADD,
-                component:AddProduct
+                component:AddProduct,
+                meta:{title:'Add product'}
+
             },
             {
                 path: 'product/:id/edit',
                 name: ADMIN_PRODUCT_EDIT,
                 component:EditProduct ,
+                meta:{title:'Product details'}
             },
             {
                 path:'settings',
                 name:ADMIN_SETTING_ROUTE,
-                component:Settings
+                component:Settings,
+                meta:{title:'Settings'}
             },
             {
                 path:'slider',
                 name:ADMIN_SLIDER_EDIT,
-                component: SliderMaker
+                component: SliderMaker,
+                meta:{title:'Sliders'}
             },
             {
                 path:'banners',
                 name:ADMIN_BANNERS_EDIT,
-                component: Banners
+                component: Banners,
+                meta:{title:'Banners'}
             },
             {
                 path:'inquiries',
                 name:ADMIN_INQUIRES,
-                component: Inquiries
+                component: Inquiries,
+                meta:{title:'Inquiries'}
             },
             {
                 path:'home_settings',
                 name:ADMIN_HOME_PAGE_SETTINGS,
-                component: HomePageSettings
+                component: HomePageSettings,
+                meta:{title:'Home page settings'}
             },
             {
                 path:'contact',
                 name:ADMIN_CONTACT_INFO,
-                component: ContactInfo
+                component: ContactInfo,
+                meta:{title:'Contact info'}
             },
             {
                 path:'subscribers',
                 name:ADMIN_SUBSCRIBERS,
-                component: Subscribers
+                component: Subscribers,
+                meta:{title:'Subscribers'}
             },
             {
                 path:'privacy',
                 name:ADMIN_PRIVACY,
-                component: PrivacySettings
+                component: PrivacySettings,
+                meta:{title:'Privacy'}
             }
         ]
     }

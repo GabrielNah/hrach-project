@@ -48,6 +48,9 @@
                         </template>
 
                     </div>
+                    <div class="product_inquiry" v-if="screen < 900">
+                        <slot name="inquiry" />
+                    </div>
                 </div>
                 <div class="product_info">
                     <h3 class="product_name"> {{ product.name }}</h3>
@@ -109,7 +112,7 @@
                                             Negotiable
                                         </div>
                                         <span v-if="price?.discount" class="price_discount">
-                                            {{ price.discount }} %
+                                            {{ price.discount }} % OFF
                                         </span>
                                     </div>
                                 </div>
@@ -118,7 +121,7 @@
                     </div>
                     <div class="colors border-top" v-if="product.colors.length">
                         <span class="product_data_text ">Color : {{ info.color?.name ?? '' }} </span>
-                        <div class="d-flex align-items-center gap-1 mt-1 ">
+                        <div class="d-flex align-items-center gap-1 mt-1 flex-wrap ">
                             <template v-for="color in product.colors">
                                 <img  v-if="color.individual ?? false" class="color"
                                       @click="selectColor(color)"
@@ -134,7 +137,7 @@
                     </div>
                     <div class="sizes border-top" v-if="product.sizes.length">
                         <span class="product_data_text">Size : {{ info.size?.size ?? '' }}</span>
-                        <div class="d-flex align-items-center gap-1 mt-1">
+                        <div class="d-flex align-items-center gap-1 mt-1 flex-wrap">
                             <span v-for="size in product.sizes"
                                 @click="selectSize(size)"
                                   class="size text-center product_data_text"
@@ -144,7 +147,10 @@
                         </div>
                     </div>
                 </div>
-                 <slot name="inquiry"/>
+                <div class="product_inquiry" v-if="screen >= 900">
+                    <slot name="inquiry" />
+                </div>
+
             </section>
             <div class="d-flex w-100 justify-content-between">
                 <section class="description">
@@ -236,11 +242,14 @@
                     </div>
                 </section>
 
-                <slot name="product_yo_may_like" :likables="likableProducts"/>
+                <slot name="product_yo_may_like" v-if="screen > 600"
+                      :likables="likableProducts"/>
 
 
             </div>
 
+            <slot name="product_yo_may_like" v-if="screen <=600"
+                  :likables="likableProducts"/>
             <slot name="related_product" :relatedProducts="relatedProducts"/>
         </div>
     </main>
@@ -256,6 +265,9 @@ export default {
     name: "ProductDetails",
     components: {
         ProductCart,
+    },
+    computed:{
+      screen:()=>window.screen.width
     },
     setup(props,ctx){
         const route=useRoute();
@@ -452,6 +464,7 @@ body{
     color: whitesmoke;
     padding: 5px 10px;
     border-radius: 3px;
+    margin-top: 5px;
 }
 .navbar_text{
     a{
@@ -477,6 +490,9 @@ body{
     display: flex;
     flex-direction: column;
     width: 35%;
+    @media (max-width: 900px) {
+        width: 60%;
+    }
 }
 
 .main_image {
@@ -534,12 +550,28 @@ body{
 }
 
 .product_info {
-    width: 40%;
     display: flex;
     flex-direction: column;
     padding: 20px 20px;
+
+    @media (max-width: 900px) {
+        width: 40%;
+    }
+    @media (min-width: 900px) {
+        flex:1;
+    }
+
 }
 
+.product_inquiry{
+    @media (max-width: 900px) {
+        width: 100%;
+        margin-top: 30px;
+    }
+    @media (min-width: 900px) {
+        width: 30%;
+    }
+}
 .product_info .product_name {
     font-family: 'Inter';
     font-style: normal;
@@ -585,13 +617,13 @@ body{
         display: flex;
         //border-top: 1px solid #e6e7eb;
         //border-bottom: 1px solid #e6e7eb;
+        flex-wrap: wrap;
         padding: 20px 0;
         margin: 10px 0;
         justify-content: space-between;
         width: 100%;
 
          .price-item {
-            width: 25%;
              .quality {
                  font-size: 14px;
                  color: #666;
@@ -824,17 +856,19 @@ body{
         padding: 20px 20px;
 
         table {
-            max-width: 100%;
+            width: 100%;
 
             .names {
 
-                min-width: 204px;
+                width: 50%;
                 background: #EFF2F4;
                 font-family: 'Inter';
                 font-style: normal;
                 font-weight: 400;
                 font-size: 16px;
                 line-height: 19px;
+                overflow: hidden;
+                text-overflow: ellipsis;
 
                 /* gray-600 */
 
@@ -842,12 +876,14 @@ body{
             }
 
             .values {
-                min-width: 300px;
+                width: 50%;
                 font-family: 'Inter';
                 font-style: normal;
                 font-weight: 400;
                 font-size: 16px;
                 line-height: 24px;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 /* identical to box height, or 150% */
 
                 letter-spacing: -0.2px;

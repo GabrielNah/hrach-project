@@ -1,16 +1,30 @@
 <template>
     <main class="main_content" v-if="product">
         <div class="container">
-            <nav class="navbar">
-                <span class="navbar_text">Home</span>
+            <nav class="navbar " style="width: fit-content">
+                <span class="navbar_text">
+                    <router-link to="/">Home</router-link>
+                </span>
                 <span class="navbar_text arrow"> \ </span>
-                <span class="navbar_text"> All categories </span>
+                <span class="navbar_text">
+                    <router-link to="/products/list/all">
+                        All categories
+                    </router-link>
+                </span>
                 <template v-if="product.category.parentCategory">
                     <span class="navbar_text arrow"> \ </span>
-                    <span class="navbar_text"> {{ product.category.parentCategory.name }}</span>
+                    <span class="navbar_text">
+                        <router-link :to="'/products/list/'+product.category.parentCategory.name">
+                              {{ product.category.parentCategory.name }}
+                        </router-link>
+                      </span>
                 </template>
                 <span class="navbar_text arrow"> \ </span>
-                <span class="navbar_text"> {{  product.category.name  }} </span>
+                <span class="navbar_text">
+                    <router-link :to="'/products/list/'+product.category.name">
+                        {{  product.category.name  }}
+                    </router-link>
+                </span>
             </nav>
             <section class="products_main_info">
                 <div class="files_wrapper">
@@ -94,6 +108,9 @@
                                             </svg>
                                             Negotiable
                                         </div>
+                                        <span v-if="price?.discount" class="price_discount">
+                                            {{ price.discount }} % OFF
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -101,7 +118,7 @@
                     </div>
                     <div class="colors border-top" v-if="product.colors.length">
                         <span class="product_data_text ">Color : {{ info.color?.name ?? '' }} </span>
-                        <div class="d-flex align-items-center gap-1 mt-1 ">
+                        <div class="d-flex align-items-center gap-1 mt-1 flex-wrap ">
                             <template v-for="color in product.colors">
                                 <img  v-if="color.individual ?? false" class="color"
                                       @click="selectColor(color)"
@@ -117,7 +134,7 @@
                     </div>
                     <div class="sizes border-top" v-if="product.sizes.length">
                         <span class="product_data_text">Size : {{ info.size?.size ?? '' }}</span>
-                        <div class="d-flex align-items-center gap-1 mt-1">
+                        <div class="d-flex align-items-center gap-1 mt-1 flex-wrap">
                             <span v-for="size in product.sizes"
                                 @click="selectSize(size)"
                                   class="size text-center product_data_text"
@@ -127,9 +144,12 @@
                         </div>
                     </div>
                 </div>
-                 <slot name="inquiry"/>
+                <div class="product_inquiry" >
+                    <slot name="inquiry" />
+                </div>
+
             </section>
-            <div class="d-flex w-100 justify-content-between">
+            <div class="d-flex w-100 justify-content-between" style="gap: 10px">
                 <section class="description">
                     <div class="description_tab">
                         <nav>
@@ -219,11 +239,14 @@
                     </div>
                 </section>
 
-                <slot name="product_yo_may_like" :likables="likableProducts"/>
+                <slot name="product_yo_may_like" v-if="screen > 600"
+                      :likables="likableProducts"/>
 
 
             </div>
 
+            <slot name="product_yo_may_like" v-if="screen <=600"
+                  :likables="likableProducts"/>
             <slot name="related_product" :relatedProducts="relatedProducts"/>
         </div>
     </main>
@@ -231,15 +254,21 @@
 
 <script>
 import ProductCart from "../../Customer/Pages/Components/Product-cart.vue";
-import {useRoute} from "vue-router";
-import {onMounted, reactive, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import { onBeforeMount, reactive, ref} from "vue";
 import useProductModifier from "../../GlobalComposables/useProductModifier";
 
 export default {
     name: "ProductDetails",
-    components: {ProductCart},
+    components: {
+        ProductCart,
+    },
+    computed:{
+      screen:()=>window.screen.width
+    },
     setup(props,ctx){
         const route=useRoute();
+        const router=useRouter()
         const product=ref(null)
         const selectedCurrency=ref('')
         const likableProducts=ref([])
@@ -285,7 +314,7 @@ export default {
         const productModifier=useProductModifier()
         ctx.expose({product,productModifier})
 
-        onMounted(async ()=>{
+        onBeforeMount(async ()=>{
             try {
                 let {data:{product:neededProduct,likable,related}}  =  await axios.get('/product/'+route.params.id);
                 product.value = neededProduct
@@ -295,7 +324,9 @@ export default {
                 setSelectedFile(neededProduct.general_file)
                 files.all=[neededProduct.general_file,...neededProduct.non_general_files]
             }catch (e) {
-
+               if (e?.response?.status === 404){
+                   await router.replace({name: 'not-found'})
+               }
             }
 
         })
@@ -364,9 +395,6 @@ body{
 .cursor:hover{
     color: blue;
 }
-.main_content {
-    background-color: #F8F9FA;
-}
 
 .navbar {
     display: flex;
@@ -404,6 +432,7 @@ body{
     border-radius: 6px;
     height: fit-content;
 
+
     .send_inquiry_button {
         /* Auto layout */
 
@@ -427,12 +456,31 @@ body{
         border-radius: 6px;
     }
 }
-
+.price_discount{
+    background:rgb(207, 38, 38);;
+    color: whitesmoke;
+    padding: 5px 10px;
+    border-radius: 3px;
+    margin-top: 5px;
+}
+.navbar_text{
+    a{
+        color: #F2F3F7;
+    }
+    a:hover{
+        color: #F2F3F7 !important;
+    }
+}
 .products_main_info {
     display: flex;
     flex-direction: row;
     background: #FFFFFF;
     padding: 20px 20px;
+    @media (max-width: 900px) {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
 
 }
 
@@ -444,6 +492,9 @@ body{
     display: flex;
     flex-direction: column;
     width: 35%;
+    @media (max-width: 900px) {
+        width: 100%;
+    }
 }
 
 .main_image {
@@ -498,15 +549,36 @@ body{
     border-radius: 4px;
     margin-left: 8px;
     cursor: pointer;
+    object-fit: cover;
 }
 
 .product_info {
-    width: 40%;
     display: flex;
     flex-direction: column;
     padding: 20px 20px;
+
+    @media (max-width: 900px) {
+        width: 100%;
+
+    }
+    @media (min-width: 900px) {
+        flex:1;
+    }
+
 }
 
+.product_inquiry{
+    @media (max-width: 900px) {
+        width: 95%;
+        >div{
+            flex-direction: row !important;
+        }
+        margin-top: 30px;
+    }
+    @media (min-width: 900px) {
+        width: 30%;
+    }
+}
 .product_info .product_name {
     font-family: 'Inter';
     font-style: normal;
@@ -552,13 +624,17 @@ body{
         display: flex;
         //border-top: 1px solid #e6e7eb;
         //border-bottom: 1px solid #e6e7eb;
+        flex-wrap: wrap;
         padding: 20px 0;
         margin: 10px 0;
         justify-content: space-between;
         width: 100%;
 
          .price-item {
-            width: 25%;
+             display: flex;
+             flex-direction: column;
+             justify-content: center;
+             align-items: center;
              .quality {
                  font-size: 14px;
                  color: #666;
@@ -591,6 +667,7 @@ body{
 
     .single_price {
         padding: 15px 15px;
+        position: relative;
 
         .price {
             font-family: 'Inter';
@@ -671,6 +748,10 @@ body{
     margin-top: 20px;
     display: flex;
     flex-direction: column;
+    @media (max-width: 600px) {
+      width: 100%;
+    }
+
 
     h6 {
         font-family: 'Inter';
@@ -690,15 +771,38 @@ body{
         margin-top: 10px;
         max-height: 450px;
         overflow: auto;
+        display: flex;
+        flex-direction: column;
+
+        a{
+            text-decoration: none;
+            cursor: pointer;
+
+        }
+        @media (max-width: 600px) {
+            flex-direction: row;
+            max-width: 100%;
+        }
 
         .single_prod {
             display: flex;
             flex-direction: row;
             margin-bottom: 10px;
+            position: relative;
+            .single_prod_discount{
+                padding: 5px;
+                position: absolute;
+                background: #FA3434;
+                color: #F2F3F7;
+                border-radius: 10px;
+                top: 2px;
+                left:2px;
+            }
 
             img {
-                width: 70px;
-                height: 70px;
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
                 border: 1px solid #E0E0E0;
                 border-radius: 6px;
                 margin-right: 10px;
@@ -761,7 +865,8 @@ body{
 
     box-shadow: 0px 1px 3px rgba(56, 56, 56, 0.1);
     border-radius: 6px;
-    width: 70%;
+    min-width: 70%;
+    flex: 1;
 
     .nav-tabs, .active {
         color: #505050;;
@@ -791,17 +896,19 @@ body{
         padding: 20px 20px;
 
         table {
-            max-width: 100%;
+            width: 100%;
 
             .names {
 
-                min-width: 204px;
+                width: 50%;
                 background: #EFF2F4;
                 font-family: 'Inter';
                 font-style: normal;
                 font-weight: 400;
                 font-size: 16px;
                 line-height: 19px;
+                overflow: hidden;
+                text-overflow: ellipsis;
 
                 /* gray-600 */
 
@@ -809,12 +916,14 @@ body{
             }
 
             .values {
-                min-width: 300px;
+                width: 50%;
                 font-family: 'Inter';
                 font-style: normal;
                 font-weight: 400;
                 font-size: 16px;
                 line-height: 24px;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 /* identical to box height, or 150% */
 
                 letter-spacing: -0.2px;
@@ -833,7 +942,6 @@ body{
 }
 
 .related_products {
-    margin-bottom: 20px;
     width: 100%;
     margin-top: 20px;
     background: #FFFFFF;
@@ -847,7 +955,10 @@ body{
 
     box-shadow: 0px 1px 3px rgba(56, 56, 56, 0.1);
     border-radius: 6px;
-
+    a{
+        text-decoration: none;
+        cursor: pointer;
+    }
     h6 {
         font-family: 'Inter';
         font-style: normal;
@@ -875,11 +986,21 @@ body{
             flex-direction: column;
             gap: 5px;
             cursor: pointer;
-
+            position: relative;
+            .single_prod_discount{
+                padding: 5px;
+                position: absolute;
+                background: #FA3434;
+                color: #F2F3F7;
+                border-radius: 10px;
+                top: 2px;
+                left:2px;
+            }
             img {
                 width: 172px;
                 height: 172px;
                 border-radius: 4px;
+                object-fit: cover;
             }
 
             .related_product_price {

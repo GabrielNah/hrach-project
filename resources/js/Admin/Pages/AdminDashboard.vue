@@ -1,6 +1,6 @@
 <template>
-    <project-state/>
     <currency-rates/>
+    <project-state/>
     <site-appearance/>
 </template>
 

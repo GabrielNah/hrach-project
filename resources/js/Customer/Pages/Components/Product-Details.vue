@@ -19,7 +19,7 @@
             </div>
         </template>
         <template v-slot:product_yo_may_like="{likables}">
-            <section class="prods_you_may_like">
+            <section class="prods_you_may_like" v-if="likables?.length">
 
                 <h6>Products you may like</h6>
 
@@ -28,6 +28,9 @@
                         <router-link :to="{name: PRODUCT_DETAIL_PAGE,params: {id:likableProd.id}}"
                             class="single_prod"
                         >
+                            <span class="single_prod_discount" v-if="likableProd?.price_for_one?.discount">
+                               -{{ likableProd?.price_for_one?.discount }}%
+                            </span>
                             <template v-if="likableProd.general_file.type === 'image'">
                                 <img :src="'/'+likableProd.general_file.path" alt="">
                             </template>
@@ -44,7 +47,7 @@
             </section>
         </template>
         <template v-slot:related_product="{relatedProducts}">
-            <div class="related_products">
+            <div class="related_products" v-if="relatedProducts?.length">
                 <h6>Related products</h6>
                 <div class="d-flex w-100 related_products_wrapper">
                     <template v-for="prod in relatedProducts" :key="prod.id">
@@ -52,6 +55,9 @@
                                      class="one_related_product"
 
                         >
+                            <span class="single_prod_discount" v-if="prod?.price_for_one?.discount">
+                               -{{ prod?.price_for_one?.discount }}%
+                            </span>
                             <template v-if="prod.general_file.type === 'image'">
                                 <img :src="'/'+prod.general_file.path" alt="">
                             </template>
@@ -84,13 +90,16 @@
 </template>
 
 <script>
-import Modal from "../../../SharedComponents/ReusableComponents/Modal.vue";
 import ProductDetails from "../../../SharedComponents/Product/ProductDetails.vue";
-import LeaveComment from "./Popups/LeaveComment.vue";
-import SendInquiry from "./Popups/SendInquiry.vue";
+import {defineAsyncComponent} from "vue";
 export default {
     name: "Product-Details",
-    components: {ProductDetails,LeaveComment,Modal,SendInquiry}
+    components: {
+        ProductDetails,
+        LeaveComment:defineAsyncComponent(()=>import("./Popups/LeaveComment.vue")),
+        Modal:defineAsyncComponent(()=>import("../../../SharedComponents/ReusableComponents/Modal.vue")),
+        SendInquiry:defineAsyncComponent(()=>import("./Popups/SendInquiry.vue"))
+    }
 }
 </script>
 <script setup>

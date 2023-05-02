@@ -72,9 +72,6 @@ export default {
 </script>
 
 <style >
-#app{
-    background-color: #8B8B8B;
-}
 </style>
 <style scoped>
 .wrapped{
@@ -91,5 +88,7 @@ export default {
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
+    width: 100vw;
+    padding-bottom: 10px;
 }
 </style>

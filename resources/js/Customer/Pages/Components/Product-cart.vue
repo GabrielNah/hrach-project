@@ -16,19 +16,23 @@
 
 
         <router-link class="img-wrap p-1 "
+                     :style="{height:horizontal ? '99%' : '60%'}"
                      :to="productRoute(product.id)"
                      :class="horizontal ? 'w-50' :'w-100'"
         >
             <template v-if="product.general_file.type === 'video'">
                 <video :src="'/'+product.general_file.path" autoplay loop muted
-                       class="w-100 h-100"></video>
+                       class="w-100 h-100 product-card-img"></video>
             </template>
             <template v-if="product.general_file.type === 'image'">
-                <img :src="'/'+product.general_file.path" class="w-100 h-100">
+                <img :src="'/'+product.general_file.path" class="w-100 h-100 product-card-img">
             </template>
 
         </router-link>
-        <figcaption class="info-wrap">
+        <figcaption class="info-wrap"
+                    :class="horizontal ? 'w-50' :'w-100'"
+                    :style="{height:horizontal ? '99%' : '40%'}"
+        >
             <div class="d-flex gap-1">
                 <svg v-for="i in 5" fill="none" height="15" viewBox="0 0 16 15" width="16"
                      xmlns="http://www.w3.org/2000/svg">
@@ -44,10 +48,10 @@
             </div>
             <template v-if="horizontal">
                 <div class="price h5 mt-2 d-flex justify-content-between" >
-                    <span style="max-width: 23ch;">{{ product.name }}</span>
+                    <span class="prod-name" style="max-width: 23ch;">{{ product.name }}</span>
                 </div>
                 <div class="price h5 mt-2 d-flex justify-content-between" >
-                    <span style="max-width: 120ch;">{{ product.description }}</span>
+                    <span style="max-width: 120ch;" class="prod-description">{{ product.description }}</span>
                 </div>
                 <template v-if="product?.tags?.length">
                     <div class="d-flex gap-1">
@@ -61,13 +65,15 @@
                 </template>
             </template>
 
-            <div class="price h5 mt-2 d-flex gap-2 align-items-center ">
+            <div class="price h5 mt-2 d-flex gap-2 align-items-center "
+                :class="{'flex-wrap':horizontal}"
+            >
                 <span
                   :class="{'text-decoration-line-through':product?.price_for_one?.discount}"
                 >
                     {{ product?.price_for_one?.price }}$
                 </span>
-                <span v-if="product?.price_for_one?.discount">
+                <span v-if="product?.price_for_one?.discount" style="flex: 1">
                     {{
                     calculateDiscountedPrice(
                         product?.price_for_one?.price,
@@ -113,6 +119,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.card{
+    transition: 0.2s ease-out all;
+}
 .tag-wrapper{
     right: 12px;
     top: 16px;
@@ -158,5 +167,40 @@ export default defineComponent({
 
         background: #FA3434;
         border-radius: 5.55px;
+    }
+    a.title{
+        max-width: 100%;
+        overflow: hidden;
+        white-space: normal;
+        max-height: 20px;
+        text-overflow: ellipsis;
+    }
+    .prod-name{
+        max-width: 100%;
+        overflow: hidden;
+        white-space: normal;
+        max-height: 20px;
+        text-overflow: ellipsis;
+    }
+    .prod-description{
+        max-width: 100%;
+        overflow: hidden;
+        white-space: normal;
+        max-height: 40px;
+        text-overflow: ellipsis;
+    }
+    .card:hover,:focus{
+        transition: 0.2s ease-out all;
+        transform: scale(1.08);
+        box-shadow: 5px 7px 15px -1px rgba(0,0,0,0.75);
+        -webkit-box-shadow: 5px 7px 15px -1px rgba(0,0,0,0.75);
+        -moz-box-shadow: 5px 7px 15px -1px rgba(0,0,0,0.75);
+    }
+    .product-card-img{
+        transition: 0.2s ease-out all;
+    }
+    .product-card-img:hover,:focus {
+        transition: 0.2s ease-out all;
+        transform: scale(1.2);
     }
 </style>

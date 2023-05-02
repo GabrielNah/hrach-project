@@ -9,16 +9,19 @@ export default ()=>([
     {
         path:'',
         name:USER_HOME_PAGE,
-        component:HomePage
+        component:HomePage,
+        meta:{title:'Home'}
     },
     {
       path:'products/list/:category?',
       name: PRODUCT_LIST_PAGE,
-      component:SearchedProducts
+      component:SearchedProducts,
+      meta: {title:'Products'}
     },
     {
-        path:'product/:id',
-        name:PRODUCT_DETAIL_PAGE,
-        component:ProductDetails
+        path: 'product/:id',
+        name: PRODUCT_DETAIL_PAGE,
+        component: ProductDetails,
+        meta: {title:'Product details'}
     },
 ])

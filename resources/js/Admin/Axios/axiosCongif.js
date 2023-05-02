@@ -39,5 +39,5 @@ const onResponseError=(error) => {
 
 
 HTTP.interceptors.request.use(onRequest,(e)=>Promise.reject(e));
-HTTP.interceptors.response.use(onRequest,onResponseError);
+HTTP.interceptors.response.use((r)=>r,onResponseError);
 export default HTTP;

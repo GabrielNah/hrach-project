@@ -18,9 +18,25 @@ class PriceResource extends JsonResource
             'currency'=>Price::USD,
             'discount'=>$this->resource->discount,
             'negotiable'=> (bool)$this->resource->negotiable,
-            'price'=>$this->resource->price,
+            'price'=>$this->formatNumber($this->resource->price),
         ];
     }
+
+    private function formatNumber($value) {
+        $floatValue = is_string($value) ? (float)$value : $value;
+
+        if (floor($floatValue) == $floatValue) {
+            return intval($floatValue);
+        }
+
+        $formattedValue = number_format($floatValue, 2, '.', '');
+        if (substr($formattedValue, -1) != '0') {
+            return $formattedValue;
+        }
+
+        return intval($floatValue);
+    }
+
 
     public static function collection($resource)
     {

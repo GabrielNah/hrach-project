@@ -89,5 +89,6 @@ export default {
     background-repeat: no-repeat;
     background-size: cover;
     width: 100vw;
+    padding-bottom: 10px;
 }
 </style>

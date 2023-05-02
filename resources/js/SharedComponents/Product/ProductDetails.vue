@@ -48,9 +48,6 @@
                         </template>
 
                     </div>
-                    <div class="product_inquiry" v-if="screen < 900">
-                        <slot name="inquiry" />
-                    </div>
                 </div>
                 <div class="product_info">
                     <h3 class="product_name"> {{ product.name }}</h3>
@@ -147,12 +144,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="product_inquiry" v-if="screen >= 900">
+                <div class="product_inquiry" >
                     <slot name="inquiry" />
                 </div>
 
             </section>
-            <div class="d-flex w-100 justify-content-between">
+            <div class="d-flex w-100 justify-content-between" style="gap: 10px">
                 <section class="description">
                     <div class="description_tab">
                         <nav>
@@ -479,6 +476,11 @@ body{
     flex-direction: row;
     background: #FFFFFF;
     padding: 20px 20px;
+    @media (max-width: 900px) {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
 
 }
 
@@ -491,7 +493,7 @@ body{
     flex-direction: column;
     width: 35%;
     @media (max-width: 900px) {
-        width: 60%;
+        width: 100%;
     }
 }
 
@@ -547,6 +549,7 @@ body{
     border-radius: 4px;
     margin-left: 8px;
     cursor: pointer;
+    object-fit: cover;
 }
 
 .product_info {
@@ -555,7 +558,8 @@ body{
     padding: 20px 20px;
 
     @media (max-width: 900px) {
-        width: 40%;
+        width: 100%;
+
     }
     @media (min-width: 900px) {
         flex:1;
@@ -565,7 +569,10 @@ body{
 
 .product_inquiry{
     @media (max-width: 900px) {
-        width: 100%;
+        width: 95%;
+        >div{
+            flex-direction: row !important;
+        }
         margin-top: 30px;
     }
     @media (min-width: 900px) {
@@ -624,6 +631,10 @@ body{
         width: 100%;
 
          .price-item {
+             display: flex;
+             flex-direction: column;
+             justify-content: center;
+             align-items: center;
              .quality {
                  font-size: 14px;
                  color: #666;
@@ -656,6 +667,7 @@ body{
 
     .single_price {
         padding: 15px 15px;
+        position: relative;
 
         .price {
             font-family: 'Inter';
@@ -736,6 +748,10 @@ body{
     margin-top: 20px;
     display: flex;
     flex-direction: column;
+    @media (max-width: 600px) {
+      width: 100%;
+    }
+
 
     h6 {
         font-family: 'Inter';
@@ -755,15 +771,38 @@ body{
         margin-top: 10px;
         max-height: 450px;
         overflow: auto;
+        display: flex;
+        flex-direction: column;
+
+        a{
+            text-decoration: none;
+            cursor: pointer;
+
+        }
+        @media (max-width: 600px) {
+            flex-direction: row;
+            max-width: 100%;
+        }
 
         .single_prod {
             display: flex;
             flex-direction: row;
             margin-bottom: 10px;
+            position: relative;
+            .single_prod_discount{
+                padding: 5px;
+                position: absolute;
+                background: #FA3434;
+                color: #F2F3F7;
+                border-radius: 10px;
+                top: 2px;
+                left:2px;
+            }
 
             img {
-                width: 70px;
-                height: 70px;
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
                 border: 1px solid #E0E0E0;
                 border-radius: 6px;
                 margin-right: 10px;
@@ -826,7 +865,8 @@ body{
 
     box-shadow: 0px 1px 3px rgba(56, 56, 56, 0.1);
     border-radius: 6px;
-    width: 70%;
+    min-width: 70%;
+    flex: 1;
 
     .nav-tabs, .active {
         color: #505050;;
@@ -902,7 +942,6 @@ body{
 }
 
 .related_products {
-    margin-bottom: 20px;
     width: 100%;
     margin-top: 20px;
     background: #FFFFFF;
@@ -916,7 +955,10 @@ body{
 
     box-shadow: 0px 1px 3px rgba(56, 56, 56, 0.1);
     border-radius: 6px;
-
+    a{
+        text-decoration: none;
+        cursor: pointer;
+    }
     h6 {
         font-family: 'Inter';
         font-style: normal;
@@ -944,11 +986,21 @@ body{
             flex-direction: column;
             gap: 5px;
             cursor: pointer;
-
+            position: relative;
+            .single_prod_discount{
+                padding: 5px;
+                position: absolute;
+                background: #FA3434;
+                color: #F2F3F7;
+                border-radius: 10px;
+                top: 2px;
+                left:2px;
+            }
             img {
                 width: 172px;
                 height: 172px;
                 border-radius: 4px;
+                object-fit: cover;
             }
 
             .related_product_price {

@@ -28,6 +28,9 @@
                         <router-link :to="{name: PRODUCT_DETAIL_PAGE,params: {id:likableProd.id}}"
                             class="single_prod"
                         >
+                            <span class="single_prod_discount" v-if="likableProd?.price_for_one?.discount">
+                               -{{ likableProd?.price_for_one?.discount }}%
+                            </span>
                             <template v-if="likableProd.general_file.type === 'image'">
                                 <img :src="'/'+likableProd.general_file.path" alt="">
                             </template>
@@ -52,6 +55,9 @@
                                      class="one_related_product"
 
                         >
+                            <span class="single_prod_discount" v-if="prod?.price_for_one?.discount">
+                               -{{ prod?.price_for_one?.discount }}%
+                            </span>
                             <template v-if="prod.general_file.type === 'image'">
                                 <img :src="'/'+prod.general_file.path" alt="">
                             </template>

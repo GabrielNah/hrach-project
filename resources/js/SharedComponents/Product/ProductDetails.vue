@@ -33,7 +33,9 @@
                             <video :src="'/'+files.selected.path"   autoplay  loop muted></video>
                         </template>
                         <template v-if="files.selected.type==='image'">
-                            <img :src="'/'+files.selected.path" />
+                            <vue-magnifier zoomFactor="2"  mgHeight="200"
+                                           mgWidth="200"
+                                           :src="'/'+files.selected.path"/>
                         </template>
                     </div>
                     <div class="images" v-if="files.all.length">
@@ -257,11 +259,13 @@ import ProductCart from "../../Customer/Pages/Components/Product-cart.vue";
 import {useRoute, useRouter} from "vue-router";
 import { onBeforeMount, reactive, ref} from "vue";
 import useProductModifier from "../../GlobalComposables/useProductModifier";
-
+import VueMagnifier from '@websitebeaver/vue-magnifier'
+import '@websitebeaver/vue-magnifier/styles.css'
 export default {
     name: "ProductDetails",
     components: {
         ProductCart,
+        VueMagnifier
     },
     computed:{
       screen:()=>window.screen.width
